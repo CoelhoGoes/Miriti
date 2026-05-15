@@ -1,0 +1,51 @@
+.modal-base-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  pointer-events: auto;
+  background: rgba(7, 17, 11, 0.62);
+  backdrop-filter: blur(4px);
+}
+
+.modal-base-container {
+  position: relative;
+  width: min(92vw, 42rem);
+  max-height: min(88vh, 42rem);
+  overflow: auto;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #fffef7 0%, #f2fbf4 100%);
+  border: 1px solid rgba(15, 37, 25, 0.14);
+  box-shadow: 0 24px 54px rgba(7, 17, 11, 0.3);
+}
+
+.modal-base-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff8a65, #ff5252);
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(255, 82, 82, 0.3);
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+.modal-base-close:hover {
+  transform: scale(1.04);
+  filter: brightness(1.04);
+}
+
+.modal-base-close:active {
+  transform: scale(0.98);
+}
