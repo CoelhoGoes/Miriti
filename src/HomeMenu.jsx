@@ -27,14 +27,7 @@ function XPBar({ current, max }) {
 
   return (
     <div style={{ margin: '8px 0 4px' }}>
-      <div
-        style={{
-          height: 8,
-          background: 'rgba(255,255,255,0.2)',
-          borderRadius: 99,
-          overflow: 'hidden',
-        }}
-      >
+      <div style={{ height: 8, background: 'rgba(255,255,255,0.2)', borderRadius: 99, overflow: 'hidden' }}>
         <animated.div
           style={{
             ...barSpring,
@@ -57,16 +50,9 @@ XPBar.propTypes = {
 }
 
 function ResourceChip({ emoji, value, color }) {
-  const chipSpring = useSpring({
-    from: { opacity: 0, transform: 'translateY(-8px)' },
-    to: { opacity: 1, transform: 'translateY(0)' },
-    config: config.gentle,
-  })
-
   return (
-    <animated.div
+    <div
       style={{
-        ...chipSpring,
         display: 'flex',
         alignItems: 'center',
         gap: 5,
@@ -95,7 +81,7 @@ function ResourceChip({ emoji, value, color }) {
       >
         +
       </span>
-    </animated.div>
+    </div>
   )
 }
 
@@ -115,7 +101,6 @@ export default function HomeMenu({ onNavigate }) {
   const moedas = gameState.economia.moedas
   const energia = gameState.economia.energia
   const diaAtual = gameState.economia.diaAtual
-
   const xpCurrent = xp % 500
 
   const sidebarSpring = useSpring({
@@ -161,7 +146,7 @@ export default function HomeMenu({ onNavigate }) {
         fontFamily: "'Nunito', 'Fredoka One', sans-serif",
         overflow: 'hidden',
         background: '#1a1a2e',
-        pointerEvents: 'none',
+        pointerEvents: 'auto',
       }}
     >
       <animated.aside
@@ -178,22 +163,12 @@ export default function HomeMenu({ onNavigate }) {
           pointerEvents: 'auto',
         }}
       >
-        <div
-          style={{
-            background: '#145214',
-            padding: '14px 16px 12px',
-            borderBottom: '2px solid rgba(255,255,255,0.1)',
-          }}
-        >
+        <div style={{ background: '#145214', padding: '14px 16px 12px', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ fontSize: 22 }}>🌿</span>
             <div>
-              <div style={{ color: '#f9ca24', fontWeight: 900, fontSize: 18, lineHeight: 1.1 }}>
-                Miriti
-              </div>
-              <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10 }}>
-                Matemática Financeira
-              </div>
+              <div style={{ color: '#f9ca24', fontWeight: 900, fontSize: 18, lineHeight: 1.1 }}>Miriti</div>
+              <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10 }}>Matemática Financeira</div>
             </div>
           </div>
         </div>
@@ -218,9 +193,7 @@ export default function HomeMenu({ onNavigate }) {
             </div>
             <div>
               <div style={{ color: '#fff', fontWeight: 800, fontSize: 15 }}>{nome}</div>
-              <div style={{ color: '#a5d6a7', fontSize: 11, fontWeight: 600 }}>
-                Nível {nivel} – Aprendiz
-              </div>
+              <div style={{ color: '#a5d6a7', fontSize: 11, fontWeight: 600 }}>Nível {nivel} – Aprendiz</div>
             </div>
           </div>
           <XPBar current={xpCurrent} max={500} />
@@ -230,41 +203,40 @@ export default function HomeMenu({ onNavigate }) {
           {navTrail.map((trail, i) => {
             const item = NAV_ITEMS[i]
             const isActive = activeNav === i
-
             return (
-              <animated.button
-                key={item.label}
-                type="button"
-                style={{
-                  ...trail,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  width: '100%',
-                  padding: '10px 16px',
-                  background: isActive
-                    ? 'linear-gradient(90deg, rgba(249,202,36,0.25), rgba(249,202,36,0.08))'
-                    : 'transparent',
-                  borderLeft: isActive ? '4px solid #f9ca24' : '4px solid transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: isActive ? '#f9ca24' : 'rgba(255,255,255,0.75)',
-                  fontWeight: isActive ? 800 : 500,
-                  fontSize: 14,
-                  textAlign: 'left',
-                  transition: 'all 0.15s',
-                  pointerEvents: 'auto',
-                }}
-                onClick={() => {
-                  setActiveNav(i)
-                  if (onNavigate) {
-                    onNavigate(item.label)
-                  }
-                }}
-              >
-                <span style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{item.icon}</span>
-                {item.label}
-              </animated.button>
+              <animated.div key={item.label} style={trail}>
+                <button
+                  type="button"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    width: '100%',
+                    padding: '10px 16px',
+                    background: isActive
+                      ? 'linear-gradient(90deg, rgba(249,202,36,0.25), rgba(249,202,36,0.08))'
+                      : 'transparent',
+                    borderTop: 'none',
+                    borderRight: 'none',
+                    borderBottom: 'none',
+                    borderLeft: isActive ? '4px solid #f9ca24' : '4px solid transparent',
+                    cursor: 'pointer',
+                    color: isActive ? '#f9ca24' : 'rgba(255,255,255,0.75)',
+                    fontWeight: isActive ? 800 : 500,
+                    fontSize: 14,
+                    textAlign: 'left',
+                    transition: 'all 0.15s',
+                    fontFamily: 'inherit',
+                  }}
+                  onClick={() => {
+                    setActiveNav(i)
+                    if (onNavigate) onNavigate(item.label)
+                  }}
+                >
+                  <span style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{item.icon}</span>
+                  {item.label}
+                </button>
+              </animated.div>
             )
           })}
         </nav>
@@ -282,7 +254,6 @@ export default function HomeMenu({ onNavigate }) {
             color: 'rgba(255,255,255,0.45)',
             fontSize: 13,
             fontWeight: 500,
-            pointerEvents: 'auto',
           }}
         >
           <span style={{ fontSize: 16 }}>🚪</span> Sair
@@ -318,7 +289,6 @@ export default function HomeMenu({ onNavigate }) {
             <ResourceChip emoji="🪙" value={moedas.toLocaleString('pt-BR')} color="#f9ca24" />
             <ResourceChip emoji="⚡" value={`${energia}%`} color="#e74c3c" />
           </div>
-
           <div style={{ display: 'flex', gap: 8 }}>
             {['📅', '🔔'].map((icon) => (
               <button
@@ -335,7 +305,6 @@ export default function HomeMenu({ onNavigate }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  pointerEvents: 'auto',
                 }}
               >
                 {icon}
@@ -344,7 +313,7 @@ export default function HomeMenu({ onNavigate }) {
           </div>
         </animated.header>
 
-        <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
+        <div style={{ flex: 1, display: 'flex', minHeight: 0, height: '100%' }}>
           <PhaserGame />
         </div>
 
@@ -365,9 +334,7 @@ export default function HomeMenu({ onNavigate }) {
         >
           <span style={{ fontSize: 28 }}>⭐</span>
           <div>
-            <div style={{ color: '#fff', fontWeight: 800, fontSize: 15 }}>
-              Continue sua jornada!
-            </div>
+            <div style={{ color: '#fff', fontWeight: 800, fontSize: 15 }}>Continue sua jornada!</div>
             <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>
               Dia {diaAtual} - explore decisões, missões e recompensas do Projeto Miriti.
             </div>
