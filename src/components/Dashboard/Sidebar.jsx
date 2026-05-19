@@ -19,6 +19,11 @@ export default function Sidebar() {
     <aside className="dashboard-sidebar">
       <section className="dashboard-profile">
         <span className="dashboard-kicker">Perfil</span>
+        <img
+          src="https://ui-avatars.com/api/?name=Jogador&background=f39c12&color=fff&size=64&bold=true"
+          alt="Avatar"
+          style={{ width: 64, height: 64, borderRadius: '50%', border: '2px solid white' }}
+        />
         <strong className="dashboard-profile__name">{nome}</strong>
         <p className="dashboard-profile__level">Nível {nivel}</p>
         <XPBar current={xp % 500} max={500} />
