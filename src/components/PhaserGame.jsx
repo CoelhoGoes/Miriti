@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
+import PropTypes from 'prop-types'
 import Phaser from 'phaser'
 import { useGame } from '../context/GameContext'
 import MainScene from '../game/scenes/MainScene'
 
-export default function PhaserGame() {
+export default function PhaserGame({ onOpenModal }) {
   const containerRef = useRef(null)
   const gameRef = useRef(null)
   const { addCoins } = useGame()
@@ -58,14 +59,23 @@ export default function PhaserGame() {
       addCoins(amount)
     }
 
+    const handleOpenModal = (event) => {
+      const { modalName } = event.detail
+      if (onOpenModal) {
+        onOpenModal(modalName)
+      }
+    }
+
     // Registra listener para evento de coleta de moeda
     globalThis.addEventListener('PHASER_ACTION_COLLECT', handleCollectCoin)
+    globalThis.addEventListener('PHASER_ACTION_OPEN_MODAL', handleOpenModal)
 
     // Cleanup: remove listener ao desmontar
     return () => {
       globalThis.removeEventListener('PHASER_ACTION_COLLECT', handleCollectCoin)
+      globalThis.removeEventListener('PHASER_ACTION_OPEN_MODAL', handleOpenModal)
     }
-  }, [addCoins])
+  }, [addCoins, onOpenModal])
 
   return (
     <div
@@ -77,4 +87,8 @@ export default function PhaserGame() {
       }}
     />
   )
+}
+
+PhaserGame.propTypes = {
+  onOpenModal: PropTypes.func,
 }

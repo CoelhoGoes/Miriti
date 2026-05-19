@@ -6,78 +6,110 @@ export default class MainScene extends Phaser.Scene {
     super({ key: 'MainScene' })
   }
 
+  preload() {
+    this.load.image('mapa-vila', '/assets/mapa-vila.jpg')
+  }
+
   create() {
-    // Define cor de fundo azul claro
-    this.cameras.main.setBackgroundColor('#87CEEB')
+    const map = this.add.image(0, 0, 'mapa-vila').setOrigin(0, 0)
+    const viewWidth = this.scale.width
+    const viewHeight = this.scale.height
 
-    // Obtém dimensões do canvas
-    const width = this.cameras.main.width
-    const height = this.cameras.main.height
+    map.setDisplaySize(viewWidth, viewHeight)
 
-    // Desenha elipse verde centralizada (representando a ilha)
-    const graphics = this.make.graphics({ x: 0, y: 0, add: false })
-    graphics.fillStyle(0x2e7d32, 1) // Verde escuro (#2e7d32)
-    graphics.fillEllipse(width / 2, height / 2, width * 0.7, height * 0.65)
-    graphics.generateTexture('island-texture', width, height)
-    graphics.destroy()
+    this.physics.world.setBounds(0, 0, viewWidth, viewHeight)
+    this.cameras.main.setBounds(0, 0, viewWidth, viewHeight)
 
-    // Cria sprite da ilha
-    this.add.image(width / 2, height / 2, 'island-texture')
+    map.setDepth(0)
 
-    // Textura temporária do jogador enquanto não há sprites finais
     const playerGraphics = this.add.graphics()
     playerGraphics.fillStyle(0x2d3436, 1)
-    playerGraphics.fillRoundedRect(0, 0, 32, 32, 6)
-    playerGraphics.lineStyle(2, 0xffffff, 0.65)
-    playerGraphics.strokeRoundedRect(0, 0, 32, 32, 6)
-    playerGraphics.generateTexture('playerTexture', 32, 32)
+    playerGraphics.fillRoundedRect(0, 0, 40, 40, 8)
+    playerGraphics.generateTexture('player-sprite', 40, 40)
     playerGraphics.destroy()
 
-    this.player = new Player(this, width / 2, height / 2, 'playerTexture')
+    this.player = new Player(this, viewWidth / 2, viewHeight / 2, 'player-sprite')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.wasd = this.input.keyboard.addKeys('W,A,S,D')
 
-    // Texto de validação centralizado
-    this.add.text(width / 2, height / 2, 'Phaser Engine Ativo!', {
-      fontSize: '32px',
-      fontFamily: 'Arial',
-      fill: '#ffffff',
-      align: 'center',
-      fontStyle: 'bold',
-    }).setOrigin(0.5, 0.5)
+    this.cameras.main.setZoom(1)
+    this.cameras.main.setScroll(0, 0)
+    this.cameras.main.centerOn(viewWidth / 2, viewHeight / 2)
 
-    // Círculo amarelo interativo (moeda/recurso)
-    const coinCircle = this.add.circle(width / 2, height * 0.7, 30, 0xf9ca24)
-    coinCircle.setInteractive({ useHandCursor: true })
+    this.player.setDepth(10)
+    // mantenha a entidade do jogador, mas esconda o sprite visível para protótipo
+    this.player.setVisible(false)
+    this.player.setImmovable(true)
+    this.player.body.moves = false
 
-    // Evento de clique no círculo
-    coinCircle.on('pointerdown', () => {
-      // Tween de piscar (alpha flashing)
-      this.tweens.add({
-        targets: coinCircle,
-        alpha: { from: 1, to: 0.3 },
-        duration: 100,
-        yoyo: true,
-        repeat: 2,
+    const createBuilding = ({ x, y, emoji, label, modalName }) => {
+      const container = this.add.container(x, y)
+
+      const bg = this.add.circle(0, -10, 50, 0xffffff, 0.2)
+      bg.setInteractive({ useHandCursor: true })
+
+      const emojiText = this.add.text(0, -10, emoji, {
+        fontSize: '64px',
+      }).setOrigin(0.5)
+
+      const tag = this.add.text(0, 45, label, {
+        fontFamily: 'Arial',
+        fontSize: '20px',
+        fontStyle: 'bold',
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 4,
+      }).setOrigin(0.5)
+
+      container.add([bg, emojiText, tag])
+      container.setDepth(5)
+
+      bg.on('pointerdown', () => {
+        globalThis.dispatchEvent(
+          new CustomEvent('PHASER_ACTION_OPEN_MODAL', {
+            detail: { modalName },
+          })
+        )
       })
 
-      // Dispara evento global para o React
-      globalThis.dispatchEvent(
-        new CustomEvent('PHASER_ACTION_COLLECT', {
-          detail: { amount: 10 },
-        })
-      )
+      return container
+    }
 
-      console.log('💰 Moeda coletada! Evento enviado para React')
+    createBuilding({
+      x: viewWidth * 0.34,
+      y: viewHeight * 0.35,
+      emoji: '🏪',
+      label: 'Mercado',
+      modalName: 'mercado',
     })
+
+    createBuilding({
+      x: viewWidth * 0.66,
+      y: viewHeight * 0.35,
+      emoji: '🌾',
+      label: 'Fazenda',
+      modalName: 'fazenda',
+    })
+
+    createBuilding({
+      x: viewWidth * 0.5,
+      y: viewHeight * 0.62,
+      emoji: '🏦',
+      label: 'Banco',
+      modalName: 'banco',
+    })
+
+    // Debug text removed
 
     // Log de validação no console
     console.log('✅ MainScene criada com sucesso')
   }
 
   update() {
-    if (this.player) {
-      this.player.update(this.cursors, this.wasd)
+    if (!this.player) {
+      return
     }
+
+    this.player.setVelocity(0)
   }
 }

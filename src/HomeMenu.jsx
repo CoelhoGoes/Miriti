@@ -3,14 +3,15 @@ import PropTypes from 'prop-types'
 import { useSpring, useTrail, animated, config } from '@react-spring/web'
 import { useGame } from './context/GameContext'
 import PhaserGame from './components/PhaserGame'
+import ModalBase from './components/Modal/ModalBase'
 
 const NAV_ITEMS = [
-  { icon: '🏠', label: 'Início' },
-  { icon: '✅', label: 'Missões' },
-  { icon: '🛍️', label: 'Loja' },
-  { icon: '👤', label: 'Perfil' },
-  { icon: '🏆', label: 'Conquistas' },
-  { icon: '❓', label: 'Ajuda' },
+  { id: 'inicio', icon: '🏠', label: 'Início' },
+  { id: 'missoes', icon: '✅', label: 'Missões' },
+  { id: 'loja', icon: '🛍️', label: 'Loja' },
+  { id: 'perfil', icon: '👤', label: 'Perfil' },
+  { id: 'conquistas', icon: '🏆', label: 'Conquistas' },
+  { id: 'ajuda', icon: '❓', label: 'Ajuda' },
 ]
 
 function XPBar({ current, max }) {
@@ -91,8 +92,9 @@ ResourceChip.propTypes = {
   color: PropTypes.string.isRequired,
 }
 
-export default function HomeMenu({ onNavigate }) {
+export default function HomeMenu() {
   const [activeNav, setActiveNav] = useState(0)
+  const [activeModal, setActiveModal] = useState(null)
   const { gameState } = useGame()
 
   const nome = gameState.perfil.nome
@@ -152,8 +154,8 @@ export default function HomeMenu({ onNavigate }) {
       <animated.aside
         style={{
           ...sidebarSpring,
-          width: 190,
-          minWidth: 190,
+          width: 250,
+          minWidth: 250,
           background: 'linear-gradient(180deg, #1b5e20 0%, #2e7d32 60%, #1b5e20 100%)',
           display: 'flex',
           flexDirection: 'column',
@@ -175,22 +177,11 @@ export default function HomeMenu({ onNavigate }) {
 
         <div style={{ padding: '16px 14px 12px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: '50%',
-                background: '#a8d5e2',
-                border: '3px solid #f9ca24',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 28,
-                flexShrink: 0,
-              }}
-            >
-              🧒
-            </div>
+            <img
+              src="https://ui-avatars.com/api/?name=Jogador&background=f39c12&color=fff&size=64&bold=true"
+              alt="Avatar"
+              style={{ width: 64, height: 64, borderRadius: '50%', border: '2px solid white', flexShrink: 0 }}
+            />
             <div>
               <div style={{ color: '#fff', fontWeight: 800, fontSize: 15 }}>{nome}</div>
               <div style={{ color: '#a5d6a7', fontSize: 11, fontWeight: 600 }}>Nível {nivel} – Aprendiz</div>
@@ -230,7 +221,7 @@ export default function HomeMenu({ onNavigate }) {
                   }}
                   onClick={() => {
                     setActiveNav(i)
-                    if (onNavigate) onNavigate(item.label)
+                    setActiveModal(item.id)
                   }}
                 >
                   <span style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{item.icon}</span>
@@ -276,7 +267,7 @@ export default function HomeMenu({ onNavigate }) {
             ...topbarSpring,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             padding: '10px 20px',
             background: 'rgba(0,0,0,0.55)',
             backdropFilter: 'blur(8px)',
@@ -285,36 +276,47 @@ export default function HomeMenu({ onNavigate }) {
             gap: 10,
           }}
         >
-          <div style={{ display: 'flex', gap: 10 }}>
-            <ResourceChip emoji="🪙" value={moedas.toLocaleString('pt-BR')} color="#f9ca24" />
-            <ResourceChip emoji="⚡" value={`${energia}%`} color="#e74c3c" />
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {['📅', '🔔'].map((icon) => (
-              <button
-                key={icon}
-                type="button"
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.1)',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  cursor: 'pointer',
-                  fontSize: 18,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {icon}
-              </button>
-            ))}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+              maxWidth: 780,
+              gap: 16,
+            }}
+          >
+            <div style={{ display: 'flex', gap: 10, flex: '0 0 auto' }}>
+              <ResourceChip emoji="🪙" value={moedas.toLocaleString('pt-BR')} color="#f9ca24" />
+              <ResourceChip emoji="⚡" value={`${energia}%`} color="#e74c3c" />
+            </div>
+            <div style={{ display: 'flex', gap: 8, flex: '0 0 auto' }}>
+              {['📅', '🔔'].map((icon) => (
+                <button
+                  key={icon}
+                  type="button"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    cursor: 'pointer',
+                    fontSize: 18,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {icon}
+                </button>
+              ))}
+            </div>
           </div>
         </animated.header>
 
         <div style={{ flex: 1, display: 'flex', minHeight: 0, height: '100%' }}>
-          <PhaserGame />
+          <PhaserGame onOpenModal={setActiveModal} />
         </div>
 
         <animated.footer
@@ -342,10 +344,23 @@ export default function HomeMenu({ onNavigate }) {
           <span style={{ fontSize: 26 }}>🗺️</span>
         </animated.footer>
       </animated.div>
+
+      <ModalBase isOpen={Boolean(activeModal)} onClose={() => setActiveModal(null)}>
+        <div style={{ paddingTop: 18, paddingRight: 28 }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: '#2e7d32', textTransform: 'uppercase', letterSpacing: 1 }}>
+            Tela em construção
+          </div>
+          <h2 style={{ margin: '8px 0 10px', fontSize: 28, lineHeight: 1.1, color: '#16351f' }}>
+            {NAV_ITEMS.find((item) => item.id === activeModal)?.label ?? 'Tela'}
+          </h2>
+          <p style={{ margin: 0, fontSize: 16, lineHeight: 1.5, color: '#355243' }}>
+            Em construção: {NAV_ITEMS.find((item) => item.id === activeModal)?.label ?? 'Tela'}
+          </p>
+        </div>
+      </ModalBase>
     </div>
   )
 }
 
 HomeMenu.propTypes = {
-  onNavigate: PropTypes.func,
 }
