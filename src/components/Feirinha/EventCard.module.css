@@ -1,0 +1,126 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal {
+    width: min(560px, 100%);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fffdfa 0%, #fff6e8 100%);
+    padding: 1.2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+    border: 1px solid #ffe1b3;
+}
+
+.bigEmoji {
+    font-size: 4rem;
+    line-height: 1;
+    text-align: center;
+}
+
+.title {
+    margin: 0.65rem 0 0.35rem;
+    text-align: center;
+    color: #5a3100;
+    font-size: 1.45rem;
+}
+
+.description {
+    margin: 0;
+    text-align: center;
+    color: #5d4a2f;
+    font-size: 1.07rem;
+    line-height: 1.45;
+}
+
+.effectsSection {
+    margin-top: 0.9rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.65);
+    padding: 0.75rem;
+}
+
+.effectsTitle {
+    margin: 0 0 0.55rem;
+    font-size: 0.95rem;
+    color: #774a16;
+}
+
+.effectsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.effectRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0.45rem 0.55rem;
+}
+
+.effectName {
+    font-weight: 700;
+    color: #303952;
+}
+
+.deltaUp {
+    color: #1a8a4c;
+    font-weight: 700;
+}
+
+.deltaDown {
+    color: #d63031;
+    font-weight: 700;
+}
+
+.closeButton {
+    margin-top: 0.95rem;
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 0.72rem 1rem;
+    font-size: 1rem;
+    font-weight: 800;
+    background: #f5a623;
+    color: #2f2100;
+    cursor: pointer;
+}
+
+.tipBubble {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 65;
+    width: min(340px, calc(100vw - 2rem));
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1px solid #dbe6ff;
+    box-shadow: 0 10px 24px rgba(9, 23, 58, 0.18);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    padding: 0.7rem 0.75rem;
+}
+
+.tipBubble p {
+    margin: 0;
+    color: #2c3e50;
+    line-height: 1.35;
+    font-size: 0.95rem;
+}
+
+.tipEmoji {
+    font-size: 1.2rem;
+    line-height: 1;
+    transform: translateY(1px);
+}
