@@ -25,7 +25,7 @@ export const STRINGS = {
       escolinha: 'Escolinha',
       shop: 'Loja',
       achievements: 'Conquistas',
-      stocks: 'Bolsa de Valores',
+      stocks: 'Feirinha do Jutaiteua',
       settings: 'Configurações',
       credits: 'Créditos'
     },
@@ -146,7 +146,7 @@ export const STRINGS = {
       escolinha: 'School',
       shop: 'Shop',
       achievements: 'Achievements',
-      stocks: 'Stock Market',
+      stocks: 'Jutaiteua Market Fair',
       settings: 'Settings',
       credits: 'Credits'
     },

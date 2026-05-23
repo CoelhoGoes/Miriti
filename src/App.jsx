@@ -7,7 +7,8 @@ import QuizScreen from './components/QuizScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import ShopScreen from './components/ShopScreen.jsx'
 import AchievementsScreen from './components/AchievementsScreen.jsx'
-import StockMarketScreen from './components/StockMarketScreen.jsx'
+// import StockMarketScreen from './components/StockMarketScreen.jsx'
+import FeirinhaScreen from './components/Feirinha/index.jsx'
 import OptionsModal from './components/OptionsModal.jsx'
 import CreditsScreen from './components/CreditsScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
@@ -106,7 +107,7 @@ export default function App() {
       case SCREENS.ACHIEVEMENTS:
         return <AchievementsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.STOCKS:
-        return <StockMarketScreen onBack={() => goTo(SCREENS.FARM)} />
+        return <FeirinhaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.CREDITS:
         return <CreditsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.HOME:

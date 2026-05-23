@@ -2,6 +2,8 @@ import { createContext, useContext, useReducer, useEffect, useCallback } from 'r
 import { storage } from '../utils/storage.js'
 import { PHASES } from '../data/questions.js'
 import { STOCKS, STOCK_META } from '../data/stocks.js'
+import { PRODUCTS } from '../data/products'
+import { MARKET_EVENTS } from '../data/marketEvents'
 
 const GameContext = createContext(null)
 
@@ -21,6 +23,16 @@ function initialPortfolio() {
   return p
 }
 
+function buildInitialMarket() {
+  const prices = {}
+  const priceHistory = {}
+  PRODUCTS.forEach(p => {
+    prices[p.id] = p.basePrice
+    priceHistory[p.id] = [p.basePrice]
+  })
+  return { prices, priceHistory }
+}
+
 const initialState = {
   currentPhase: 0,
   unlockedPhases: 1,
@@ -36,6 +48,13 @@ const initialState = {
   selectedMascot: DEFAULT_MASCOT,
   stocks: initialStocks(),
   portfolio: initialPortfolio(),
+  market: {
+    ...buildInitialMarket(),
+    round: 1,
+    lastEventId: null,
+    visitCount: 0,
+  },
+  basket: [],
   settings: {
     musicVolume: 0.4,
     sfxVolume: 0.6,
@@ -56,6 +75,20 @@ function loadInitialState() {
     inventory: { ...initialState.inventory, ...(saved.inventory || {}) },
     stocks: { ...initialStocks(), ...(saved.stocks || {}) },
     portfolio: { ...initialPortfolio(), ...(saved.portfolio || {}) },
+    market: {
+      ...initialState.market,
+      ...(saved.market || {}),
+      prices: { ...buildInitialMarket().prices, ...((saved.market && saved.market.prices) || {}) },
+      priceHistory: { ...buildInitialMarket().priceHistory, ...((saved.market && saved.market.priceHistory) || {}) },
+      round: (saved.market && typeof saved.market.round === 'number') ? saved.market.round : initialState.market.round,
+      lastEventId: (saved.market && Object.prototype.hasOwnProperty.call(saved.market, 'lastEventId'))
+        ? saved.market.lastEventId
+        : initialState.market.lastEventId,
+      visitCount: (saved.market && typeof saved.market.visitCount === 'number')
+        ? saved.market.visitCount
+        : initialState.market.visitCount,
+    },
+    basket: Array.isArray(saved.basket) ? saved.basket : initialState.basket,
     ownedMascots: (saved.ownedMascots && saved.ownedMascots.length) ? saved.ownedMascots : [DEFAULT_MASCOT],
     selectedMascot: saved.selectedMascot || DEFAULT_MASCOT,
     energy: typeof saved.energy === 'number' ? saved.energy : MAX_ENERGY,
@@ -207,6 +240,141 @@ function reducer(state, action) {
       return { ...next, achievements: grantAchievements(next, profit ? ['trader'] : []) }
     }
 
+    case 'BUY_PRODUCT': {
+      // action.payload: { productId, quantity }
+      const product = PRODUCTS.find(p => p.id === action.payload.productId)
+      const currentPrice = state.market.prices[action.payload.productId]
+      const totalCost = currentPrice * action.payload.quantity
+      if (!product || !currentPrice || state.coins < totalCost) return state
+
+      const existingSlot = state.basket.find(
+        b => b.productId === action.payload.productId
+      )
+      const currentBasketCount = state.basket.reduce(
+        (sum, b) => sum + b.quantity, 0
+      )
+      if (currentBasketCount + action.payload.quantity > 8) return state
+
+      const newBasket = existingSlot
+        ? state.basket.map(b =>
+          b.productId === action.payload.productId
+            ? { ...b, quantity: b.quantity + action.payload.quantity }
+            : b
+        )
+        : [
+          ...state.basket,
+          {
+            productId: action.payload.productId,
+            quantity: action.payload.quantity,
+            boughtAt: currentPrice,
+            roundBought: state.market.round,
+          },
+        ]
+
+      return {
+        ...state,
+        coins: state.coins - totalCost,
+        basket: newBasket,
+      }
+    }
+
+    case 'SELL_PRODUCT': {
+      // action.payload: { productId, quantity }
+      const product = PRODUCTS.find(p => p.id === action.payload.productId)
+      const slot = state.basket.find(
+        b => b.productId === action.payload.productId
+      )
+      if (!product || !slot || slot.quantity < action.payload.quantity) return state
+
+      // Verificar cooldown do Dende
+      if (product.hasCooldown) {
+        const roundsHeld = state.market.round - slot.roundBought
+        if (roundsHeld < product.cooldownRounds) return state
+      }
+
+      const currentPrice = state.market.prices[action.payload.productId]
+      const earnings = currentPrice * action.payload.quantity
+      const newBasket = slot.quantity === action.payload.quantity
+        ? state.basket.filter(b => b.productId !== action.payload.productId)
+        : state.basket.map(b =>
+          b.productId === action.payload.productId
+            ? { ...b, quantity: b.quantity - action.payload.quantity }
+            : b
+        )
+
+      return {
+        ...state,
+        coins: state.coins + earnings,
+        basket: newBasket,
+      }
+    }
+
+    case 'APPLY_MARKET_EVENT': {
+      // action.payload: { event } — objeto completo do MARKET_EVENTS
+      const event = action.payload?.event
+      if (!event || !MARKET_EVENTS.some(ev => ev.id === event.id)) return state
+      const newPrices = { ...state.market.prices }
+      const newHistory = { ...state.market.priceHistory }
+
+      event.effects.forEach(({ productId, delta }) => {
+        const product = PRODUCTS.find(p => p.id === productId)
+        if (!product) return
+        const updated = Math.min(
+          product.maxPrice,
+          Math.max(product.minPrice, newPrices[productId] + delta)
+        )
+        newHistory[productId] = [
+          ...(newHistory[productId] || []),
+          updated,
+        ].slice(-10) // guarda apenas os ultimos 10 precos
+        newPrices[productId] = updated
+      })
+
+      return {
+        ...state,
+        market: {
+          ...state.market,
+          prices: newPrices,
+          priceHistory: newHistory,
+          lastEventId: event.id,
+        },
+      }
+    }
+
+    case 'ADVANCE_ROUND': {
+      const newPrices = { ...state.market.prices }
+      const newHistory = { ...state.market.priceHistory }
+
+      PRODUCTS.forEach(product => {
+        const variance = {
+          low: 1,
+          medium: 2,
+          high: 4,
+        }[product.volatility]
+        const delta = Math.floor(Math.random() * (variance * 2 + 1)) - variance
+        const updated = Math.min(
+          product.maxPrice,
+          Math.max(product.minPrice, newPrices[product.id] + delta)
+        )
+        newHistory[product.id] = [
+          ...(newHistory[product.id] || []),
+          updated,
+        ].slice(-10)
+        newPrices[product.id] = updated
+      })
+
+      return {
+        ...state,
+        market: {
+          ...state.market,
+          prices: newPrices,
+          priceHistory: newHistory,
+          round: state.market.round + 1,
+          visitCount: state.market.visitCount + 1,
+        },
+      }
+    }
+
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.payload } }
 
@@ -241,14 +409,20 @@ export function GameProvider({ children }) {
   const tickStocks = useCallback(() => dispatch({ type: 'STOCK_TICK' }), [])
   const buyStock = useCallback((id) => dispatch({ type: 'BUY_STOCK', id }), [])
   const sellStock = useCallback((id) => dispatch({ type: 'SELL_STOCK', id }), [])
+  const buyProduct = useCallback((payload) => dispatch({ type: 'BUY_PRODUCT', payload }), [])
+  const sellProduct = useCallback((payload) => dispatch({ type: 'SELL_PRODUCT', payload }), [])
+  const applyMarketEvent = useCallback((event) => dispatch({ type: 'APPLY_MARKET_EVENT', payload: { event } }), [])
+  const advanceRound = useCallback(() => dispatch({ type: 'ADVANCE_ROUND' }), [])
   const updateSettings = useCallback((payload) => dispatch({ type: 'UPDATE_SETTINGS', payload }), [])
   const resetProgress = useCallback(() => dispatch({ type: 'RESET' }), [])
 
   const value = {
     state,
+    dispatch,
     setPhase, spendEnergy, completePhase,
     buyItem, selectMascot, useHint,
     tickStocks, buyStock, sellStock,
+    buyProduct, sellProduct, applyMarketEvent, advanceRound,
     updateSettings, resetProgress
   }
 

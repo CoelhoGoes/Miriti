@@ -10,7 +10,7 @@ import './FarmMap.css'
 const SPOTS = [
   { id: 'escolinha', icon: '🏫', left: '30%', top: '44%', big: true },
   { id: 'shop', icon: '🏪', left: '64%', top: '39%' },
-  { id: 'stocks', icon: '📈', left: '82%', top: '61%' },
+  { id: 'stocks', icon: '🧺', left: '82%', top: '61%' },
   { id: 'achievements', icon: '🏆', left: '50%', top: '72%' },
   { id: 'settings', icon: '🛖', left: '16%', top: '75%' },
   { id: 'credits', icon: '🪧', left: '86%', top: '27%' }
