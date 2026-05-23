@@ -8,7 +8,7 @@
 .farm-sky {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 10;
   background: linear-gradient(180deg,
     #38bdf8 0%,
     #7dd3fc 32%,
@@ -21,14 +21,14 @@
   position: absolute;
   top: 4%;
   left: 7%;
-  z-index: 1;
+  z-index: 11;
   font-size: clamp(3rem, 9vw, 5.5rem);
   filter: drop-shadow(0 0 36px rgba(253, 224, 71, 0.95));
 }
 
 .farm-cloud {
   position: absolute;
-  z-index: 1;
+  z-index: 11;
   filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.1));
 }
 
@@ -37,7 +37,7 @@
   position: absolute;
   bottom: 0;
   border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  z-index: 2;
+  z-index: 12;
 }
 .farm-hill-back {
   left: -20%;
@@ -64,7 +64,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 15;
   pointer-events: none;
 }
 .farm-path-line {
@@ -84,7 +84,7 @@
 /* ---- Enfeites ---- */
 .farm-deco {
   position: absolute;
-  z-index: 4;
+  z-index: 18;
   transform: translate(-50%, -50%);
   filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.22));
   pointer-events: none;
@@ -158,7 +158,7 @@
 .farm-spot {
   position: absolute;
   transform: translate(-50%, -50%);
-  z-index: 5;
+  z-index: 30;
   display: flex;
   flex-direction: column;
   align-items: center;
