@@ -1,34 +1,282 @@
+/* ============================================
+   MIRITI — Estilos Globais
+   ============================================ */
+
+:root {
+  /* Paleta principal — tema amazônico */
+  --color-primary: #15803d;
+  --color-primary-light: #22c55e;
+  --color-secondary: #0891b2;
+  --color-accent: #f59e0b;
+  --color-success: #16a34a;
+  --color-danger: #ef4444;
+  --color-info: #0891b2;
+
+  /* Background gradients */
+  --bg-gradient-main: linear-gradient(135deg, #15803d 0%, #0d9488 50%, #0e7490 100%);
+  --bg-gradient-phase-1: linear-gradient(135deg, #4ade80 0%, #16a34a 50%, #15803d 100%);
+  --bg-gradient-phase-2: linear-gradient(135deg, #38bdf8 0%, #0891b2 50%, #0e7490 100%);
+  --bg-gradient-phase-3: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #dc2626 100%);
+  --bg-gradient-result: linear-gradient(135deg, #fde047 0%, #4ade80 50%, #16a34a 100%);
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.16);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 32px rgba(34, 197, 94, 0.5);
+  --shadow-glow-pink: 0 0 32px rgba(8, 145, 178, 0.5);
+  --shadow-glow-yellow: 0 0 32px rgba(245, 158, 11, 0.5);
+
+  /* Tipografia */
+  --font-display: 'Baloo 2', 'Fredoka', system-ui, sans-serif;
+  --font-body: 'Fredoka', system-ui, sans-serif;
+
+  /* Bordas */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+  --radius-full: 9999px;
+
+  /* Cores neutras */
+  --color-white: #ffffff;
+  --color-cream: #fff7ed;
+  --color-text: #1f2937;
+  --color-text-light: #6b7280;
+}
+
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #10261b;
-  background: #10261b;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html,
-body,
-#root {
+html, body, #root {
   width: 100%;
-  min-height: 100%;
-  margin: 0;
-}
-
-body {
+  height: 100%;
   overflow: hidden;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--bg-gradient-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Container raiz do app */
+.app-root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Utilitários de animação */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.8); }
+}
+
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.float-anim {
+  animation: float 4s ease-in-out infinite;
+}
+
+.wiggle-anim {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+/* Botão base */
+.btn-base {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding: 0.9rem 2rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+/* Card base */
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Tela centralizada */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Modo sem animações (opção desativada) */
+.animations-off *,
+.animations-off *::before,
+.animations-off *::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0ms !important;
+}
+
+/* Tela de erro (ErrorBoundary) */
+.error-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: var(--bg-gradient-main);
+}
+
+.error-box {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.error-emoji {
+  font-size: 3.5rem;
+}
+
+.error-box h2 {
+  color: var(--color-text);
+  font-size: 1.5rem;
+}
+
+.error-box p {
+  font-family: var(--font-body);
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+.error-detail {
+  width: 100%;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 0.7rem;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 140px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.error-btn {
+  margin-top: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  padding: 0.8rem 1.8rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.5);
+}
+
+/* Acessibilidade — foco visível */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  :root {
+    --radius-lg: 22px;
+    --radius-xl: 28px;
+  }
+  .card {
+    padding: 1.5rem;
+  }
+  .btn-base {
+    font-size: 1.1rem;
+    padding: 0.8rem 1.6rem;
+  }
 }
