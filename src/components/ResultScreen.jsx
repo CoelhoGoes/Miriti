@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { FaStar, FaCoins, FaRedo, FaForward, FaTrophy, FaBolt } from 'react-icons/fa'
+import { FaStar, FaCoins, FaRedo, FaForward, FaTrophy } from 'react-icons/fa'
 import AnimatedBackground from './AnimatedBackground.jsx'
 import Confetti from './Confetti.jsx'
 import { sound } from '../utils/sound.js'
 import { PHASES } from '../data/questions.js'
-import { useGame, MAX_ENERGY, ENERGY_REGEN_MS } from '../context/GameContext.jsx'
 import { useStrings, useLanguage, pick } from '../i18n/index.js'
 import './ResultScreen.css'
 
@@ -59,18 +58,9 @@ function useCountUp(target, duration = 1200, delay = 0) {
 export default function ResultScreen({ result, onContinue, onPlayAgain }) {
   const s = useStrings()
   const lang = useLanguage()
-  const { state, spendEnergy } = useGame()
-
-  const energy = Math.min(
-    MAX_ENERGY,
-    state.energy + Math.max(0, Math.floor((Date.now() - state.lastEnergyTs) / ENERGY_REGEN_MS))
-  )
-  const canReplay = energy >= 1
 
   const handlePlayAgain = () => {
-    if (!canReplay) { sound.play('wrong'); return }
     sound.play('click')
-    spendEnergy()
     onPlayAgain()
   }
 
@@ -227,13 +217,13 @@ export default function ResultScreen({ result, onContinue, onPlayAgain }) {
           transition={{ delay: 1.8 }}
         >
           <motion.button
-            className={`result-btn result-btn-secondary ${canReplay ? '' : 'result-btn-disabled'}`}
+            className="result-btn result-btn-secondary"
             onClick={handlePlayAgain}
-            onMouseEnter={() => canReplay && sound.play('hover')}
-            whileHover={canReplay ? { scale: 1.05 } : {}}
-            whileTap={canReplay ? { scale: 0.95 } : {}}
+            onMouseEnter={() => sound.play('hover')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {canReplay ? <FaRedo /> : <FaBolt />} {s.result.tryAgain}
+            <FaRedo /> {s.result.tryAgain}
           </motion.button>
           <motion.button
             className="result-btn result-btn-primary"

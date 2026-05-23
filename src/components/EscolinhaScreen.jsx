@@ -1,30 +1,21 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { FaArrowLeft, FaLock, FaStar, FaBolt } from 'react-icons/fa'
+import { motion } from 'framer-motion'
+import { FaArrowLeft, FaLock, FaStar } from 'react-icons/fa'
 import AnimatedBackground from './AnimatedBackground.jsx'
 import TopHud from './TopHud.jsx'
 import { PHASES } from '../data/questions.js'
 import { sound } from '../utils/sound.js'
-import { useGame, MAX_ENERGY, ENERGY_REGEN_MS } from '../context/GameContext.jsx'
+import { useGame } from '../context/GameContext.jsx'
 import { useStrings, useLanguage, pick } from '../i18n/index.js'
 import './EscolinhaScreen.css'
 
 export default function EscolinhaScreen({ onPlayLesson, onBack }) {
-  const { state, setPhase, spendEnergy } = useGame()
+  const { state, setPhase } = useGame()
   const s = useStrings()
   const lang = useLanguage()
-  const [noEnergy, setNoEnergy] = useState(false)
-
-  const energy = Math.min(
-    MAX_ENERGY,
-    state.energy + Math.max(0, Math.floor((Date.now() - state.lastEnergyTs) / ENERGY_REGEN_MS))
-  )
 
   const handleLesson = (i, unlocked) => {
     if (!unlocked) { sound.play('wrong'); return }
-    if (energy < 1) { sound.play('wrong'); setNoEnergy(true); return }
     sound.play('click')
-    spendEnergy()
     setPhase(i)
     onPlayLesson()
   }
@@ -96,44 +87,11 @@ export default function EscolinhaScreen({ onPlayLesson, onBack }) {
                     <div className="lesson-locked-text">{s.escolinha.locked}</div>
                   )}
                 </div>
-                {unlocked && (
-                  <div className="lesson-cost"><FaBolt /> 1</div>
-                )}
               </motion.button>
             )
           })}
         </div>
       </div>
-
-      <AnimatePresence>
-        {noEnergy && (
-          <motion.div
-            className="esc-modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setNoEnergy(false)}
-          >
-            <motion.div
-              className="esc-modal"
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.7, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="esc-modal-icon">⚡</div>
-              <h3>{s.escolinha.noEnergyTitle}</h3>
-              <p>{s.escolinha.noEnergyMsg}</p>
-              <button
-                className="esc-modal-btn"
-                onClick={() => { sound.play('click'); setNoEnergy(false) }}
-              >
-                {s.escolinha.noEnergyOk}
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   )
 }

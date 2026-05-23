@@ -1,3 +1,19 @@
+/*
+Requested mapping:
+- energy: initialState, loadInitialState, applyRegen, ENERGY_TICK, SPEND_ENERGY, BUY_ITEM energy branch, reset, persistence effect, spendEnergy callback/value.
+- energia: comment text only.
+- maxEnergy: exported constant only.
+- currentEnergy: none.
+- recharge: ENERGY_REGEN_MS, applyRegen, timer effect.
+- energyTimer: timer effect only.
+- energyCost: none.
+- spendEnergy: callback/value only.
+- tickEnergyRecharge: none.
+- refillEnergy: none.
+- lastEnergyRecharge: none.
+- energyRechargeRate: none.
+- hasEnergy: none.
+*/
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react'
 import { storage } from '../utils/storage.js'
 import { PHASES } from '../data/questions.js'
@@ -41,8 +57,6 @@ const initialState = {
   stars: {},
   phaseResults: {},
   achievements: [],
-  energy: MAX_ENERGY,
-  lastEnergyTs: Date.now(),
   inventory: { hint: 1 },
   ownedMascots: [DEFAULT_MASCOT],
   selectedMascot: DEFAULT_MASCOT,
@@ -64,8 +78,22 @@ const initialState = {
 }
 
 function loadInitialState() {
-  const saved = storage.get('game_state')
-  if (!saved) return initialState
+  let rawSave = {}
+  try {
+    rawSave = JSON.parse(localStorage.getItem('miriti_game_state') || '{}') || {}
+  } catch {
+    rawSave = {}
+  }
+  const {
+    energy,
+    maxEnergy,
+    lastEnergyRecharge,
+    energyRechargeRate,
+    lastEnergyTs,
+    ...safeState
+  } = rawSave
+
+  const saved = storage.get('game_state') || safeState
   return {
     ...initialState,
     ...saved,
@@ -91,19 +119,8 @@ function loadInitialState() {
     basket: Array.isArray(saved.basket) ? saved.basket : initialState.basket,
     ownedMascots: (saved.ownedMascots && saved.ownedMascots.length) ? saved.ownedMascots : [DEFAULT_MASCOT],
     selectedMascot: saved.selectedMascot || DEFAULT_MASCOT,
-    energy: typeof saved.energy === 'number' ? saved.energy : MAX_ENERGY,
-    lastEnergyTs: saved.lastEnergyTs || Date.now(),
     settings: { ...initialState.settings, ...(saved.settings || {}) }
   }
-}
-
-/* Recalcula a energia regenerada com base no tempo decorrido. */
-function applyRegen(state, now) {
-  if (state.energy >= MAX_ENERGY) return state
-  const gained = Math.floor((now - state.lastEnergyTs) / ENERGY_REGEN_MS)
-  if (gained <= 0) return state
-  const energy = Math.min(MAX_ENERGY, state.energy + gained)
-  return { ...state, energy, lastEnergyTs: state.lastEnergyTs + gained * ENERGY_REGEN_MS }
 }
 
 /* Concede conquistas com base no estado atual + ids extras de eventos. */
@@ -125,17 +142,6 @@ function reducer(state, action) {
   switch (action.type) {
     case 'SET_PHASE':
       return { ...state, currentPhase: action.phase }
-
-    case 'ENERGY_TICK':
-      return applyRegen(state, Date.now())
-
-    case 'SPEND_ENERGY': {
-      const now = Date.now()
-      const s = applyRegen(state, now)
-      if (s.energy <= 0) return s
-      const wasFull = s.energy >= MAX_ENERGY
-      return { ...s, energy: s.energy - 1, lastEnergyTs: wasFull ? now : s.lastEnergyTs }
-    }
 
     case 'COMPLETE_PHASE': {
       const { phase, correctAnswers, totalQuestions, earnedCoins } = action.payload
@@ -171,12 +177,10 @@ function reducer(state, action) {
     }
 
     case 'BUY_ITEM': {
-      const { id, kind, price, payload } = action.item
+      const { kind, price, payload } = action.item
       if (state.coins < price) return state
       let next = { ...state, coins: state.coins - price }
-      if (kind === 'energy') {
-        next = { ...next, energy: MAX_ENERGY }
-      } else if (kind === 'hint') {
+      if (kind === 'hint') {
         next = { ...next, inventory: { ...next.inventory, hint: (next.inventory.hint || 0) + payload } }
       } else if (kind === 'mascot') {
         if (state.ownedMascots.includes(payload)) return state
@@ -186,7 +190,6 @@ function reducer(state, action) {
           selectedMascot: payload
         }
       }
-      void id
       return { ...next, achievements: grantAchievements(next, ['shopper']) }
     }
 
@@ -379,7 +382,7 @@ function reducer(state, action) {
       return { ...state, settings: { ...state.settings, ...action.payload } }
 
     case 'RESET':
-      return { ...initialState, lastEnergyTs: Date.now(), stocks: initialStocks(), portfolio: initialPortfolio() }
+      return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
     default:
       return state
@@ -394,14 +397,8 @@ export function GameProvider({ children }) {
     storage.set('game_state', state)
   }, [state])
 
-  // Regeneração de energia ao longo do tempo
-  useEffect(() => {
-    const iv = setInterval(() => dispatch({ type: 'ENERGY_TICK' }), 8000)
-    return () => clearInterval(iv)
-  }, [])
-
   const setPhase = useCallback((phase) => dispatch({ type: 'SET_PHASE', phase }), [])
-  const spendEnergy = useCallback(() => dispatch({ type: 'SPEND_ENERGY' }), [])
+  const spendEnergy = useCallback(() => { }, [])
   const completePhase = useCallback((payload) => dispatch({ type: 'COMPLETE_PHASE', payload }), [])
   const buyItem = useCallback((item) => dispatch({ type: 'BUY_ITEM', item }), [])
   const selectMascot = useCallback((mascot) => dispatch({ type: 'SELECT_MASCOT', mascot }), [])

@@ -1,16 +1,8 @@
 /**
  * Catálogo da loja do Miriti.
- * kind: 'energy' (recarrega energia) | 'hint' (dicas de quiz) | 'mascot' (cosmético)
+ * kind: 'hint' (dicas de quiz) | 'mascot' (cosmético)
  */
 export const SHOP_ITEMS = [
-  {
-    id: 'energy_refill',
-    kind: 'energy',
-    icon: '⚡',
-    price: 60,
-    name: { pt: 'Recarga de Energia', en: 'Energy Refill' },
-    desc: { pt: 'Enche toda a sua energia na hora', en: 'Instantly fills all your energy' }
-  },
   {
     id: 'hint_pack',
     kind: 'hint',

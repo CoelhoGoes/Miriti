@@ -1,3 +1,19 @@
+/*
+Requested mapping:
+- energy: none.
+- energia: none.
+- maxEnergy: none.
+- currentEnergy: none.
+- recharge: none.
+- energyTimer: none.
+- energyCost: none.
+- spendEnergy: none.
+- tickEnergyRecharge: none.
+- refillEnergy: none.
+- lastEnergyRecharge: none.
+- energyRechargeRate: none.
+- hasEnergy: none.
+*/
 import { useState, useCallback, useEffect } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import HomeScreen from './components/HomeScreen.jsx'

@@ -22,25 +22,6 @@
   border: 2px solid rgba(255, 255, 255, 0.8);
 }
 
-.hud-energy {
-  color: #b45309;
-}
-.hud-bolt {
-  color: #f59e0b;
-  font-size: 1rem;
-}
-.hud-energy-val {
-  color: #92400e;
-}
-.hud-energy-timer {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #a16207;
-  background: #fef3c7;
-  padding: 0.1rem 0.45rem;
-  border-radius: 999px;
-}
-
 .hud-coins {
   color: #b45309;
 }
@@ -51,5 +32,4 @@
 
 @media (max-width: 520px) {
   .hud-pill { font-size: 0.8rem; padding: 0.3rem 0.6rem; }
-  .hud-energy-timer { font-size: 0.62rem; }
 }
