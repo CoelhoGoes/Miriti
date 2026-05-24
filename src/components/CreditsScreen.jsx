@@ -7,7 +7,7 @@ import './CreditsScreen.css'
 
 const team = [
   'Equipe Miriti',
-  'Cauê Jadão e Bernardo Lins'
+  'Cauê Jadão, Bernardo Lins e Gabriel Góes'
 ]
 
 const techs = [
