@@ -1,0 +1,211 @@
+.boss-quiz-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 720px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: center;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.boss-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.boss-quit-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+
+.boss-phase-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.5rem 0.9rem;
+  border-radius: 16px;
+  color: #fff;
+  border: 2px solid #fde047;
+}
+
+.boss-skull {
+  font-size: 1.7rem;
+  color: #fde047;
+}
+
+.boss-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: #fde047;
+  text-transform: uppercase;
+}
+
+.boss-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.boss-mascot-target {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fef9c3, #facc15);
+  border: 3px solid #f59e0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.6);
+  flex-shrink: 0;
+}
+
+.boss-progress-row {
+  width: 100%;
+}
+
+.boss-result {
+  background: #fff;
+  border-radius: 28px;
+  padding: 1.6rem 1.4rem;
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  border: 4px solid #fde047;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.boss-result-emoji {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.boss-result h2 {
+  color: var(--color-text);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.boss-result p {
+  font-family: var(--font-body);
+  color: var(--color-text-light);
+  font-weight: 500;
+  margin: 0;
+}
+
+.boss-result-stats {
+  margin: 0.4rem 0 0.2rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #b45309;
+  background: #fef3c7;
+  border: 2px solid #fde68a;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+}
+
+.boss-result-actions {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.boss-btn {
+  flex: 1;
+  padding: 0.7rem;
+  border-radius: 14px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: 2px solid;
+}
+
+.boss-btn.secondary {
+  background: #f3f4f6;
+  color: var(--color-text);
+  border-color: #d1d5db;
+}
+
+.boss-btn.primary {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  color: #fff;
+  border-color: #15803d;
+}
+
+.boss-btn.danger {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  border-color: #991b1b;
+}
+
+.boss-already-note {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #047857;
+  font-size: 0.85rem;
+}
+
+.boss-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 220;
+  padding: 1rem;
+}
+
+.boss-confirm-box {
+  background: #fff;
+  border-radius: 24px;
+  padding: 1.4rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.boss-confirm-box h3 {
+  margin: 0 0 0.4rem;
+  color: var(--color-text);
+}
+
+.boss-confirm-box p {
+  font-family: var(--font-body);
+  color: var(--color-text-light);
+  margin-bottom: 0.9rem;
+}
+
+.boss-confirm-actions {
+  display: flex;
+  gap: 0.6rem;
+}

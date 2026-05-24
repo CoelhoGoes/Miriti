@@ -101,7 +101,12 @@ export default function ResultScreen({ result, onContinue, onPlayAgain }) {
   return (
     <>
       <AnimatedBackground gradient="linear-gradient(135deg, #fde047 0%, #4ade80 50%, #16a34a 100%)" density={12} />
-      {showConfetti && <Confetti count={stars === 3 ? 100 : 50} />}
+      {showConfetti && (
+        <Confetti
+          count={stars === 3 ? 110 : 55}
+          palette={stars === 3 ? 'gold' : undefined}
+        />
+      )}
 
       <div className="result-content">
         <motion.div

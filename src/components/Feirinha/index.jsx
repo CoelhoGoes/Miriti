@@ -77,44 +77,47 @@ export default function FeirinhaScreen({ onBack }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
         >
-            <header className={styles.header}>
-                <h1 className={styles.title}>🛖 Feirinha do Jutaiteua</h1>
-                <motion.button
-                    type="button"
-                    className={styles.backButton}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={onBack}
-                >
-                    ← Voltar
-                </motion.button>
-            </header>
+            <div className={styles.inner}>
+                <header className={styles.header}>
+                    <h1 className={styles.title}>🛖 Feirinha do Jutaiteua</h1>
+                    <motion.button
+                        type="button"
+                        className={styles.backButton}
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={onBack}
+                    >
+                        ← Voltar
+                    </motion.button>
+                </header>
 
-            <div className={styles.meta}>
-                <span>Rodada {state.market.round}</span>
-                <strong>{state.coins} moedas disponiveis</strong>
+                <div className={styles.meta}>
+                    <span>🎯 Rodada {state.market.round}</span>
+                    <strong>🪙 {state.coins} moedas disponíveis</strong>
+                </div>
+
+                <section className={styles.grid}>
+                    {productCards.map(({ product, currentPrice, previousPrice, basketSlot }) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            currentPrice={currentPrice}
+                            previousPrice={previousPrice}
+                            basketSlot={basketSlot}
+                            round={state.market.round}
+                            onBuy={handleBuy}
+                            onSell={handleSell}
+                        />
+                    ))}
+                </section>
+
+                <CestaDaFamilia
+                    basket={state.basket}
+                    marketPrices={state.market.prices}
+                    round={state.market.round}
+                    onSell={handleSell}
+                />
             </div>
-
-            <section className={styles.grid}>
-                {productCards.map(({ product, currentPrice, previousPrice, basketSlot }) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                        currentPrice={currentPrice}
-                        previousPrice={previousPrice}
-                        basketSlot={basketSlot}
-                        round={state.market.round}
-                        onBuy={handleBuy}
-                        onSell={handleSell}
-                    />
-                ))}
-            </section>
-
-            <CestaDaFamilia
-                basket={state.basket}
-                marketPrices={state.market.prices}
-                round={state.market.round}
-                onSell={handleSell}
-            />
 
             <AnimatePresence>
                 {activeEvent && (

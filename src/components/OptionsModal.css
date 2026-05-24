@@ -11,15 +11,18 @@
 }
 
 .options-modal {
-  background: #fff;
-  border-radius: 28px;
-  padding: 1.8rem 1.5rem;
+  background:
+    linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  border-radius: 32px;
+  padding: 1.9rem 1.5rem 1.5rem;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
-  border: 4px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.42),
+    inset 0 3px 0 rgba(255, 255, 255, 1);
+  border: 4px solid #bbf7d0;
   position: relative;
 }
 
@@ -190,6 +193,86 @@
   font-size: 0.75rem;
   font-weight: 600;
   opacity: 0.8;
+}
+
+.options-a11y {
+  margin: 0.4rem 0 0.6rem;
+  padding: 0.9rem 0.9rem 0.4rem;
+  background: linear-gradient(180deg, #ecfdf5, #d1fae5);
+  border-radius: 18px;
+  border: 2px solid #86efac;
+}
+
+.options-a11y-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: #15803d;
+  margin-bottom: 0.7rem;
+  font-size: 1rem;
+}
+
+.options-a11y .options-label {
+  color: #166534;
+}
+
+.options-font-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.options-font-btn {
+  background: #f3f4f6;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0.3rem 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--color-text);
+  cursor: pointer;
+  line-height: 1;
+  min-height: 44px;
+}
+
+.options-font-btn.active {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-color: #10b981;
+  color: #047857;
+}
+
+.options-cb-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.options-cb-btn {
+  background: #f3f4f6;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0.5rem 0.3rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.options-cb-btn.active {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-color: #10b981;
+  color: #047857;
+}
+
+.options-help {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+  margin: -0.4rem 0 0.6rem;
+  text-align: center;
 }
 
 .options-danger {

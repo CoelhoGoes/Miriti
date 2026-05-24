@@ -28,3 +28,14 @@
   border-bottom: 12px solid;
   background: transparent !important;
 }
+
+.confetti-star,
+.confetti-heart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  text-shadow: 0 0 4px currentColor;
+  font-family: serif;
+}

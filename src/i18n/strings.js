@@ -128,6 +128,66 @@ export const STRINGS = {
       title: 'Ops! Algo deu errado',
       message: 'O jogo encontrou um probleminha, mas você pode continuar.',
       button: 'Voltar ao início'
+    },
+    mascot: {
+      title: 'Curiosidade do mascote',
+      subtitle: 'Toque para ouvir outra história!',
+      another: 'Outra curiosidade',
+      gotIt: 'Entendi!'
+    },
+    boss: {
+      title: 'Chefão da matéria',
+      subtitle: 'Quiz longo que vale um mascote exclusivo.',
+      locked: 'Conclua a lição com pelo menos 1 estrela para liberar o chefão.',
+      start: 'Encarar o chefão',
+      progress: (n, total) => `Pergunta ${n} de ${total}`,
+      wonTitle: 'Mascote desbloqueado!',
+      wonMsg: 'Você venceu o chefão da matéria!',
+      retry: 'Tentar de novo',
+      done: 'Voltar à Escolinha',
+      lostTitle: 'Quase lá!',
+      lostMsg: 'Acerte ao menos 70% para conquistar o mascote.',
+      alreadyWon: 'Já conquistado',
+      replay: 'Refazer (treino)'
+    },
+    tutorial: {
+      skip: 'Pular',
+      next: 'Próximo',
+      finish: 'Começar!',
+      back: 'Anterior',
+      steps: [
+        { title: 'Bem-vindo à Fazendinha!', text: 'Eu sou seu mascote 🦜. Vou te guiar pelos primeiros passos da educação financeira.' },
+        { title: 'Escolinha 🏫', text: 'Comece pela Escolinha. Cada lição ensina algo novo sobre dinheiro.' },
+        { title: 'Feirinha 🧺', text: 'Compre e venda produtos da Amazônia para treinar suas escolhas.' },
+        { title: 'Loja 🏪', text: 'Use suas moedas 🪙 para comprar dicas e novos mascotes!' },
+        { title: 'Conquistas 🏆', text: 'Veja seus troféus e meta a meta cumpra desafios.' },
+        { title: 'Toque no mascote!', text: 'No topo da tela, toque no seu mascote para ouvir curiosidades sobre dinheiro.' }
+      ]
+    },
+    a11y: {
+      sectionTitle: 'Acessibilidade',
+      fontSize: 'Tamanho da fonte',
+      fontSmall: 'P',
+      fontMedium: 'M',
+      fontLarge: 'G',
+      fontXLarge: 'GG',
+      colorblind: 'Modo daltônico',
+      cbNone: 'Padrão',
+      cbDeuter: 'Deutan',
+      cbProtan: 'Protan',
+      cbTritan: 'Tritan'
+    },
+    parents: {
+      title: 'Área dos Pais e Professores',
+      summary: 'Resumo da criança',
+      timePlayed: 'Tempo jogado',
+      lessonsCompleted: 'Lições concluídas',
+      bossesBeaten: 'Chefões vencidos',
+      weakSubjects: 'Matérias mais fracas',
+      suggestions: 'Sugestões para praticar',
+      nothing: 'Ainda sem dados — peça para a criança jogar algumas lições.',
+      back: 'Voltar',
+      enterButton: 'Pais e Professores'
     }
   },
 
@@ -249,6 +309,66 @@ export const STRINGS = {
       title: 'Oops! Something went wrong',
       message: 'The game ran into a little problem, but you can continue.',
       button: 'Back to start'
+    },
+    mascot: {
+      title: 'Mascot fun fact',
+      subtitle: 'Tap to hear another story!',
+      another: 'Another fact',
+      gotIt: 'Got it!'
+    },
+    boss: {
+      title: 'Subject Boss',
+      subtitle: 'A long quiz that rewards an exclusive mascot.',
+      locked: 'Finish the lesson with at least 1 star to unlock the boss.',
+      start: 'Face the boss',
+      progress: (n, total) => `Question ${n} of ${total}`,
+      wonTitle: 'Mascot unlocked!',
+      wonMsg: 'You beat the subject boss!',
+      retry: 'Try again',
+      done: 'Back to School',
+      lostTitle: 'Almost there!',
+      lostMsg: 'Get at least 70% to earn the mascot.',
+      alreadyWon: 'Already beaten',
+      replay: 'Replay (practice)'
+    },
+    tutorial: {
+      skip: 'Skip',
+      next: 'Next',
+      finish: 'Start!',
+      back: 'Back',
+      steps: [
+        { title: 'Welcome to the Farm!', text: "I'm your mascot 🦜. I'll guide you through your first steps with money." },
+        { title: 'School 🏫', text: 'Start at the School. Each lesson teaches something new about money.' },
+        { title: 'Market Fair 🧺', text: 'Buy and sell Amazon products to train your choices.' },
+        { title: 'Shop 🏪', text: 'Use your coins 🪙 to buy hints and new mascots!' },
+        { title: 'Achievements 🏆', text: 'See your trophies and conquer challenges.' },
+        { title: 'Tap the mascot!', text: 'At the top of the screen, tap your mascot to hear fun facts about money.' }
+      ]
+    },
+    a11y: {
+      sectionTitle: 'Accessibility',
+      fontSize: 'Font size',
+      fontSmall: 'S',
+      fontMedium: 'M',
+      fontLarge: 'L',
+      fontXLarge: 'XL',
+      colorblind: 'Colorblind mode',
+      cbNone: 'Default',
+      cbDeuter: 'Deutan',
+      cbProtan: 'Protan',
+      cbTritan: 'Tritan'
+    },
+    parents: {
+      title: 'Parents & Teachers Area',
+      summary: 'Child summary',
+      timePlayed: 'Time played',
+      lessonsCompleted: 'Lessons completed',
+      bossesBeaten: 'Bosses beaten',
+      weakSubjects: 'Weakest subjects',
+      suggestions: 'Practice suggestions',
+      nothing: 'No data yet — ask the child to play a few lessons.',
+      back: 'Back',
+      enterButton: 'Parents & Teachers'
     }
   }
 }

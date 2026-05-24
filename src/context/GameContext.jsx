@@ -56,6 +56,7 @@ const initialState = {
   coins: 120,
   stars: {},
   phaseResults: {},
+  bossClears: {},
   achievements: [],
   inventory: { hint: 1 },
   ownedMascots: [DEFAULT_MASCOT],
@@ -69,11 +70,15 @@ const initialState = {
     visitCount: 0,
   },
   basket: [],
+  playTimeSec: 0,
   settings: {
     musicVolume: 0.4,
     sfxVolume: 0.6,
     animationsEnabled: true,
-    language: 'pt'
+    language: 'pt',
+    tutorialDone: false,
+    fontScale: 1,
+    colorblindMode: 'none'
   }
 }
 
@@ -99,6 +104,8 @@ function loadInitialState() {
     ...saved,
     stars: { ...(saved.stars || {}) },
     phaseResults: { ...(saved.phaseResults || {}) },
+    bossClears: { ...(saved.bossClears || {}) },
+    playTimeSec: typeof saved.playTimeSec === 'number' ? saved.playTimeSec : 0,
     achievements: Array.isArray(saved.achievements) ? saved.achievements : [],
     inventory: { ...initialState.inventory, ...(saved.inventory || {}) },
     stocks: { ...initialStocks(), ...(saved.stocks || {}) },
@@ -381,6 +388,32 @@ function reducer(state, action) {
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.payload } }
 
+    case 'COMPLETE_BOSS': {
+      const { phase, mascot, accuracy } = action.payload
+      const prev = state.bossClears[phase]
+      const bossClears = {
+        ...state.bossClears,
+        [phase]: { accuracy, beatenAt: Date.now() }
+      }
+      const ownedMascots = mascot && !state.ownedMascots.includes(mascot)
+        ? [...state.ownedMascots, mascot]
+        : state.ownedMascots
+      const selectedMascot = mascot && !prev ? mascot : state.selectedMascot
+      const next = {
+        ...state,
+        bossClears,
+        ownedMascots,
+        selectedMascot,
+        coins: state.coins + (prev ? 20 : 60)
+      }
+      const extras = ['boss_slayer']
+      if (Object.keys(bossClears).length >= PHASES.length) extras.push('all_bosses')
+      return { ...next, achievements: grantAchievements(next, extras) }
+    }
+
+    case 'ADD_PLAY_TIME':
+      return { ...state, playTimeSec: (state.playTimeSec || 0) + (action.seconds || 0) }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -411,6 +444,8 @@ export function GameProvider({ children }) {
   const applyMarketEvent = useCallback((event) => dispatch({ type: 'APPLY_MARKET_EVENT', payload: { event } }), [])
   const advanceRound = useCallback(() => dispatch({ type: 'ADVANCE_ROUND' }), [])
   const updateSettings = useCallback((payload) => dispatch({ type: 'UPDATE_SETTINGS', payload }), [])
+  const completeBoss = useCallback((payload) => dispatch({ type: 'COMPLETE_BOSS', payload }), [])
+  const addPlayTime = useCallback((seconds) => dispatch({ type: 'ADD_PLAY_TIME', seconds }), [])
   const resetProgress = useCallback(() => dispatch({ type: 'RESET' }), [])
 
   const value = {
@@ -420,7 +455,7 @@ export function GameProvider({ children }) {
     buyItem, selectMascot, useHint,
     tickStocks, buyStock, sellStock,
     buyProduct, sellProduct, applyMarketEvent, advanceRound,
-    updateSettings, resetProgress
+    updateSettings, completeBoss, addPlayTime, resetProgress
   }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>

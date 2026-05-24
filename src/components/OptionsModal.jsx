@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash } from 'react-icons/fa'
+import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye } from 'react-icons/fa'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings, LANGUAGES } from '../i18n/index.js'
@@ -131,6 +131,64 @@ export default function OptionsModal({ onClose }) {
               {settings.animationsEnabled ? s.options.on : s.options.off}
             </span>
           </button>
+        </div>
+
+        {/* Acessibilidade */}
+        <div className="options-a11y">
+          <div className="options-a11y-title">
+            <FaUniversalAccess /> {s.a11y.sectionTitle}
+          </div>
+
+          {/* Tamanho da fonte */}
+          <div className="options-group">
+            <label className="options-label">
+              <FaFont /> {s.a11y.fontSize}
+            </label>
+            <div className="options-font-row">
+              {[
+                { v: 1, label: s.a11y.fontSmall, size: '0.85rem' },
+                { v: 2, label: s.a11y.fontMedium, size: '1rem' },
+                { v: 3, label: s.a11y.fontLarge, size: '1.2rem' },
+                { v: 4, label: s.a11y.fontXLarge, size: '1.4rem' }
+              ].map(opt => (
+                <button
+                  key={opt.v}
+                  type="button"
+                  className={`options-font-btn ${settings.fontScale === opt.v ? 'active' : ''}`}
+                  onClick={() => { sound.play('click'); updateSettings({ fontScale: opt.v }) }}
+                  aria-label={`${s.a11y.fontSize} ${opt.label}`}
+                  style={{ fontSize: opt.size }}
+                >
+                  Aa
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Modo daltônico */}
+          <div className="options-group">
+            <label className="options-label">
+              <FaEye /> {s.a11y.colorblind}
+            </label>
+            <div className="options-cb-row">
+              {[
+                { id: 'none', label: s.a11y.cbNone },
+                { id: 'deuter', label: s.a11y.cbDeuter },
+                { id: 'protan', label: s.a11y.cbProtan },
+                { id: 'tritan', label: s.a11y.cbTritan }
+              ].map(opt => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  className={`options-cb-btn ${settings.colorblindMode === opt.id ? 'active' : ''}`}
+                  onClick={() => { sound.play('click'); updateSettings({ colorblindMode: opt.id }) }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
         </div>
 
         <div className="options-danger">

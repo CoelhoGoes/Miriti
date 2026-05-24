@@ -62,7 +62,7 @@ const CLOUDS = [
   { id: 'cloud-3', left: '80%', top: '14%', size: 2.8, dur: 30 }
 ]
 
-export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements, onSettings, onCredits }) {
+export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents }) {
   const { state } = useGame()
 
   const openSettings = () => {
@@ -81,6 +81,16 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
     console.log('credits')
   }
 
+  const handleMascot = () => {
+    sound.play('pop')
+    if (onMascotClick) onMascotClick()
+  }
+
+  const openParents = () => {
+    sound.play('click')
+    if (onParents) onParents()
+  }
+
   return (
     <div className={`${styles.farmContainer} farm-map`}>
       <motion.header
@@ -94,6 +104,7 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
             type="button"
             onClick={openSettings}
             title="Configurações"
+            aria-label="Configurações"
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
           >
@@ -103,15 +114,38 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
             type="button"
             onClick={openCredits}
             title="Créditos"
+            aria-label="Créditos"
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
           >
             📋
           </motion.button>
+          <motion.button
+            type="button"
+            onClick={openParents}
+            title="Pais e Professores"
+            aria-label="Pais e Professores"
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.94 }}
+          >
+            👨‍👩‍👧
+          </motion.button>
         </div>
 
         <div className={styles.headerTitle}>
-          <span style={{ fontSize: 26 }} aria-hidden="true">{state.selectedMascot}</span>
+          <motion.button
+            type="button"
+            onClick={handleMascot}
+            title="Toque para curiosidades"
+            aria-label="Mascote — toque para curiosidades"
+            className={styles.mascotButton}
+            whileHover={{ scale: 1.12, rotate: -6 }}
+            whileTap={{ scale: 0.92 }}
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <span aria-hidden="true">{state.selectedMascot}</span>
+          </motion.button>
           <h1>Fazendinha Miriti</h1>
         </div>
 

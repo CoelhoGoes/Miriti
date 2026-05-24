@@ -14,7 +14,7 @@ Requested mapping:
 - energyRechargeRate: none.
 - hasEnergy: none.
 */
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import HomeScreen from './components/HomeScreen.jsx'
 import FarmMap from './components/FarmMap.jsx'
@@ -28,6 +28,11 @@ import FeirinhaScreen from './components/Feirinha/index.jsx'
 import OptionsModal from './components/OptionsModal.jsx'
 import CreditsScreen from './components/CreditsScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import MascotChat from './components/MascotChat.jsx'
+import Tutorial from './components/Tutorial.jsx'
+import ParentsPanel from './components/ParentsPanel.jsx'
+import BossQuiz from './components/BossQuiz.jsx'
+import ColorblindFilters from './components/ColorblindFilters.jsx'
 import { useGame } from './context/GameContext.jsx'
 import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
@@ -41,7 +46,9 @@ const SCREENS = {
   SHOP: 'shop',
   ACHIEVEMENTS: 'achievements',
   STOCKS: 'stocks',
-  CREDITS: 'credits'
+  CREDITS: 'credits',
+  PARENTS: 'parents',
+  BOSS: 'boss'
 }
 
 const screenVariants = {
@@ -52,8 +59,11 @@ const screenVariants = {
 export default function App() {
   const [screen, setScreen] = useState(SCREENS.HOME)
   const [optionsOpen, setOptionsOpen] = useState(false)
+  const [mascotChatOpen, setMascotChatOpen] = useState(false)
+  const [tutorialOpen, setTutorialOpen] = useState(false)
+  const [bossPhase, setBossPhase] = useState(0)
   const [lastResult, setLastResult] = useState(null)
-  const { state } = useGame()
+  const { state, updateSettings, addPlayTime } = useGame()
   const s = useStrings()
 
   useEffect(() => {
@@ -73,6 +83,35 @@ export default function App() {
     }
   }, [state.settings.musicVolume, state.settings.sfxVolume])
 
+  // Tracker simples de tempo de jogo (acumula segundos enquanto a aba está visível)
+  const playTickRef = useRef(null)
+  useEffect(() => {
+    const start = () => {
+      if (playTickRef.current) return
+      playTickRef.current = setInterval(() => {
+        if (document.visibilityState === 'visible') {
+          addPlayTime(5)
+        }
+      }, 5000)
+    }
+    const stop = () => {
+      if (playTickRef.current) {
+        clearInterval(playTickRef.current)
+        playTickRef.current = null
+      }
+    }
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') stop()
+      else start()
+    }
+    start()
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      stop()
+    }
+  }, [addPlayTime])
+
   const goTo = useCallback((target) => {
     sound.play('transition')
     setScreen(target)
@@ -82,6 +121,23 @@ export default function App() {
     setLastResult(result)
     setScreen(SCREENS.RESULT)
   }, [])
+
+  const startBoss = useCallback((phaseIndex) => {
+    setBossPhase(phaseIndex)
+    goTo(SCREENS.BOSS)
+  }, [goTo])
+
+  // Dispara o tutorial ao chegar na fazendinha pela primeira vez
+  useEffect(() => {
+    if (screen === SCREENS.FARM && !state.settings.tutorialDone) {
+      setTutorialOpen(true)
+    }
+  }, [screen, state.settings.tutorialDone])
+
+  const finishTutorial = useCallback(() => {
+    updateSettings({ tutorialDone: true })
+    setTutorialOpen(false)
+  }, [updateSettings])
 
   const renderScreen = () => {
     switch (screen) {
@@ -94,6 +150,8 @@ export default function App() {
             onAchievements={() => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
             onCredits={() => goTo(SCREENS.CREDITS)}
+            onMascotClick={() => setMascotChatOpen(true)}
+            onParents={() => goTo(SCREENS.PARENTS)}
           />
         )
       case SCREENS.ESCOLINHA:
@@ -101,6 +159,7 @@ export default function App() {
           <EscolinhaScreen
             onPlayLesson={() => goTo(SCREENS.QUIZ)}
             onBack={() => goTo(SCREENS.FARM)}
+            onPlayBoss={startBoss}
           />
         )
       case SCREENS.QUIZ:
@@ -126,6 +185,10 @@ export default function App() {
         return <FeirinhaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.CREDITS:
         return <CreditsScreen onBack={() => goTo(SCREENS.FARM)} />
+      case SCREENS.PARENTS:
+        return <ParentsPanel onBack={() => goTo(SCREENS.FARM)} />
+      case SCREENS.BOSS:
+        return <BossQuiz phaseIndex={bossPhase} onExit={() => goTo(SCREENS.ESCOLINHA)} />
       case SCREENS.HOME:
       default:
         return <HomeScreen onStart={() => goTo(SCREENS.FARM)} />
@@ -133,10 +196,21 @@ export default function App() {
   }
 
   const animationsEnabled = state.settings.animationsEnabled !== false
+  const fontScale = state.settings.fontScale || 1
+  const cbMode = state.settings.colorblindMode || 'none'
+  const cbClass = cbMode === 'none' ? '' : `cb-${cbMode}`
 
   return (
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
-      <div className={`app-root ${animationsEnabled ? '' : 'animations-off'}`}>
+      <ColorblindFilters />
+      <div
+        className={[
+          'app-root',
+          animationsEnabled ? '' : 'animations-off',
+          `font-scale-${fontScale}`,
+          cbClass
+        ].filter(Boolean).join(' ')}
+      >
         <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
           <motion.div
             key={screen}
@@ -152,6 +226,12 @@ export default function App() {
         <AnimatePresence>
           {optionsOpen && (
             <OptionsModal onClose={() => setOptionsOpen(false)} />
+          )}
+          {mascotChatOpen && (
+            <MascotChat onClose={() => setMascotChatOpen(false)} />
+          )}
+          {tutorialOpen && (
+            <Tutorial onFinish={finishTutorial} />
           )}
         </AnimatePresence>
       </div>

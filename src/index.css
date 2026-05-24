@@ -192,6 +192,51 @@ h1, h2, h3, h4, h5, h6 {
   transition-delay: 0ms !important;
 }
 
+/* Acessibilidade — escala de fonte (multiplica o tamanho de texto) */
+.app-root {
+  font-size: calc(1rem * var(--font-scale, 1));
+}
+.app-root.font-scale-1 { --font-scale: 1; }
+.app-root.font-scale-2 { --font-scale: 1.12; }
+.app-root.font-scale-3 { --font-scale: 1.25; }
+.app-root.font-scale-4 { --font-scale: 1.4; }
+
+/* Aplica fator de escala apenas em texto, mantendo emojis/ícones intactos */
+.app-root.font-scale-2 p,
+.app-root.font-scale-2 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
+.app-root.font-scale-2 li,
+.app-root.font-scale-2 label,
+.app-root.font-scale-2 button,
+.app-root.font-scale-2 h1,
+.app-root.font-scale-2 h2,
+.app-root.font-scale-2 h3,
+.app-root.font-scale-2 h4 { font-size: 1.12em; }
+
+.app-root.font-scale-3 p,
+.app-root.font-scale-3 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
+.app-root.font-scale-3 li,
+.app-root.font-scale-3 label,
+.app-root.font-scale-3 button,
+.app-root.font-scale-3 h1,
+.app-root.font-scale-3 h2,
+.app-root.font-scale-3 h3,
+.app-root.font-scale-3 h4 { font-size: 1.18em; }
+
+.app-root.font-scale-4 p,
+.app-root.font-scale-4 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
+.app-root.font-scale-4 li,
+.app-root.font-scale-4 label,
+.app-root.font-scale-4 button,
+.app-root.font-scale-4 h1,
+.app-root.font-scale-4 h2,
+.app-root.font-scale-4 h3,
+.app-root.font-scale-4 h4 { font-size: 1.26em; }
+
+/* Acessibilidade — modos daltônicos (filtros suaves no app inteiro) */
+.app-root.cb-deuter { filter: url('#cb-deuter'); }
+.app-root.cb-protan { filter: url('#cb-protan'); }
+.app-root.cb-tritan { filter: url('#cb-tritan'); }
+
 /* Tela de erro (ErrorBoundary) */
 .error-screen {
   position: absolute;

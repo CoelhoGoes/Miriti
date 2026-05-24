@@ -101,9 +101,35 @@ class SoundManager {
         this._tone({ freq: 220, duration: 0.18, type: 'square', gain: 0.22 })
         this._tone({ freq: 165, duration: 0.22, type: 'square', gain: 0.22, when: 0.1 })
         break
-      case 'victory':
-        this._arpeggio([523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98], 0.09,
-          { duration: 0.22, type: 'triangle', gain: 0.4 })
+      case 'victory': {
+        // Variantes diferentes a cada vitória — pequeno detalhe, grande impacto.
+        const variant = Math.floor(Math.random() * 4)
+        if (variant === 0) {
+          this._arpeggio([523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98], 0.09,
+            { duration: 0.22, type: 'triangle', gain: 0.4 })
+        } else if (variant === 1) {
+          // Fanfarra alegre em modo maior
+          this._arpeggio([440, 554.37, 659.25, 880, 1108.73], 0.08,
+            { duration: 0.24, type: 'triangle', gain: 0.38 })
+          this._tone({ freq: 1318.51, duration: 0.32, type: 'sine', gain: 0.3, when: 0.45 })
+        } else if (variant === 2) {
+          // Melodia ascendente em três degraus
+          this._arpeggio([523.25, 659.25, 783.99], 0.1, { duration: 0.18, type: 'triangle', gain: 0.35 })
+          this._arpeggio([783.99, 987.77, 1174.66], 0.1, { duration: 0.22, type: 'sine', gain: 0.35 })
+        } else {
+          // Tema curto e doce
+          this._tone({ freq: 659.25, duration: 0.16, type: 'triangle', gain: 0.36 })
+          this._tone({ freq: 783.99, duration: 0.16, type: 'triangle', gain: 0.36, when: 0.14 })
+          this._tone({ freq: 987.77, duration: 0.18, type: 'triangle', gain: 0.4, when: 0.28 })
+          this._tone({ freq: 1318.51, duration: 0.28, type: 'sine', gain: 0.4, when: 0.46 })
+        }
+        break
+      }
+      case 'victory_grand':
+        // Vitória especial (chefão): mais longa e marcante
+        this._arpeggio([392, 523.25, 659.25, 783.99], 0.08, { duration: 0.18, type: 'triangle', gain: 0.35 })
+        this._arpeggio([1046.5, 1318.51, 1567.98], 0.1, { duration: 0.26, type: 'sine', gain: 0.42 })
+        this._tone({ freq: 1975.53, duration: 0.42, type: 'triangle', gain: 0.36, when: 0.68 })
         break
       case 'transition':
         this._tone({ freq: 660, duration: 0.1, type: 'sine', gain: 0.25 })

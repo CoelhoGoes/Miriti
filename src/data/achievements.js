@@ -55,5 +55,17 @@ export const ACHIEVEMENTS = [
     icon: '🦜',
     name: { pt: 'Amigo dos Bichos', en: 'Animal Friend' },
     desc: { pt: 'Tenha 3 mascotes diferentes', en: 'Own 3 different mascots' }
+  },
+  {
+    id: 'boss_slayer',
+    icon: '👹',
+    name: { pt: 'Caçador de Chefões', en: 'Boss Slayer' },
+    desc: { pt: 'Vença pelo menos um chefão de matéria', en: 'Beat at least one subject boss' }
+  },
+  {
+    id: 'all_bosses',
+    icon: '🏆',
+    name: { pt: 'Mestre dos Chefões', en: 'Boss Master' },
+    desc: { pt: 'Vença os chefões de todas as matérias', en: 'Beat the boss of every subject' }
   }
 ]
