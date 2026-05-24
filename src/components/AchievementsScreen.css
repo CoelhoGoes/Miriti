@@ -1,0 +1,114 @@
+.ach-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 720px;
+  padding: 1rem;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.ach-back-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.ach-title {
+  font-size: clamp(1.7rem, 5.5vw, 2.5rem);
+  color: #fff;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+.ach-subtitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+.ach-progress-badge {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #92400e;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  margin: 0.2rem 0 0.6rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.8rem;
+  width: 100%;
+  padding-bottom: 1.5rem;
+}
+
+.ach-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  text-align: center;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.7);
+}
+.ach-card.locked {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+.ach-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.3rem;
+  background: linear-gradient(135deg, #fef3c7, #fde047);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.5);
+}
+.ach-card.locked .ach-card-icon {
+  background: #e5e7eb;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  box-shadow: none;
+}
+
+.ach-card-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+.ach-card.locked .ach-card-name { color: #9ca3af; }
+
+.ach-card-desc {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.76rem;
+  color: var(--color-text-light);
+  line-height: 1.3;
+}

@@ -1,0 +1,124 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #e7eaf0;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  box-shadow: 0 10px 24px rgba(19, 29, 51, 0.06);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mainInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #222f3e;
+}
+
+.riskBadge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #edf2ff;
+  color: #3c4b67;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.trend {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.currentPrice {
+  margin: 0;
+  color: #2d3436;
+}
+
+.cooldownBadge,
+.readyBadge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.3rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.cooldownBadge {
+  background: #ffe9cc;
+  color: #9b5d00;
+}
+
+.readyBadge {
+  background: #def7e5;
+  color: #157347;
+}
+
+.actions {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.buyButton,
+.sellButton {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.buyButton {
+  background: #1f6feb;
+  color: #ffffff;
+}
+
+.sellButton {
+  background: #11a683;
+  color: #ffffff;
+}
+
+.buyButton:disabled,
+.sellButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 0.85rem;
+  }
+
+  .emoji {
+    font-size: 2.4rem;
+  }
+}

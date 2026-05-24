@@ -1,0 +1,161 @@
+.wrapper {
+    margin-top: 1rem;
+    border-radius: 14px;
+    border: 1px solid #e7ebf4;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    padding: 0.9rem;
+}
+
+.title {
+    margin: 0 0 0.65rem;
+    color: #2c3e50;
+    font-size: 1.05rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.slotFilled,
+.slotEmpty {
+    min-height: 64px;
+    border-radius: 12px;
+    border: 1px solid #d9dfeb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.slotFilled {
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.slotEmpty {
+    background: #f3f6fa;
+    color: #b2bdcc;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.slotEmoji {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.qtyBadge {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    border-radius: 999px;
+    background: #1f6feb;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.12rem 0.38rem;
+}
+
+.footer {
+    margin-top: 0.75rem;
+    display: grid;
+    gap: 0.35rem;
+}
+
+.line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2f3640;
+    font-size: 0.93rem;
+}
+
+.positive {
+    color: #1b8a52;
+}
+
+.negative {
+    color: #d63031;
+}
+
+.neutral {
+    color: #7f8c8d;
+}
+
+.inlineModal {
+    margin-top: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid #d8e3ff;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(22, 43, 80, 0.12);
+    padding: 0.75rem;
+}
+
+.modalTitle {
+    margin: 0 0 0.4rem;
+    color: #2c3e50;
+}
+
+.modalInfo {
+    margin: 0.25rem 0;
+    color: #35495e;
+    font-size: 0.92rem;
+}
+
+.cooldownWarning {
+    margin: 0.4rem 0 0;
+    color: #9a6700;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.modalActions {
+    margin-top: 0.65rem;
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.sellOne,
+.sellAll,
+.closeMiniModal {
+    border: 0;
+    border-radius: 10px;
+    padding: 0.52rem 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.sellOne {
+    background: #16a085;
+    color: #ffffff;
+}
+
+.sellAll {
+    background: #0e7a66;
+    color: #ffffff;
+}
+
+.closeMiniModal {
+    background: #e9eef8;
+    color: #334e68;
+}
+
+.sellOne:disabled,
+.sellAll:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 680px) {
+    .grid {
+        gap: 0.45rem;
+    }
+
+    .slotFilled,
+    .slotEmpty {
+        min-height: 58px;
+    }
+}
