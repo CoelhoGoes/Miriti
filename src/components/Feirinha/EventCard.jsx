@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PRODUCTS } from '../../data/products';
+import { useStrings, useLanguage } from '../../i18n/index.js';
 import styles from './EventCard.module.css';
 
 const modalVariants = {
@@ -19,6 +20,9 @@ const modalVariants = {
 };
 
 export default function EventCard({ event, onClose }) {
+    const s = useStrings();
+    const lang = useLanguage();
+    const t = (obj) => (obj && typeof obj === 'object') ? (obj[lang] ?? obj.pt) : obj;
     const [showTip, setShowTip] = useState(false);
     const [tipText, setTipText] = useState('');
 
@@ -41,7 +45,7 @@ export default function EventCard({ event, onClose }) {
 
     const handleClose = () => {
         if (event?.educationalTip) {
-            setTipText(event.educationalTip);
+            setTipText(t(event.educationalTip));
             setShowTip(true);
         }
         onClose();
@@ -73,11 +77,11 @@ export default function EventCard({ event, onClose }) {
                                 {event.emoji}
                             </motion.div>
 
-                            <h2 className={styles.title}>{event.title}</h2>
-                            <p className={styles.description}>{event.description}</p>
+                            <h2 className={styles.title}>{t(event.title)}</h2>
+                            <p className={styles.description}>{t(event.description)}</p>
 
                             <section className={styles.effectsSection}>
-                                <h3 className={styles.effectsTitle}>O que muda na feirinha?</h3>
+                                <h3 className={styles.effectsTitle}>{s.feirinha.whatChanges}</h3>
                                 <div className={styles.effectsList}>
                                     {event.effects.map((effect, index) => {
                                         const product = productById[effect.productId];
@@ -88,12 +92,12 @@ export default function EventCard({ event, onClose }) {
                                                 className={styles.effectRow}
                                             >
                                                 <span className={styles.effectName}>
-                                                    {product?.emoji || '🧺'} {product?.name || effect.productId}
+                                                    {product?.emoji || '🧺'} {t(product?.name) || effect.productId}
                                                 </span>
                                                 <span
                                                     className={positive ? styles.deltaUp : styles.deltaDown}
                                                 >
-                                                    {positive ? '+' : ''}{effect.delta} moedas
+                                                    {positive ? '+' : ''}{effect.delta} {s.feirinha.coins}
                                                 </span>
                                             </div>
                                         );
@@ -107,7 +111,7 @@ export default function EventCard({ event, onClose }) {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleClose}
                             >
-                                Entendi! 👍
+                                {s.feirinha.understood}
                             </motion.button>
                         </motion.div>
                     </motion.div>

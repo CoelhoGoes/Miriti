@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import { useStrings, useLanguage } from '../../i18n/index.js';
+import { useGame } from '../../context/GameContext.jsx';
 import Barometer from './Barometer';
 import styles from './ProductCard.module.css';
 
@@ -33,6 +35,11 @@ export default function ProductCard({
     onBuy,
     onSell,
 }) {
+    const { state } = useGame();
+    const s = useStrings();
+    const lang = useLanguage();
+    const t = (obj) => (obj && typeof obj === 'object') ? (obj[lang] ?? obj.pt) : obj;
+
     const trend = useMemo(
         () => getTrend(currentPrice, previousPrice),
         [currentPrice, previousPrice]
@@ -43,8 +50,9 @@ export default function ProductCard({
         trendControls.start(trend.key);
     }, [trendControls, trend.key]);
 
-    const basketCount = basketSlot ? basketSlot.quantity : 0;
-    const basketIsFullByRule = Boolean(basketSlot && basketCount >= 8);
+    const basketLines = state.basket.length;
+    const productInBasket = Boolean(basketSlot);
+    const basketIsFullByRule = basketLines >= 8 && !productInBasket;
 
     const roundsHeld = basketSlot ? round - basketSlot.roundBought : 0;
     const cooldownActive = Boolean(
@@ -65,8 +73,8 @@ export default function ProductCard({
                 <div className={styles.mainInfo}>
                     <span className={styles.emoji} aria-hidden="true">{product.emoji}</span>
                     <div className={styles.nameBlock}>
-                        <h3 className={styles.name}>{product.name}</h3>
-                        <span className={styles.riskBadge}>{product.riskProfile}</span>
+                        <h3 className={styles.name}>{t(product.name)}</h3>
+                        <span className={styles.riskBadge}>{t(product.riskProfile)}</span>
                     </div>
                 </div>
                 <motion.span
@@ -87,15 +95,15 @@ export default function ProductCard({
                 maxPrice={product.maxPrice}
             />
 
-            <p className={styles.currentPrice}><strong>{currentPrice} moedas</strong></p>
+            <p className={styles.currentPrice}><strong>{currentPrice} {s.feirinha.coins}</strong></p>
 
             {product.hasCooldown && basketSlot && (
                 cooldownActive ? (
                     <div className={styles.cooldownBadge}>
-                        🔒 Venda em {roundsLeft} rodada(s)
+                        🔒 {s.feirinha.sellIn.replace('{n}', roundsLeft)}
                     </div>
                 ) : (
-                    <div className={styles.readyBadge}>✅ Pronto para vender</div>
+                    <div className={styles.readyBadge}>{s.feirinha.readyToSell}</div>
                 )
             )}
 
@@ -107,7 +115,7 @@ export default function ProductCard({
                     whileTap={{ scale: 0.95 }}
                     onClick={() => onBuy(product.id)}
                 >
-                    Comprar
+                    {s.feirinha.buy}
                 </motion.button>
 
                 {basketSlot && basketSlot.quantity > 0 && (
@@ -118,7 +126,7 @@ export default function ProductCard({
                         whileTap={{ scale: 0.95 }}
                         onClick={() => onSell(product.id, 1)}
                     >
-                        Vender ({basketSlot.quantity})
+                        {s.feirinha.sell} ({basketSlot.quantity})
                     </motion.button>
                 )}
             </div>

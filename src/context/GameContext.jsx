@@ -22,6 +22,34 @@ import { PRODUCTS } from '../data/products'
 import { MARKET_EVENTS } from '../data/marketEvents'
 
 const GameContext = createContext(null)
+const ACCESSIBILITY_STORAGE_KEY = 'miriti_accessibility'
+const COLORBLIND_MODES = new Set(['none', 'deuter', 'protan', 'tritan'])
+
+export function readSavedAccessibilityMode() {
+  try {
+    const savedA11y = JSON.parse(localStorage.getItem(ACCESSIBILITY_STORAGE_KEY) || '{}') || {}
+    if (savedA11y?.colorblindMode && COLORBLIND_MODES.has(savedA11y.colorblindMode)) {
+      return savedA11y.colorblindMode
+    }
+    if (savedA11y?.colorblind) return 'deuter'
+  } catch {
+    return 'none'
+  }
+  return 'none'
+}
+
+export function syncColorblindBodyMode(mode) {
+  if (typeof document === 'undefined') return
+  const normalizedMode = COLORBLIND_MODES.has(mode) ? mode : 'none'
+  const isColorblind = normalizedMode !== 'none'
+  document.body.classList.toggle('colorblind-mode', normalizedMode !== 'none')
+  document.body.setAttribute('data-colorblind-mode', normalizedMode)
+  if (isColorblind) {
+    document.body.dataset.colorblindMode = normalizedMode
+  } else {
+    delete document.body.dataset.colorblindMode
+  }
+}
 
 /* ---- Constantes de jogo ---- */
 export const MAX_ENERGY = 5
@@ -99,6 +127,10 @@ function loadInitialState() {
   } = rawSave
 
   const saved = storage.get('game_state') || safeState
+  const savedColorblindMode = readSavedAccessibilityMode()
+  const colorblindMode = savedColorblindMode === 'none'
+    ? (saved.settings?.colorblindMode || initialState.settings.colorblindMode)
+    : savedColorblindMode
   return {
     ...initialState,
     ...saved,
@@ -126,7 +158,11 @@ function loadInitialState() {
     basket: Array.isArray(saved.basket) ? saved.basket : initialState.basket,
     ownedMascots: (saved.ownedMascots && saved.ownedMascots.length) ? saved.ownedMascots : [DEFAULT_MASCOT],
     selectedMascot: saved.selectedMascot || DEFAULT_MASCOT,
-    settings: { ...initialState.settings, ...(saved.settings || {}) }
+    settings: {
+      ...initialState.settings,
+      ...(saved.settings || {}),
+      colorblindMode
+    }
   }
 }
 
@@ -260,10 +296,7 @@ function reducer(state, action) {
       const existingSlot = state.basket.find(
         b => b.productId === action.payload.productId
       )
-      const currentBasketCount = state.basket.reduce(
-        (sum, b) => sum + b.quantity, 0
-      )
-      if (currentBasketCount + action.payload.quantity > 8) return state
+      if (!existingSlot && state.basket.length >= 8) return state
 
       const newBasket = existingSlot
         ? state.basket.map(b =>
@@ -429,6 +462,20 @@ export function GameProvider({ children }) {
   useEffect(() => {
     storage.set('game_state', state)
   }, [state])
+
+  useEffect(() => {
+    const colorblindMode = state.settings.colorblindMode || 'none'
+    syncColorblindBodyMode(colorblindMode)
+    try {
+      localStorage.setItem(
+        ACCESSIBILITY_STORAGE_KEY,
+        JSON.stringify({
+          colorblind: colorblindMode !== 'none',
+          colorblindMode,
+        })
+      )
+    } catch { }
+  }, [state.settings.colorblindMode])
 
   const setPhase = useCallback((phase) => dispatch({ type: 'SET_PHASE', phase }), [])
   const spendEnergy = useCallback(() => { }, [])

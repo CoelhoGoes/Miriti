@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PRODUCTS } from '../../data/products';
+import { useStrings, useLanguage } from '../../i18n/index.js';
 import styles from './CestaDaFamilia.module.css';
 
 const miniModalVariants = {
@@ -18,6 +19,9 @@ function getDifferenceClass(diff) {
 }
 
 export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) {
+    const s = useStrings();
+    const lang = useLanguage();
+    const t = (obj) => (obj && typeof obj === 'object') ? (obj[lang] ?? obj.pt) : obj;
     const [selectedProductId, setSelectedProductId] = useState(null);
 
     const productsById = useMemo(() => {
@@ -59,7 +63,7 @@ export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) 
 
     return (
         <section className={styles.wrapper}>
-            <h3 className={styles.title}>Cesta da Familia</h3>
+            <h3 className={styles.title}>{s.feirinha.basketTitle}</h3>
 
             <div className={styles.grid}>
                 {SLOT_IDS.map((slotId, position) => {
@@ -85,17 +89,17 @@ export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) 
 
             <div className={styles.footer}>
                 <div className={styles.line}>
-                    <span>Total investido:</span>
-                    <strong>{totalInvestido} moedas</strong>
+                    <span>{s.feirinha.totalInvested}</span>
+                    <strong>{totalInvestido} {s.feirinha.coins}</strong>
                 </div>
                 <div className={styles.line}>
-                    <span>Valor atual:</span>
-                    <strong>{valorAtual} moedas</strong>
+                    <span>{s.feirinha.currentValue}</span>
+                    <strong>{valorAtual} {s.feirinha.coins}</strong>
                 </div>
                 <div className={styles.line}>
-                    <span>Diferenca:</span>
+                    <span>{s.feirinha.difference}</span>
                     <strong className={getDifferenceClass(diferenca)}>
-                        {diferenca > 0 ? '+' : ''}{diferenca} moedas
+                        {diferenca > 0 ? '+' : ''}{diferenca} {s.feirinha.coins}
                     </strong>
                 </div>
             </div>
@@ -110,23 +114,23 @@ export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) 
                         exit="exit"
                     >
                         <h4 className={styles.modalTitle}>
-                            {selectedProduct.emoji} {selectedProduct.name}
+                            {selectedProduct.emoji} {t(selectedProduct.name)}
                         </h4>
 
                         <p className={styles.modalInfo}>
-                            Comprou por: {selectedSlot.boughtAt} moedas | Preco atual: {precoAtualSelecionado} moedas
+                            {s.feirinha.sellModal.boughtAt} {selectedSlot.boughtAt} {s.feirinha.coins} | {s.feirinha.sellModal.currentPrice} {precoAtualSelecionado} {s.feirinha.coins}
                         </p>
 
                         <p className={styles.modalInfo}>
-                            Lucro/prejuizo por unidade:{' '}
+                            {s.feirinha.sellModal.profitPerUnit}{' '}
                             <strong className={getDifferenceClass(lucroUnidade)}>
-                                {lucroUnidade > 0 ? '+' : ''}{lucroUnidade} moedas
+                                {lucroUnidade > 0 ? '+' : ''}{lucroUnidade} {s.feirinha.coins}
                             </strong>
                         </p>
 
                         {cooldownAtivo && (
                             <p className={styles.cooldownWarning}>
-                                🔒 Venda liberada em {roundsRestantes} rodada(s).
+                                🔒 {s.feirinha.sellModal.cooldownWarn}
                             </p>
                         )}
 
@@ -138,7 +142,7 @@ export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) 
                                 disabled={cooldownAtivo}
                                 onClick={() => onSell(selectedSlot.productId, 1)}
                             >
-                                Vender 1
+                                {s.feirinha.sellModal.sellOne}
                             </motion.button>
                             <motion.button
                                 type="button"
@@ -147,7 +151,7 @@ export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) 
                                 disabled={cooldownAtivo}
                                 onClick={() => onSell(selectedSlot.productId, selectedSlot.quantity)}
                             >
-                                Vender tudo
+                                {s.feirinha.sellModal.sellAll}
                             </motion.button>
                             <motion.button
                                 type="button"
@@ -155,7 +159,7 @@ export default function CestaDaFamilia({ basket, marketPrices, round, onSell }) 
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setSelectedProductId(null)}
                             >
-                                Fechar
+                                {s.feirinha.sellModal.close}
                             </motion.button>
                         </div>
                     </motion.div>

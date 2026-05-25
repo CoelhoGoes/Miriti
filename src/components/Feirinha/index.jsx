@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { PRODUCTS } from '../../data/products'
 import { MARKET_EVENTS } from '../../data/marketEvents'
 import { useGame } from '../../context/GameContext.jsx'
+import { useStrings } from '../../i18n/index.js'
 import EventCard from './EventCard'
 import ProductCard from './ProductCard'
 import CestaDaFamilia from './CestaDaFamilia'
@@ -16,6 +17,7 @@ function pickEvent(lastEventId) {
 
 export default function FeirinhaScreen({ onBack }) {
     const { state, dispatch } = useGame()
+    const s = useStrings()
     const [activeEvent, setActiveEvent] = useState(null)
     const [showTip, setShowTip] = useState(false)
     const didInitRef = useRef(false)
@@ -79,7 +81,7 @@ export default function FeirinhaScreen({ onBack }) {
         >
             <div className={styles.inner}>
                 <header className={styles.header}>
-                    <h1 className={styles.title}>🛖 Feirinha do Jutaiteua</h1>
+                    <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
                     <motion.button
                         type="button"
                         className={styles.backButton}
@@ -87,13 +89,13 @@ export default function FeirinhaScreen({ onBack }) {
                         whileTap={{ scale: 0.95 }}
                         onClick={onBack}
                     >
-                        ← Voltar
+                        ← {s.common.back}
                     </motion.button>
                 </header>
 
                 <div className={styles.meta}>
-                    <span>🎯 Rodada {state.market.round}</span>
-                    <strong>🪙 {state.coins} moedas disponíveis</strong>
+                    <span>🎯 {s.feirinha.round} {state.market.round}</span>
+                    <strong>🪙 {state.coins} {s.feirinha.coinsAvailable}</strong>
                 </div>
 
                 <section className={styles.grid}>

@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
+import { useStrings } from '../i18n/index.js'
 import './FarmMap.css'
 import styles from './FarmMap/FarmMap.module.css'
 
@@ -9,7 +10,6 @@ import styles from './FarmMap/FarmMap.module.css'
 const MAP_NODES = [
   {
     id: 'escolinha',
-    label: 'Escolinha',
     emoji: '🏫',
     screen: 'escolinha',
     borderColor: '#4A90D9',
@@ -18,7 +18,6 @@ const MAP_NODES = [
   },
   {
     id: 'feirinha',
-    label: 'Feirinha do Jutaiteua',
     emoji: '🧺',
     screen: 'stocks',
     borderColor: '#E67E22',
@@ -27,7 +26,6 @@ const MAP_NODES = [
   },
   {
     id: 'loja',
-    label: 'Loja',
     emoji: '🏪',
     screen: 'shop',
     shadowColor: '#C49B00',
@@ -35,7 +33,6 @@ const MAP_NODES = [
   },
   {
     id: 'conquistas',
-    label: 'Conquistas',
     emoji: '🏆',
     screen: 'achievements',
     borderColor: '#F39C12',
@@ -64,6 +61,7 @@ const CLOUDS = [
 
 export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents }) {
   const { state } = useGame()
+  const s = useStrings()
 
   const openSettings = () => {
     if (onSettings) {
@@ -103,8 +101,8 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           <motion.button
             type="button"
             onClick={openSettings}
-            title="Configurações"
-            aria-label="Configurações"
+            title={s.farmMap.settings}
+            aria-label={s.farmMap.settings}
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
           >
@@ -113,8 +111,8 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           <motion.button
             type="button"
             onClick={openCredits}
-            title="Créditos"
-            aria-label="Créditos"
+            title={s.farmMap.credits}
+            aria-label={s.farmMap.credits}
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
           >
@@ -123,8 +121,8 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           <motion.button
             type="button"
             onClick={openParents}
-            title="Pais e Professores"
-            aria-label="Pais e Professores"
+            title={s.farmMap.parents}
+            aria-label={s.farmMap.parents}
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
           >
@@ -136,8 +134,8 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           <motion.button
             type="button"
             onClick={handleMascot}
-            title="Toque para curiosidades"
-            aria-label="Mascote — toque para curiosidades"
+            title={s.farmMap.mascotTip}
+            aria-label={s.farmMap.mascotLabel}
             className={styles.mascotButton}
             whileHover={{ scale: 1.12, rotate: -6 }}
             whileTap={{ scale: 0.92 }}
@@ -146,7 +144,7 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           >
             <span aria-hidden="true">{state.selectedMascot}</span>
           </motion.button>
-          <h1>Fazendinha Miriti</h1>
+          <h1>{s.farmMap.title}</h1>
         </div>
 
         <div className={styles.coinsBadge}>
@@ -156,7 +154,7 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
       </motion.header>
 
       <div className={styles.hintBar}>
-        🗺️ Toque em um lugar para visitar!
+        {s.farmMap.hint}
       </div>
 
       <div className="farm-sky" />
@@ -272,7 +270,7 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
                 <div className={styles.nodeBadge}>{state.newShopItems || 0}</div>
               )}
             </div>
-            <div className={styles.nodeLabel}>{node.label}</div>
+            <div className={styles.nodeLabel}>{s.farmMap.nodes[node.id]}</div>
           </motion.div>
         )
       })}
