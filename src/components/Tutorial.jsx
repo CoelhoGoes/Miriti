@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { sound } from '../utils/sound.js'
 import { useStrings } from '../i18n/index.js'
 import './Tutorial.css'
@@ -30,7 +31,10 @@ export default function Tutorial({ onFinish }) {
     onFinish()
   }, [onFinish])
 
-  return (
+  const modalRoot = document.getElementById('modal-root')
+  if (!modalRoot) return null
+
+  const modalContent = (
     <motion.div
       className="tutorial-overlay"
       initial={{ opacity: 0 }}
@@ -81,7 +85,7 @@ export default function Tutorial({ onFinish }) {
         <div className="tutorial-dots">
           {steps.map((_, i) => (
             <span
-              key={i}
+              key={`${step.title}-${i}`}
               className={`tutorial-dot ${i === index ? 'active' : ''}`}
               aria-hidden="true"
             />
@@ -108,4 +112,6 @@ export default function Tutorial({ onFinish }) {
       </motion.div>
     </motion.div>
   )
+
+  return createPortal(modalContent, modalRoot)
 }

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye } from 'react-icons/fa'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
@@ -13,13 +14,13 @@ export default function OptionsModal({ onClose }) {
   const [confirmReset, setConfirmReset] = useState(false)
 
   const handleMusicVolume = (e) => {
-    const v = parseFloat(e.target.value)
+    const v = Number.parseFloat(e.target.value)
     updateSettings({ musicVolume: v })
     sound.setMusicVolume(v)
   }
 
   const handleSfxVolume = (e) => {
-    const v = parseFloat(e.target.value)
+    const v = Number.parseFloat(e.target.value)
     updateSettings({ sfxVolume: v })
     sound.setSfxVolume(v)
     sound.play('pop')
@@ -47,7 +48,10 @@ export default function OptionsModal({ onClose }) {
     onClose()
   }
 
-  return (
+  const modalRoot = document.getElementById('modal-root')
+  if (!modalRoot) return null
+
+  const modalContent = (
     <motion.div
       className="options-overlay"
       initial={{ opacity: 0 }}
@@ -192,14 +196,7 @@ export default function OptionsModal({ onClose }) {
         </div>
 
         <div className="options-danger">
-          {!confirmReset ? (
-            <button
-              className="options-reset-btn"
-              onClick={() => { sound.play('hover'); setConfirmReset(true) }}
-            >
-              <FaTrash /> {s.options.reset}
-            </button>
-          ) : (
+          {confirmReset ? (
             <div className="options-confirm">
               <p>{s.options.resetConfirm}</p>
               <div className="options-confirm-actions">
@@ -217,9 +214,18 @@ export default function OptionsModal({ onClose }) {
                 </button>
               </div>
             </div>
+          ) : (
+            <button
+              className="options-reset-btn"
+              onClick={() => { sound.play('hover'); setConfirmReset(true) }}
+            >
+              <FaTrash /> {s.options.reset}
+            </button>
           )}
         </div>
       </motion.div>
     </motion.div>
   )
+
+  return createPortal(modalContent, modalRoot)
 }

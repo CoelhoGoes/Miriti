@@ -212,30 +212,69 @@ h1, h2, h3, h4, h5, h6 {
 .app-root.font-scale-2 h3,
 .app-root.font-scale-2 h4 { font-size: 1.12em; }
 
-.app-root.font-scale-3 p,
-.app-root.font-scale-3 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
-.app-root.font-scale-3 li,
-.app-root.font-scale-3 label,
-.app-root.font-scale-3 button,
-.app-root.font-scale-3 h1,
-.app-root.font-scale-3 h2,
-.app-root.font-scale-3 h3,
-.app-root.font-scale-3 h4 { font-size: 1.18em; }
+/* Acessibilidade — modos daltônicos por variáveis CSS */
+body.colorblind-mode {
+  --color-primary: #0072b2;
+  --color-accent: #e69f00;
+  --color-success: #009e73;
+  --color-warning: #d55e00;
+  --color-danger: #cc79a7;
+  --color-secondary: #56b4e9;
+  --color-info: #56b4e9;
+}
 
-.app-root.font-scale-4 p,
-.app-root.font-scale-4 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
-.app-root.font-scale-4 li,
-.app-root.font-scale-4 label,
-.app-root.font-scale-4 button,
-.app-root.font-scale-4 h1,
-.app-root.font-scale-4 h2,
-.app-root.font-scale-4 h3,
-.app-root.font-scale-4 h4 { font-size: 1.26em; }
+body.colorblind-mode[data-colorblind-mode='protan'] {
+  --color-primary: #005f99;
+  --color-accent: #d89000;
+  --color-success: #2b9c67;
+  --color-warning: #c05a00;
+  --color-danger: #b4558f;
+  --color-secondary: #2f7fc1;
+  --color-info: #2f7fc1;
+}
 
-/* Acessibilidade — modos daltônicos (filtros suaves no app inteiro) */
-.app-root.cb-deuter { filter: url('#cb-deuter'); }
-.app-root.cb-protan { filter: url('#cb-protan'); }
-.app-root.cb-tritan { filter: url('#cb-tritan'); }
+body.colorblind-mode[data-colorblind-mode='tritan'] {
+  --color-primary: #3b6fb6;
+  --color-accent: #c77d00;
+  --color-success: #1f9a8a;
+  --color-warning: #b85e00;
+  --color-danger: #a66ad8;
+  --color-secondary: #4a90d9;
+  --color-info: #4a90d9;
+}
+
+body.colorblind-mode[data-colorblind-mode='deuter'] {
+  --color-primary: #0072b2;
+  --color-accent: #e69f00;
+  --color-success: #009e73;
+  --color-warning: #d55e00;
+  --color-danger: #cc79a7;
+  --color-secondary: #56b4e9;
+  --color-info: #56b4e9;
+}
+
+/* ── Filtros visuais de daltonismo ─────────────────────────────
+ Aplicados em .app-root (dentro do #root).
+ Seguro porque OptionsModal usa createPortal → #modal-root (fora do #root).
+ ──────────────────────────────────────────────────────────── */
+
+body[data-colorblind-mode='deuter'] .app-root {
+  filter: saturate(0.6) hue-rotate(20deg);
+}
+
+body[data-colorblind-mode='protan'] .app-root {
+  filter: saturate(0.6) hue-rotate(-20deg) brightness(0.95);
+}
+
+body[data-colorblind-mode='tritan'] .app-root {
+  filter: saturate(0.7) hue-rotate(170deg) brightness(1.05);
+}
+
+/* Modo 'none' — garantir que o filtro é removido explicitamente */
+body[data-colorblind-mode='none'] .app-root,
+body:not([data-colorblind-mode]) .app-root {
+  filter: none;
+}
 
 /* Tela de erro (ErrorBoundary) */
 .error-screen {

@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { FaTimes } from 'react-icons/fa'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
@@ -33,7 +34,10 @@ export default function MascotChat({ onClose }) {
     onClose()
   }, [onClose])
 
-  return (
+  const modalRoot = document.getElementById('modal-root')
+  if (!modalRoot) return null
+
+  const modalContent = (
     <motion.div
       className="mascot-chat-overlay"
       initial={{ opacity: 0 }}
@@ -95,4 +99,6 @@ export default function MascotChat({ onClose }) {
       </motion.div>
     </motion.div>
   )
+
+  return createPortal(modalContent, modalRoot)
 }

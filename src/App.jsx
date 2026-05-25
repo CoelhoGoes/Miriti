@@ -32,7 +32,6 @@ import MascotChat from './components/MascotChat.jsx'
 import Tutorial from './components/Tutorial.jsx'
 import ParentsPanel from './components/ParentsPanel.jsx'
 import BossQuiz from './components/BossQuiz.jsx'
-import ColorblindFilters from './components/ColorblindFilters.jsx'
 import { useGame } from './context/GameContext.jsx'
 import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
@@ -72,14 +71,14 @@ export default function App() {
       sound.setMusicVolume(state.settings.musicVolume)
       sound.setSfxVolume(state.settings.sfxVolume)
       if (state.settings.musicVolume > 0) sound.startMusic()
-      window.removeEventListener('pointerdown', init)
-      window.removeEventListener('keydown', init)
+      globalThis.removeEventListener('pointerdown', init)
+      globalThis.removeEventListener('keydown', init)
     }
-    window.addEventListener('pointerdown', init)
-    window.addEventListener('keydown', init)
+    globalThis.addEventListener('pointerdown', init)
+    globalThis.addEventListener('keydown', init)
     return () => {
-      window.removeEventListener('pointerdown', init)
-      window.removeEventListener('keydown', init)
+      globalThis.removeEventListener('pointerdown', init)
+      globalThis.removeEventListener('keydown', init)
     }
   }, [state.settings.musicVolume, state.settings.sfxVolume])
 
@@ -197,31 +196,45 @@ export default function App() {
 
   const animationsEnabled = state.settings.animationsEnabled !== false
   const fontScale = state.settings.fontScale || 1
-  const cbMode = state.settings.colorblindMode || 'none'
-  const cbClass = cbMode === 'none' ? '' : `cb-${cbMode}`
+
+  // Escala de fonte global: altera o font-size do <html> para que
+  // TODOS os valores rem do projecto escalem correctamente.
+  // Cleanup restaura o default ao desmontar (hot reload seguro).
+  useEffect(() => {
+    const SCALE_MAP = {
+      1: '16px',
+      2: '17.92px',
+      3: '20px',
+      4: '22.4px'
+    }
+    document.documentElement.style.fontSize = SCALE_MAP[fontScale] ?? '16px'
+    return () => {
+      document.documentElement.style.fontSize = ''
+    }
+  }, [fontScale])
 
   return (
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
-      <ColorblindFilters />
       <div
         className={[
           'app-root',
           animationsEnabled ? '' : 'animations-off',
-          `font-scale-${fontScale}`,
-          cbClass
+          `font-scale-${fontScale}`
         ].filter(Boolean).join(' ')}
       >
-        <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
-          <motion.div
-            key={screen}
-            className="screen"
-            variants={screenVariants}
-            initial="initial"
-            animate="animate"
-          >
-            {renderScreen()}
-          </motion.div>
-        </ErrorBoundary>
+        <div className="app-content">
+          <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
+            <motion.div
+              key={screen}
+              className="screen"
+              variants={screenVariants}
+              initial="initial"
+              animate="animate"
+            >
+              {renderScreen()}
+            </motion.div>
+          </ErrorBoundary>
+        </div>
 
         <AnimatePresence>
           {optionsOpen && (
