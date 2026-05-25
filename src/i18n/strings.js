@@ -16,16 +16,16 @@ export const STRINGS = {
       close: 'Fechar'
     },
     home: {
-      subtitle: 'Educação Financeira na Fazendinha',
+      subtitle: 'Educação Financeira na Fazenda',
       cta: 'Toque na tela ou pressione qualquer tecla para começar'
     },
     farm: {
-      title: 'Fazendinha Miriti',
+      title: 'Fazenda Miriti',
       subtitle: 'Toque em um lugar da fazenda para visitar!',
-      escolinha: 'Escolinha',
+      escolinha: 'Escola',
       shop: 'Loja',
       achievements: 'Conquistas',
-      stocks: 'Feirinha do Jutaiteua',
+      stocks: 'Feira do Jutaiteua',
       settings: 'Configurações',
       credits: 'Créditos'
     },
@@ -34,7 +34,7 @@ export const STRINGS = {
       nextIn: (t) => `+1 em ${t}`
     },
     escolinha: {
-      title: 'Escolinha da Fazenda',
+      title: 'Escola da Fazenda',
       subtitle: 'Escolha uma lição para aprender!',
       locked: 'Conclua a lição anterior',
       lessonLabel: (n) => `Lição ${n}`,
@@ -66,7 +66,7 @@ export const STRINGS = {
       messages: [
         'A prática leva à perfeição. Vamos tentar outra vez?',
         'Você está no caminho certo! Tente de novo para melhorar!',
-        'Excelente desempenho! Continue aprendendo na escolinha!',
+        'Excelente desempenho! Continue aprendendo na escola!',
         'Você é um verdadeiro guardião da educação financeira! 🌟'
       ],
       statHits: 'Acertos',
@@ -75,7 +75,7 @@ export const STRINGS = {
       trophyLabel: 'Troféu desbloqueado!',
       trophyName: (phaseName) => `Mestre de ${phaseName}`,
       tryAgain: 'Tentar novamente',
-      backToMap: 'Voltar à Escolinha'
+      backToMap: 'Voltar à Escola'
     },
     options: {
       title: '⚙️ Configurações',
@@ -117,7 +117,7 @@ export const STRINGS = {
       tip: 'Dica: os preços sobem e descem. O segredo é comprar barato e vender quando subir!'
     },
     credits: {
-      subtitle: 'Uma aventura na fazendinha amazônica para ensinar dinheiro e responsabilidade financeira às crianças',
+      subtitle: 'Uma aventura na fazenda amazônica para ensinar dinheiro e responsabilidade financeira às crianças',
       techTitle: 'Tecnologias',
       teamTitle: 'Equipe',
       roles: ['Criador', 'Desenvolvedores'],
@@ -144,7 +144,7 @@ export const STRINGS = {
       wonTitle: 'Mascote desbloqueado!',
       wonMsg: 'Você venceu o chefão da matéria!',
       retry: 'Tentar de novo',
-      done: 'Voltar à Escolinha',
+      done: 'Voltar à Escola',
       lostTitle: 'Quase lá!',
       lostMsg: 'Acerte ao menos 70% para conquistar o mascote.',
       alreadyWon: 'Já conquistado',
@@ -156,9 +156,9 @@ export const STRINGS = {
       finish: 'Começar!',
       back: 'Anterior',
       steps: [
-        { title: 'Bem-vindo à Fazendinha!', text: 'Eu sou seu mascote 🦜. Vou te guiar pelos primeiros passos da educação financeira.' },
-        { title: 'Escolinha 🏫', text: 'Comece pela Escolinha. Cada lição ensina algo novo sobre dinheiro.' },
-        { title: 'Feirinha 🧺', text: 'Compre e venda produtos da Amazônia para treinar suas escolhas.' },
+        { title: 'Bem-vindo à Fazenda!', text: 'Eu sou sua mascote 🐔. Vou te guiar pelos primeiros passos da educação financeira.' },
+        { title: 'Escola 🏫', text: 'Comece pela Escola. Cada lição ensina algo novo sobre dinheiro.' },
+        { title: 'Feira 🧺', text: 'Compre e venda produtos da Amazônia para treinar suas escolhas.' },
         { title: 'Loja 🏪', text: 'Use suas moedas 🪙 para comprar dicas e novos mascotes!' },
         { title: 'Conquistas 🏆', text: 'Veja seus troféus e meta a meta cumpra desafios.' },
         { title: 'Toque no mascote!', text: 'No topo da tela, toque no seu mascote para ouvir curiosidades sobre dinheiro.' }
@@ -190,7 +190,7 @@ export const STRINGS = {
       enterButton: 'Pais e Professores'
     },
     feirinha: {
-      title: 'Feirinha do Jutaiteua',
+      title: 'Feira do Jutaiteua',
       round: 'Rodada',
       coinsAvailable: 'moedas disponíveis',
       buy: 'Comprar',
@@ -202,7 +202,7 @@ export const STRINGS = {
       currentValue: 'Valor atual:',
       difference: 'Diferença:',
       coins: 'moedas',
-      whatChanges: 'O que muda na feirinha?',
+      whatChanges: 'O que muda na feira?',
       understood: 'Entendi! 👍',
       base: 'Base: {price}',
       sellModal: {
@@ -223,7 +223,7 @@ export const STRINGS = {
       }
     },
     farmMap: {
-      title: 'Fazendinha Miriti',
+      title: 'Fazenda Miriti',
       hint: '🗺️ Toque em um lugar para visitar!',
       settings: 'Configurações',
       credits: 'Créditos',
@@ -231,8 +231,8 @@ export const STRINGS = {
       mascotTip: 'Toque para curiosidades',
       mascotLabel: 'Mascote — toque para curiosidades',
       nodes: {
-        escolinha: 'Escolinha',
-        feirinha: 'Feirinha do Jutaiteua',
+        escolinha: 'Escola',
+        feirinha: 'Feira do Jutaiteua',
         loja: 'Loja',
         conquistas: 'Conquistas'
       }
@@ -254,7 +254,7 @@ export const STRINGS = {
       escolinha: 'School',
       shop: 'Shop',
       achievements: 'Achievements',
-      stocks: 'Jutaiteua Market Fair',
+      stocks: 'Jutaiteua Fair',
       settings: 'Settings',
       credits: 'Credits'
     },
@@ -385,7 +385,7 @@ export const STRINGS = {
       finish: 'Start!',
       back: 'Back',
       steps: [
-        { title: 'Welcome to the Farm!', text: "I'm your mascot 🦜. I'll guide you through your first steps with money." },
+        { title: 'Welcome to the Farm!', text: "I'm your mascot 🐔. I'll guide you through your first steps with money." },
         { title: 'School 🏫', text: 'Start at the School. Each lesson teaches something new about money.' },
         { title: 'Market Fair 🧺', text: 'Buy and sell Amazon products to train your choices.' },
         { title: 'Shop 🏪', text: 'Use your coins 🪙 to buy hints and new mascots!' },
@@ -419,7 +419,7 @@ export const STRINGS = {
       enterButton: 'Parents & Teachers'
     },
     feirinha: {
-      title: 'Jutaiteua Market',
+      title: 'Jutaiteua Fair',
       round: 'Round',
       coinsAvailable: 'coins available',
       buy: 'Buy',
@@ -461,7 +461,7 @@ export const STRINGS = {
       mascotLabel: 'Mascot — tap for fun facts',
       nodes: {
         escolinha: 'School',
-        feirinha: 'Jutaiteua Market',
+        feirinha: 'Jutaiteua Fair',
         loja: 'Shop',
         conquistas: 'Achievements'
       }

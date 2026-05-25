@@ -1,5 +1,5 @@
 /**
- * Banco de perguntas do Miriti — as lições da Escolinha.
+ * Banco de perguntas do Miriti — as lições da Escola.
  * 5 lições com dificuldade crescente (faixa de 9 a 12 anos), sem exibir a idade.
  * Textos traduzíveis usam { pt, en }; options usam { pt: [...], en: [...] }.
  */

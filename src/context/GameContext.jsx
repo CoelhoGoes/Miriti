@@ -54,7 +54,13 @@ export function syncColorblindBodyMode(mode) {
 /* ---- Constantes de jogo ---- */
 export const MAX_ENERGY = 5
 export const ENERGY_REGEN_MS = 2 * 60 * 1000 // 1 energia a cada 2 minutos
-export const DEFAULT_MASCOT = '🦜'
+export const DEFAULT_MASCOT = '🐔'
+
+const AVAILABLE_MASCOTS = new Set(['🐔', '🐒', '🦥', '🐸', '🐢'])
+
+function normalizeMascot(value) {
+  return AVAILABLE_MASCOTS.has(value) ? value : DEFAULT_MASCOT
+}
 
 function initialStocks() {
   const s = {}
@@ -131,6 +137,10 @@ function loadInitialState() {
   const colorblindMode = savedColorblindMode === 'none'
     ? (saved.settings?.colorblindMode || initialState.settings.colorblindMode)
     : savedColorblindMode
+  const savedMascots = Array.isArray(saved.ownedMascots)
+    ? saved.ownedMascots.map(normalizeMascot)
+    : [DEFAULT_MASCOT]
+  const selectedMascot = normalizeMascot(saved.selectedMascot)
   return {
     ...initialState,
     ...saved,
@@ -156,8 +166,8 @@ function loadInitialState() {
         : initialState.market.visitCount,
     },
     basket: Array.isArray(saved.basket) ? saved.basket : initialState.basket,
-    ownedMascots: (saved.ownedMascots && saved.ownedMascots.length) ? saved.ownedMascots : [DEFAULT_MASCOT],
-    selectedMascot: saved.selectedMascot || DEFAULT_MASCOT,
+    ownedMascots: savedMascots.length ? savedMascots : [DEFAULT_MASCOT],
+    selectedMascot,
     settings: {
       ...initialState.settings,
       ...(saved.settings || {}),

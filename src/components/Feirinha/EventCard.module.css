@@ -12,10 +12,10 @@
 .modal {
     width: min(560px, 100%);
     border-radius: 18px;
-    background: linear-gradient(180deg, #fffdfa 0%, #fff6e8 100%);
+    background: var(--color-white);
     padding: 1.2rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
-    border: 1px solid #ffe1b3;
+    border: 2px solid var(--color-surface-2);
 }
 
 .bigEmoji {
@@ -27,14 +27,14 @@
 .title {
     margin: 0.65rem 0 0.35rem;
     text-align: center;
-    color: #5a3100;
+    color: var(--color-text-primary);
     font-size: 1.45rem;
 }
 
 .description {
     margin: 0;
     text-align: center;
-    color: #5d4a2f;
+    color: var(--color-text-secondary);
     font-size: 1.07rem;
     line-height: 1.45;
 }
@@ -49,7 +49,7 @@
 .effectsTitle {
     margin: 0 0 0.55rem;
     font-size: 0.95rem;
-    color: #774a16;
+    color: var(--color-text-primary);
 }
 
 .effectsList {
@@ -63,23 +63,23 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    background: #ffffff;
+    background: var(--color-white);
     border-radius: 8px;
     padding: 0.45rem 0.55rem;
 }
 
 .effectName {
     font-weight: 700;
-    color: #303952;
+    color: var(--color-text-primary);
 }
 
 .deltaUp {
-    color: #1a8a4c;
+    color: var(--color-success);
     font-weight: 700;
 }
 
 .deltaDown {
-    color: #d63031;
+    color: var(--color-danger);
     font-weight: 700;
 }
 
@@ -91,8 +91,8 @@
     padding: 0.72rem 1rem;
     font-size: 1rem;
     font-weight: 800;
-    background: #f5a623;
-    color: #2f2100;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
     cursor: pointer;
 }
 
@@ -103,8 +103,8 @@
     z-index: 65;
     width: min(340px, calc(100vw - 2rem));
     border-radius: 14px;
-    background: #ffffff;
-    border: 1px solid #dbe6ff;
+    background: var(--color-white);
+    border: 1px solid var(--color-surface-2);
     box-shadow: 0 10px 24px rgba(9, 23, 58, 0.18);
     display: flex;
     align-items: flex-start;
@@ -114,7 +114,7 @@
 
 .tipBubble p {
     margin: 0;
-    color: #2c3e50;
+    color: var(--color-text-primary);
     line-height: 1.35;
     font-size: 0.95rem;
 }

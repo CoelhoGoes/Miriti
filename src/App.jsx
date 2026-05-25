@@ -126,7 +126,7 @@ export default function App() {
     goTo(SCREENS.BOSS)
   }, [goTo])
 
-  // Dispara o tutorial ao chegar na fazendinha pela primeira vez
+  // Dispara o tutorial ao chegar na fazenda pela primeira vez
   useEffect(() => {
     if (screen === SCREENS.FARM && !state.settings.tutorialDone) {
       setTutorialOpen(true)

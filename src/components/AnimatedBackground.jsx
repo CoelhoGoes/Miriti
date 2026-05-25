@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import './AnimatedBackground.css'
 
-const EMOJIS = ['🌻', '🐔', '🦋', '🐝', '🍃', '🐄', '🌾', '🐸', '🌳', '🦜', '🐞', '🌷']
+const EMOJIS = ['🌻', '🐔', '🦋', '🐝', '🍃', '🐄', '🌾', '🐸', '🌳', '🐔', '🐞', '🌷']
 
 /**
  * Fundo decorativo. As animações são feitas só com CSS (sem framer-motion),
  * o que mantém o jogo leve e fluido.
  */
 export default function AnimatedBackground({
-  gradient = 'linear-gradient(135deg, #15803d 0%, #0d9488 50%, #0e7490 100%)',
+  gradient = 'linear-gradient(160deg, var(--color-primary-dark) 0%, var(--color-primary) 45%, var(--color-secondary) 100%)',
   density = 10
 }) {
   const items = useMemo(() => {

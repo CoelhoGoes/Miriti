@@ -4,7 +4,7 @@
   width: 100%;
   height: 100%;
   padding: 1rem 1rem 6rem;
-  background: linear-gradient(180deg, #f4f9ff 0%, #fdf9ef 100%);
+  background: var(--color-surface-4);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -27,17 +27,17 @@
   position: sticky;
   top: -1rem;
   padding: 0.65rem 0.9rem;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--color-white);
   backdrop-filter: blur(8px);
   border-radius: 18px;
-  border: 2px solid rgba(35, 53, 77, 0.08);
+  border: 2px solid var(--color-surface-2);
   box-shadow: 0 6px 18px rgba(35, 53, 77, 0.1);
   z-index: 5;
 }
 
 .title {
   margin: 0;
-  color: #23354d;
+  color: var(--color-text-primary);
   font-size: clamp(1.25rem, 2.5vw, 1.8rem);
   display: flex;
   align-items: center;
@@ -51,8 +51,8 @@
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 0.95rem;
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4);
   transition: transform 0.15s, box-shadow 0.15s;
@@ -68,25 +68,25 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.8rem;
-  color: #385170;
+  color: var(--color-text-secondary);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.95rem;
   padding: 0.55rem 0.9rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(254, 243, 199, 0.65));
+  background: var(--color-white);
   border-radius: 14px;
-  border: 2px solid rgba(245, 158, 11, 0.25);
+  border: 2px solid var(--color-surface-2);
 }
 
 .meta strong {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  color: #b45309;
-  background: #fffbeb;
+  color: var(--color-warning);
+  background: var(--color-warning-light);
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  border: 1.5px solid #fde68a;
+  border: 1.5px solid var(--color-warning);
 }
 
 .grid {

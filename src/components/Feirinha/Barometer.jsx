@@ -13,18 +13,18 @@ export default function Barometer({ currentPrice, basePrice, minPrice, maxPrice 
 
     const getLevel = (percentage) => {
         if (percentage <= 20) {
-            return { emoji: '❄️', label: s.feirinha.barometer.level1, color: '#4a90d9' };
+            return { emoji: '❄️', label: s.feirinha.barometer.level1, color: 'var(--color-primary)' };
         }
         if (percentage <= 40) {
-            return { emoji: '📉', label: s.feirinha.barometer.level2, color: '#74b9ff' };
+            return { emoji: '📉', label: s.feirinha.barometer.level2, color: 'var(--color-secondary)' };
         }
         if (percentage <= 60) {
-            return { emoji: '😐', label: s.feirinha.barometer.level3, color: '#f9ca24' };
+            return { emoji: '😐', label: s.feirinha.barometer.level3, color: 'var(--color-warning)' };
         }
         if (percentage <= 80) {
-            return { emoji: '📈', label: s.feirinha.barometer.level4, color: '#f0932b' };
+            return { emoji: '📈', label: s.feirinha.barometer.level4, color: 'var(--color-warning)' };
         }
-        return { emoji: '🔥', label: s.feirinha.barometer.level5, color: '#eb4d4b' };
+        return { emoji: '🔥', label: s.feirinha.barometer.level5, color: 'var(--color-danger)' };
     };
 
     const safeRange = maxPrice - minPrice;
@@ -53,7 +53,7 @@ export default function Barometer({ currentPrice, basePrice, minPrice, maxPrice 
             <div className={styles.track}>
                 <motion.div
                     className={styles.fill}
-                    initial={{ width: '0%', backgroundColor: '#c9ced6' }}
+                    initial={{ width: '0%', backgroundColor: 'var(--color-surface-3)' }}
                     animate={controls}
                 />
             </div>

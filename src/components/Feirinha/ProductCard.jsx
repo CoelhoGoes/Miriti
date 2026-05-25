@@ -15,9 +15,9 @@ const cardVariants = {
 };
 
 const trendVariants = {
-    up: { scale: [1, 1.12, 1], color: '#22a06b' },
-    down: { scale: [1, 1.12, 1], color: '#d64545' },
-    flat: { scale: 1, color: '#7f8c8d' },
+    up: { scale: [1, 1.12, 1], color: 'var(--color-success)' },
+    down: { scale: [1, 1.12, 1], color: 'var(--color-danger)' },
+    flat: { scale: 1, color: 'var(--color-text-secondary)' },
 };
 
 function getTrend(currentPrice, previousPrice) {

@@ -1,14 +1,14 @@
 .wrapper {
     margin-top: 1rem;
     border-radius: 14px;
-    border: 1px solid #e7ebf4;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid var(--color-surface-2);
+    background: var(--color-surface-4);
     padding: 0.9rem;
 }
 
 .title {
     margin: 0 0 0.65rem;
-    color: #2c3e50;
+    color: var(--color-text-primary);
     font-size: 1.05rem;
 }
 
@@ -22,7 +22,7 @@
 .slotEmpty {
     min-height: 64px;
     border-radius: 12px;
-    border: 1px solid #d9dfeb;
+    border: 1px solid var(--color-surface-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,13 +30,13 @@
 }
 
 .slotFilled {
-    background: #ffffff;
+    background: var(--color-surface-2);
     cursor: pointer;
 }
 
 .slotEmpty {
-    background: #f3f6fa;
-    color: #b2bdcc;
+    background: var(--color-surface-3);
+    color: var(--color-text-secondary);
     font-size: 1.7rem;
     font-weight: 700;
 }
@@ -51,8 +51,8 @@
     right: 6px;
     top: 6px;
     border-radius: 999px;
-    background: #1f6feb;
-    color: #ffffff;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
     font-size: 0.72rem;
     font-weight: 700;
     padding: 0.12rem 0.38rem;
@@ -68,16 +68,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #2f3640;
+    color: var(--color-text-primary);
     font-size: 0.93rem;
 }
 
 .positive {
-    color: #1b8a52;
+    color: var(--color-success);
 }
 
 .negative {
-    color: #d63031;
+    color: var(--color-danger);
 }
 
 .neutral {
@@ -87,26 +87,26 @@
 .inlineModal {
     margin-top: 0.75rem;
     border-radius: 12px;
-    border: 1px solid #d8e3ff;
-    background: #ffffff;
+    border: 1px solid var(--color-surface-2);
+    background: var(--color-white);
     box-shadow: 0 10px 24px rgba(22, 43, 80, 0.12);
     padding: 0.75rem;
 }
 
 .modalTitle {
     margin: 0 0 0.4rem;
-    color: #2c3e50;
+    color: var(--color-text-primary);
 }
 
 .modalInfo {
     margin: 0.25rem 0;
-    color: #35495e;
+    color: var(--color-text-secondary);
     font-size: 0.92rem;
 }
 
 .cooldownWarning {
     margin: 0.4rem 0 0;
-    color: #9a6700;
+    color: var(--color-warning);
     font-weight: 700;
     font-size: 0.9rem;
 }
@@ -129,18 +129,18 @@
 }
 
 .sellOne {
-    background: #16a085;
-    color: #ffffff;
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
 }
 
 .sellAll {
-    background: #0e7a66;
-    color: #ffffff;
+    background: var(--color-success);
+    color: var(--color-text-inverse);
 }
 
 .closeMiniModal {
-    background: #e9eef8;
-    color: #334e68;
+    background: var(--color-surface-3);
+    color: var(--color-text-primary);
 }
 
 .sellOne:disabled,

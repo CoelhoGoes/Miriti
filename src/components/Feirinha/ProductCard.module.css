@@ -4,8 +4,8 @@
   gap: 0.9rem;
   padding: 1rem;
   border-radius: 14px;
-  border: 1px solid #e7eaf0;
-  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border: 1px solid var(--color-surface-2);
+  background: var(--color-surface-4);
   box-shadow: 0 10px 24px rgba(19, 29, 51, 0.06);
 }
 
@@ -36,7 +36,7 @@
 .name {
   margin: 0;
   font-size: 1.05rem;
-  color: #222f3e;
+  color: var(--color-text-primary);
 }
 
 .riskBadge {
@@ -45,8 +45,8 @@
   width: fit-content;
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
-  background: #edf2ff;
-  color: #3c4b67;
+  background: var(--color-surface-3);
+  color: var(--color-text-secondary);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -58,7 +58,7 @@
 
 .currentPrice {
   margin: 0;
-  color: #2d3436;
+  color: var(--color-text-primary);
 }
 
 .cooldownBadge,
@@ -73,13 +73,13 @@
 }
 
 .cooldownBadge {
-  background: #ffe9cc;
-  color: #9b5d00;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .readyBadge {
-  background: #def7e5;
-  color: #157347;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .actions {
@@ -98,13 +98,13 @@
 }
 
 .buyButton {
-  background: #1f6feb;
-  color: #ffffff;
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
 }
 
 .sellButton {
-  background: #11a683;
-  color: #ffffff;
+  background: var(--color-secondary);
+  color: var(--color-text-inverse);
 }
 
 .buyButton:disabled,

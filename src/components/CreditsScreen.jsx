@@ -11,10 +11,10 @@ const team = [
 ]
 
 const techs = [
-  { icon: FaReact, label: { pt: 'React', en: 'React' }, color: '#61dafb' },
-  { icon: FaCode, label: { pt: 'Framer Motion', en: 'Framer Motion' }, color: '#ff4d6d' },
-  { icon: FaCss3, label: { pt: 'CSS Moderno', en: 'Modern CSS' }, color: '#3b82f6' },
-  { icon: FaPalette, label: { pt: 'Design Lúdico', en: 'Playful Design' }, color: '#a855f7' }
+  { icon: FaReact, label: { pt: 'React', en: 'React' }, color: 'var(--color-primary)' },
+  { icon: FaCode, label: { pt: 'Framer Motion', en: 'Framer Motion' }, color: 'var(--color-danger)' },
+  { icon: FaCss3, label: { pt: 'CSS Moderno', en: 'Modern CSS' }, color: 'var(--color-secondary)' },
+  { icon: FaPalette, label: { pt: 'Design Lúdico', en: 'Playful Design' }, color: 'var(--color-warning)' }
 ]
 
 export default function CreditsScreen({ onBack }) {
@@ -44,7 +44,7 @@ export default function CreditsScreen({ onBack }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring', damping: 14 }}
         >
-          🦜 Miriti
+          🐔 Miriti
         </motion.h1>
 
         <motion.p

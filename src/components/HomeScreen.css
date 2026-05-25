@@ -28,12 +28,12 @@
 
 .logo-letter {
   display: inline-block;
-  background: linear-gradient(180deg, #fff 0%, #fde68a 50%, #fbbf24 100%);
+  background: linear-gradient(180deg, var(--color-white) 0%, var(--color-warning-light) 50%, var(--color-warning) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  -webkit-text-stroke: 3px #fff;
-  text-stroke: 3px #fff;
+  -webkit-text-stroke: 3px var(--color-white);
+  text-stroke: 3px var(--color-white);
   position: relative;
   animation: letter-bounce 2.5s ease-in-out infinite;
   animation-delay: calc(var(--i) * 0.1s);
@@ -48,7 +48,7 @@
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(1rem, 2.5vw, 1.4rem);
-  color: #fff;
+  color: var(--color-text-inverse);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   letter-spacing: 0.05em;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
@@ -87,7 +87,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(0.95rem, 2vw, 1.2rem);
-  color: #fff;
+  color: var(--color-text-inverse);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   padding: 0.85rem 1.8rem;
   border-radius: 999px;

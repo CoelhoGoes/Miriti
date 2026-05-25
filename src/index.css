@@ -1,16 +1,16 @@
+@import './styles/tokens.css';
+
 /* ============================================
-   MIRITI — Estilos Globais
-   ============================================ */
+  MIRITI — Estilos Globais
+  ============================================ */
 
 :root {
   /* Paleta principal — tema amazônico */
-  --color-primary: #15803d;
   --color-primary-light: #22c55e;
-  --color-secondary: #0891b2;
   --color-accent: #f59e0b;
-  --color-success: #16a34a;
-  --color-danger: #ef4444;
   --color-info: #0891b2;
+  --color-text: var(--color-text-primary);
+  --color-text-light: var(--color-text-secondary);
 
   /* Background gradients */
   --bg-gradient-main: linear-gradient(135deg, #15803d 0%, #0d9488 50%, #0e7490 100%);
@@ -39,8 +39,6 @@
   --radius-xl: 36px;
   --radius-full: 9999px;
 
-  /* Cores neutras */
-  --color-white: #ffffff;
   --color-cream: #fff7ed;
   --color-text: #1f2937;
   --color-text-light: #6b7280;
@@ -60,8 +58,13 @@ html, body, #root {
 
 body {
   font-family: var(--font-body);
-  color: var(--color-text);
-  background: var(--bg-gradient-main);
+  color: var(--color-text-primary);
+  background: linear-gradient(
+    180deg,
+    var(--color-sky-top) 0%,
+    var(--color-sky-bottom) 55%,
+    var(--color-ground) 100%
+  );
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
@@ -212,70 +215,6 @@ h1, h2, h3, h4, h5, h6 {
 .app-root.font-scale-2 h3,
 .app-root.font-scale-2 h4 { font-size: 1.12em; }
 
-/* Acessibilidade — modos daltônicos por variáveis CSS */
-body.colorblind-mode {
-  --color-primary: #0072b2;
-  --color-accent: #e69f00;
-  --color-success: #009e73;
-  --color-warning: #d55e00;
-  --color-danger: #cc79a7;
-  --color-secondary: #56b4e9;
-  --color-info: #56b4e9;
-}
-
-body.colorblind-mode[data-colorblind-mode='protan'] {
-  --color-primary: #005f99;
-  --color-accent: #d89000;
-  --color-success: #2b9c67;
-  --color-warning: #c05a00;
-  --color-danger: #b4558f;
-  --color-secondary: #2f7fc1;
-  --color-info: #2f7fc1;
-}
-
-body.colorblind-mode[data-colorblind-mode='tritan'] {
-  --color-primary: #3b6fb6;
-  --color-accent: #c77d00;
-  --color-success: #1f9a8a;
-  --color-warning: #b85e00;
-  --color-danger: #a66ad8;
-  --color-secondary: #4a90d9;
-  --color-info: #4a90d9;
-}
-
-body.colorblind-mode[data-colorblind-mode='deuter'] {
-  --color-primary: #0072b2;
-  --color-accent: #e69f00;
-  --color-success: #009e73;
-  --color-warning: #d55e00;
-  --color-danger: #cc79a7;
-  --color-secondary: #56b4e9;
-  --color-info: #56b4e9;
-}
-
-/* ── Filtros visuais de daltonismo ─────────────────────────────
- Aplicados em .app-root (dentro do #root).
- Seguro porque OptionsModal usa createPortal → #modal-root (fora do #root).
- ──────────────────────────────────────────────────────────── */
-
-body[data-colorblind-mode='deuter'] .app-root {
-  filter: saturate(0.6) hue-rotate(20deg);
-}
-
-body[data-colorblind-mode='protan'] .app-root {
-  filter: saturate(0.6) hue-rotate(-20deg) brightness(0.95);
-}
-
-body[data-colorblind-mode='tritan'] .app-root {
-  filter: saturate(0.7) hue-rotate(170deg) brightness(1.05);
-}
-
-/* Modo 'none' — garantir que o filtro é removido explicitamente */
-body[data-colorblind-mode='none'] .app-root,
-body:not([data-colorblind-mode]) .app-root {
-  filter: none;
-}
-
 /* Tela de erro (ErrorBoundary) */
 .error-screen {
   position: absolute;
@@ -306,13 +245,13 @@ body:not([data-colorblind-mode]) .app-root {
 }
 
 .error-box h2 {
-  color: var(--color-text);
+  color: var(--color-text-primary);
   font-size: 1.5rem;
 }
 
 .error-box p {
   font-family: var(--font-body);
-  color: var(--color-text-light);
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 

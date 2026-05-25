@@ -6,13 +6,13 @@ export const ACHIEVEMENTS = [
     id: 'first_lesson',
     icon: '🎓',
     name: { pt: 'Primeira Lição', en: 'First Lesson' },
-    desc: { pt: 'Conclua sua primeira lição na escolinha', en: 'Finish your first lesson at the school' }
+    desc: { pt: 'Conclua sua primeira lição na escola', en: 'Finish your first lesson at the school' }
   },
   {
     id: 'all_lessons',
     icon: '🏫',
     name: { pt: 'Formado!', en: 'Graduate!' },
-    desc: { pt: 'Conclua todas as lições da escolinha', en: 'Finish every lesson at the school' }
+    desc: { pt: 'Conclua todas as lições da escola', en: 'Finish every lesson at the school' }
   },
   {
     id: 'perfect',
@@ -52,7 +52,7 @@ export const ACHIEVEMENTS = [
   },
   {
     id: 'collector',
-    icon: '🦜',
+    icon: '🐔',
     name: { pt: 'Amigo dos Bichos', en: 'Animal Friend' },
     desc: { pt: 'Tenha 3 mascotes diferentes', en: 'Own 3 different mascots' }
   },
