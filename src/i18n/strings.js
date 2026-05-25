@@ -188,6 +188,54 @@ export const STRINGS = {
       nothing: 'Ainda sem dados — peça para a criança jogar algumas lições.',
       back: 'Voltar',
       enterButton: 'Pais e Professores'
+    },
+    feirinha: {
+      title: 'Feirinha do Jutaiteua',
+      round: 'Rodada',
+      coinsAvailable: 'moedas disponíveis',
+      buy: 'Comprar',
+      sell: 'Vender',
+      readyToSell: '✅ Pronto para vender',
+      sellIn: 'Venda em {n} rodada(s)',
+      basketTitle: 'Cesta da Família',
+      totalInvested: 'Total investido:',
+      currentValue: 'Valor atual:',
+      difference: 'Diferença:',
+      coins: 'moedas',
+      whatChanges: 'O que muda na feirinha?',
+      understood: 'Entendi! 👍',
+      base: 'Base: {price}',
+      sellModal: {
+        boughtAt: 'Comprou por:',
+        currentPrice: 'Preço atual:',
+        profitPerUnit: 'Lucro por unidade:',
+        sellOne: 'Vender 1',
+        sellAll: 'Vender tudo',
+        close: 'Fechar',
+        cooldownWarn: 'Aguarde o cooldown para vender.'
+      },
+      barometer: {
+        level1: 'Muito barato!',
+        level2: 'Caindo',
+        level3: 'Normal',
+        level4: 'Subindo',
+        level5: 'Muito caro!'
+      }
+    },
+    farmMap: {
+      title: 'Fazendinha Miriti',
+      hint: '🗺️ Toque em um lugar para visitar!',
+      settings: 'Configurações',
+      credits: 'Créditos',
+      parents: 'Pais e Professores',
+      mascotTip: 'Toque para curiosidades',
+      mascotLabel: 'Mascote — toque para curiosidades',
+      nodes: {
+        escolinha: 'Escolinha',
+        feirinha: 'Feirinha do Jutaiteua',
+        loja: 'Loja',
+        conquistas: 'Conquistas'
+      }
     }
   },
 
@@ -369,6 +417,54 @@ export const STRINGS = {
       nothing: 'No data yet — ask the child to play a few lessons.',
       back: 'Back',
       enterButton: 'Parents & Teachers'
+    },
+    feirinha: {
+      title: 'Jutaiteua Market',
+      round: 'Round',
+      coinsAvailable: 'coins available',
+      buy: 'Buy',
+      sell: 'Sell',
+      readyToSell: '✅ Ready to sell',
+      sellIn: 'Sell in {n} round(s)',
+      basketTitle: 'Family Basket',
+      totalInvested: 'Total invested:',
+      currentValue: 'Current value:',
+      difference: 'Difference:',
+      coins: 'coins',
+      whatChanges: 'What changes at the market?',
+      understood: 'Got it! 👍',
+      base: 'Base: {price}',
+      sellModal: {
+        boughtAt: 'Bought at:',
+        currentPrice: 'Current price:',
+        profitPerUnit: 'Profit per unit:',
+        sellOne: 'Sell 1',
+        sellAll: 'Sell all',
+        close: 'Close',
+        cooldownWarn: 'Wait for the cooldown to sell.'
+      },
+      barometer: {
+        level1: 'Very cheap!',
+        level2: 'Falling',
+        level3: 'Normal',
+        level4: 'Rising',
+        level5: 'Very expensive!'
+      }
+    },
+    farmMap: {
+      title: 'Miriti Farm',
+      hint: '🗺️ Tap a place to visit!',
+      settings: 'Settings',
+      credits: 'Credits',
+      parents: 'Parents & Teachers',
+      mascotTip: 'Tap for fun facts',
+      mascotLabel: 'Mascot — tap for fun facts',
+      nodes: {
+        escolinha: 'School',
+        feirinha: 'Jutaiteua Market',
+        loja: 'Shop',
+        conquistas: 'Achievements'
+      }
     }
   }
 }
