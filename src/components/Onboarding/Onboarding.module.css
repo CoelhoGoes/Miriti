@@ -140,3 +140,48 @@
   text-align: center;
   margin-top: 16px;
 }
+
+/* ── Recovery Screen ─────────────────────────────── */
+.linkButton {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 16px;
+  text-decoration: underline;
+  width: 100%;
+  text-align: center;
+  padding: 8px;
+}
+
+.linkButton:hover {
+  color: var(--color-primary-dark);
+}
+
+.linkButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.codeInput {
+  width: 100%;
+  padding: 14px 18px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 3px solid var(--color-surface-2);
+  border-radius: 16px;
+  background: var(--color-surface-4);
+  color: var(--color-text-primary);
+  outline: none;
+  text-transform: uppercase;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.codeInput:focus {
+  border-color: var(--color-primary);
+}

@@ -9,6 +9,7 @@ import CooperativaScreen from './components/Cooperativa/index.jsx'
 import LeaderboardScreen from './components/Leaderboard/LeaderboardScreen.jsx'
 import NicknameScreen from './components/Onboarding/NicknameScreen.jsx'
 import RecoveryCelebration from './components/Onboarding/RecoveryCelebration.jsx'
+import RecoveryScreen from './components/Onboarding/RecoveryScreen.jsx'
 import AchievementsScreen from './components/AchievementsScreen.jsx'
 import FeirinhaScreen from './components/Feirinha/index.jsx'
 import OptionsModal from './components/OptionsModal.jsx'
@@ -51,6 +52,7 @@ export default function App() {
   const [bossPhase, setBossPhase]         = useState(0)
   const [lastResult, setLastResult]       = useState(null)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
+  const [showRecovery, setShowRecovery] = useState(false)
   const { state, updateSettings, addPlayTime } = useGame()
   const s = useStrings()
 
@@ -108,7 +110,20 @@ export default function App() {
 
   // ── Onboarding gate (after all hooks) ──────────────────────────────────────
   if (!state.player?.id) {
-    return <NicknameScreen onComplete={(data) => setPendingPlayerData(data)} />
+    if (showRecovery) {
+      return (
+        <RecoveryScreen
+          onBack={() => setShowRecovery(false)}
+          onRecovered={() => setShowRecovery(false)}
+        />
+      )
+    }
+    return (
+      <NicknameScreen
+        onComplete={(data) => setPendingPlayerData(data)}
+        onSwitchToRecovery={() => setShowRecovery(true)}
+      />
+    )
   }
   if (!state.player?.hasOnboarded && pendingPlayerData) {
     return (

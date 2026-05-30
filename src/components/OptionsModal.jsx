@@ -12,6 +12,18 @@ export default function OptionsModal({ onClose }) {
   const { settings } = state
   const s = useStrings()
   const [confirmReset, setConfirmReset] = useState(false)
+  const [codeCopied, setCodeCopied] = useState(false)
+
+  const recoveryCode = state.player?.recoveryCode
+
+  const handleCopyRecovery = async () => {
+    if (!recoveryCode) return
+    try {
+      await navigator.clipboard.writeText(recoveryCode)
+      setCodeCopied(true)
+      setTimeout(() => setCodeCopied(false), 2000)
+    } catch { /* clipboard unavailable */ }
+  }
 
   const handleMusicVolume = (e) => {
     const v = Number.parseFloat(e.target.value)
@@ -194,6 +206,56 @@ export default function OptionsModal({ onClose }) {
           </div>
 
         </div>
+
+        {recoveryCode && (
+          <div className="options-group">
+            <label className="options-label">
+              🔑 {s.options.yourCode}
+            </label>
+            <div style={{
+              background: 'var(--color-warning-light)',
+              border: '2px dashed var(--color-warning)',
+              borderRadius: 12,
+              padding: 12,
+              textAlign: 'center',
+            }}>
+              <code style={{
+                fontFamily: 'Courier New, monospace',
+                fontSize: '1rem',
+                fontWeight: 900,
+                color: 'var(--color-primary-dark)',
+                letterSpacing: '0.05em',
+                wordBreak: 'break-all',
+              }}>
+                {recoveryCode}
+              </code>
+              <button
+                type="button"
+                onClick={handleCopyRecovery}
+                style={{
+                  display: 'block',
+                  margin: '10px auto 0',
+                  padding: '8px 16px',
+                  border: '2px solid var(--color-primary)',
+                  borderRadius: 10,
+                  background: 'var(--color-white)',
+                  color: 'var(--color-primary)',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                {codeCopied ? s.recovery.copied : `📋 ${s.options.copyYourCode}`}
+              </button>
+            </div>
+            <p style={{
+              fontSize: '0.85rem',
+              color: 'var(--color-text-secondary)',
+              marginTop: 8,
+            }}>
+              {s.options.yourCodeTip}
+            </p>
+          </div>
+        )}
 
         <div className="options-danger">
           {confirmReset ? (

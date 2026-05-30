@@ -88,7 +88,10 @@ export const STRINGS = {
       reset: 'Apagar progresso',
       resetConfirm: 'Tem certeza? Esta ação não pode ser desfeita.',
       cancel: 'Cancelar',
-      resetYes: 'Apagar tudo'
+      resetYes: 'Apagar tudo',
+      yourCode:     'O teu código secreto',
+      copyYourCode: 'Copiar',
+      yourCodeTip:  '💡 Guarda este código para recuperar o teu progresso noutro dispositivo.',
     },
     // DEPRECATED — substituído pela Cooperativa (src/components/Cooperativa/)
     shop: {
@@ -300,6 +303,20 @@ export const STRINGS = {
       letsPlay:         'Vamos jogar!',
       tipFooter:        '💡 Podes ver este código sempre que quiseres nas Configurações.',
     },
+    recoveryScreen: {
+      alreadyPlayed: 'Já joguei antes →',
+      title:         'Recuperar progresso',
+      subtitle:      'Insere o teu código secreto para continuar de onde paraste.',
+      placeholder:   'PALMEIRA-1234-MIRITI',
+      hint:          'O código tem o formato PALAVRA-NÚMERO-PALAVRA',
+      invalidFormat: '❌ Formato inválido. Exemplo: PALMEIRA-1234-MIRITI',
+      notFound:      '❌ Código não encontrado. Verifica e tenta de novo.',
+      checking:      'A procurar...',
+      success:       '✅ Bem-vindo de volta, {nickname}!',
+      restore:       'Recuperar',
+      backToNew:     '← Voltar (criar conta nova)',
+      restoring:     'A carregar o teu progresso...',
+    },
     leaderboard: {
       title:        'Ranking dos Aventureiros',
       subtitle:     'Os que mais juntaram moedas',
@@ -394,7 +411,10 @@ export const STRINGS = {
       reset: 'Erase progress',
       resetConfirm: 'Are you sure? This action cannot be undone.',
       cancel: 'Cancel',
-      resetYes: 'Erase everything'
+      resetYes: 'Erase everything',
+      yourCode:     'Your secret code',
+      copyYourCode: 'Copy',
+      yourCodeTip:  '💡 Keep this code to recover your progress on another device.',
     },
     // DEPRECATED — replaced by Cooperative (src/components/Cooperativa/)
     shop: {
@@ -605,6 +625,20 @@ export const STRINGS = {
       copied:           '✅ Copied!',
       letsPlay:         'Let us play!',
       tipFooter:        '💡 You can see this code anytime in Settings.',
+    },
+    recoveryScreen: {
+      alreadyPlayed: 'I have played before →',
+      title:         'Recover progress',
+      subtitle:      'Enter your secret code to continue where you left off.',
+      placeholder:   'PALMEIRA-1234-MIRITI',
+      hint:          'The code has the format WORD-NUMBER-WORD',
+      invalidFormat: '❌ Invalid format. Example: PALMEIRA-1234-MIRITI',
+      notFound:      '❌ Code not found. Check and try again.',
+      checking:      'Searching...',
+      success:       '✅ Welcome back, {nickname}!',
+      restore:       'Restore',
+      backToNew:     '← Back (create new account)',
+      restoring:     'Loading your progress...',
     },
     leaderboard: {
       title:        'Adventurer Ranking',

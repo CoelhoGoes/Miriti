@@ -36,7 +36,7 @@ function getFeedbackClass(validation, s) {
   return { cls: '', text: '' }
 }
 
-export default function NicknameScreen({ onComplete }) {
+export default function NicknameScreen({ onComplete, onSwitchToRecovery }) {
   const s = useStrings()
   const { setPlayer } = useGame()
 
@@ -133,6 +133,15 @@ export default function NicknameScreen({ onComplete }) {
           onClick={handleSubmit}
         >
           {submitting ? s.onboarding.creating : s.onboarding.start}
+        </button>
+
+        <button
+          type="button"
+          className={styles.linkButton}
+          onClick={onSwitchToRecovery}
+          disabled={submitting}
+        >
+          {s.recoveryScreen.alreadyPlayed}
         </button>
       </motion.div>
     </motion.div>
