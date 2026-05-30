@@ -20,6 +20,8 @@ import { PHASES } from '../data/questions.js'
 import { STOCKS, STOCK_META } from '../data/stocks.js'
 import { PRODUCTS } from '../data/products'
 import { MARKET_EVENTS } from '../data/marketEvents'
+import { ANIMALS, MARKET_CONTROL_ANIMALS } from '../data/animals'
+import { ANIMAL_EFFECTS } from '../data/animalEffects'
 
 const GameContext = createContext(null)
 const ACCESSIBILITY_STORAGE_KEY = 'miriti_accessibility'
@@ -54,9 +56,9 @@ export function syncColorblindBodyMode(mode) {
 /* ---- Constantes de jogo ---- */
 export const MAX_ENERGY = 5
 export const ENERGY_REGEN_MS = 2 * 60 * 1000 // 1 energia a cada 2 minutos
-export const DEFAULT_MASCOT = '🐔'
+export const DEFAULT_MASCOT = '🐷'
 
-const AVAILABLE_MASCOTS = new Set(['🐔', '🐒', '🦥', '🐸', '🐢'])
+const AVAILABLE_MASCOTS = new Set(['🐷', '🐔', '🐒', '🦥', '🐸', '🐢'])
 
 function normalizeMascot(value) {
   return AVAILABLE_MASCOTS.has(value) ? value : DEFAULT_MASCOT
@@ -105,6 +107,13 @@ const initialState = {
   },
   basket: [],
   playTimeSec: 0,
+  cooperativa: {
+    helpers:        {},
+    activePartners: [],
+    alliesOwned:    ['cofrinho'],
+    activeAlly:     'cofrinho',
+  },
+  quizFlags: {},
   settings: {
     musicVolume: 0.4,
     sfxVolume: 0.6,
@@ -168,12 +177,62 @@ function loadInitialState() {
     basket: Array.isArray(saved.basket) ? saved.basket : initialState.basket,
     ownedMascots: savedMascots.length ? savedMascots : [DEFAULT_MASCOT],
     selectedMascot,
+    cooperativa: {
+      ...initialState.cooperativa,
+      ...saved.cooperativa,
+    },
+    quizFlags: { ...saved.quizFlags },
     settings: {
       ...initialState.settings,
       ...(saved.settings || {}),
       colorblindMode
     }
   }
+}
+
+function migrateLegacyShop(state) {
+  if (state.cooperativa?.alliesOwned?.length > 0) return state
+
+  const legacyMap = {
+    mascot_monkey: 'macaco',
+    mascot_sloth:  'preguica',
+    mascot_frog:   'sapo',
+    mascot_turtle: 'jabuti',
+  }
+
+  const legacyOwned = Array.isArray(state.inventory)
+    ? state.inventory
+    : Object.keys(state.inventory ?? {})
+
+  const migratedAllies = ['cofrinho']
+  legacyOwned.forEach(legacyId => {
+    const newId = legacyMap[legacyId]
+    if (newId && !migratedAllies.includes(newId)) migratedAllies.push(newId)
+  })
+
+  const legacyHints = state.inventory?.hint_pack ?? 0
+  const helpers = legacyHints > 0 ? { coruja: Math.min(legacyHints, 5) } : {}
+
+  const mascotIcons = { '🐵': 'macaco', '🦥': 'preguica', '🐸': 'sapo', '🐢': 'jabuti', '🐔': 'galinha' }
+  const newActiveAlly = mascotIcons[state.selectedMascot] ?? 'cofrinho'
+  if (mascotIcons[state.selectedMascot] && !migratedAllies.includes(newActiveAlly)) {
+    migratedAllies.push(newActiveAlly)
+  }
+
+  return {
+    ...state,
+    selectedMascot: '🐷',
+    cooperativa: {
+      helpers,
+      activePartners: [],
+      alliesOwned:    migratedAllies,
+      activeAlly:     newActiveAlly,
+    },
+  }
+}
+
+function init() {
+  return migrateLegacyShop(loadInitialState())
 }
 
 /* Concede conquistas com base no estado atual + ids extras de eventos. */
@@ -300,8 +359,13 @@ function reducer(state, action) {
       // action.payload: { productId, quantity }
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const currentPrice = state.market.prices[action.payload.productId]
-      const totalCost = currentPrice * action.payload.quantity
-      if (!product || !currentPrice || state.coins < totalCost) return state
+      if (!product || !currentPrice) return state
+
+      const hasLontra = state.cooperativa.activePartners.some(p => p.id === 'lontra')
+      let totalCost = currentPrice * action.payload.quantity
+      if (hasLontra) totalCost = Math.floor(totalCost * 0.5)
+
+      if (state.coins < totalCost) return state
 
       const existingSlot = state.basket.find(
         b => b.productId === action.payload.productId
@@ -346,7 +410,10 @@ function reducer(state, action) {
       }
 
       const currentPrice = state.market.prices[action.payload.productId]
-      const earnings = currentPrice * action.payload.quantity
+      const hasCapivara = state.cooperativa.activePartners.some(p => p.id === 'capivara')
+      let earnings = currentPrice * action.payload.quantity
+      if (hasCapivara) earnings = Math.floor(earnings * 1.2)
+      if (state.cooperativa.activeAlly === 'macaco') earnings = Math.floor(earnings * 1.05)
       const newBasket = slot.quantity === action.payload.quantity
         ? state.basket.filter(b => b.productId !== action.payload.productId)
         : state.basket.map(b =>
@@ -416,8 +483,13 @@ function reducer(state, action) {
         newPrices[product.id] = updated
       })
 
+      let bonusCoins = 0
+      if (state.cooperativa.activeAlly === 'galinha') bonusCoins += 2
+      if (state.cooperativa.activeAlly === 'preguica') bonusCoins += Math.floor(state.coins * 0.01)
+
       return {
         ...state,
+        coins: state.coins + bonusCoins,
         market: {
           ...state.market,
           prices: newPrices,
@@ -457,6 +529,103 @@ function reducer(state, action) {
     case 'ADD_PLAY_TIME':
       return { ...state, playTimeSec: (state.playTimeSec || 0) + (action.seconds || 0) }
 
+    case 'PURCHASE_ANIMAL': {
+      const animal = ANIMALS.find(a => a.id === action.payload.animalId)
+      if (!animal) return state
+
+      const hasOnca = state.cooperativa.activePartners.some(p => p.id === 'onca')
+      const finalCost = hasOnca ? Math.floor(animal.cost * 0.7) : animal.cost
+      if (state.coins < finalCost) return state
+
+      if (animal.category === 'aliado') {
+        if (state.cooperativa.alliesOwned.includes(animal.id)) return state
+        return {
+          ...state,
+          coins: state.coins - finalCost,
+          cooperativa: {
+            ...state.cooperativa,
+            alliesOwned: [...state.cooperativa.alliesOwned, animal.id],
+          },
+        }
+      }
+
+      const currentStock = state.cooperativa.helpers[animal.id] ?? 0
+      if (currentStock >= (animal.maxStack ?? 5)) return state
+      return {
+        ...state,
+        coins: state.coins - finalCost,
+        cooperativa: {
+          ...state.cooperativa,
+          helpers: { ...state.cooperativa.helpers, [animal.id]: currentStock + 1 },
+        },
+      }
+    }
+
+    case 'USE_HELPER': {
+      const stock = state.cooperativa.helpers[action.payload.animalId] ?? 0
+      if (stock <= 0) return state
+
+      const animal = ANIMALS.find(a => a.id === action.payload.animalId)
+      if (animal?.category !== 'ajudante') return state
+
+      const effectFn = ANIMAL_EFFECTS[animal.effect] ?? (() => ({}))
+      const patch = effectFn(state)
+
+      return {
+        ...state,
+        ...patch,
+        cooperativa: {
+          ...state.cooperativa,
+          helpers: { ...state.cooperativa.helpers, [animal.id]: stock - 1 },
+        },
+      }
+    }
+
+    case 'ACTIVATE_PARTNER': {
+      const stock = state.cooperativa.helpers[action.payload.animalId] ?? 0
+      if (stock <= 0) return state
+
+      const animal = ANIMALS.find(a => a.id === action.payload.animalId)
+      if (animal?.category !== 'parceiro') return state
+
+      const isControl    = MARKET_CONTROL_ANIMALS.includes(animal.id)
+      const hasOtherCtrl = state.cooperativa.activePartners.some(
+        p => MARKET_CONTROL_ANIMALS.includes(p.id) && p.id !== animal.id
+      )
+      if (isControl && hasOtherCtrl) return state
+
+      const others = state.cooperativa.activePartners.filter(p => p.id !== animal.id)
+      const rounds = animal.duration?.value ?? 2
+
+      return {
+        ...state,
+        cooperativa: {
+          ...state.cooperativa,
+          helpers:        { ...state.cooperativa.helpers, [animal.id]: stock - 1 },
+          activePartners: [...others, { id: animal.id, roundsLeft: rounds }],
+        },
+      }
+    }
+
+    case 'TICK_PARTNERS': {
+      const next = state.cooperativa.activePartners
+        .map(p => ({ ...p, roundsLeft: p.roundsLeft - 1 }))
+        .filter(p => p.roundsLeft > 0)
+      return {
+        ...state,
+        cooperativa: { ...state.cooperativa, activePartners: next },
+      }
+    }
+
+    case 'EQUIP_ALLY': {
+      const target = action.payload.animalId ?? 'cofrinho'
+      if (!state.cooperativa.alliesOwned.includes(target)) return state
+      return {
+        ...state,
+        cooperativa: { ...state.cooperativa, activeAlly: target },
+      }
+    }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -466,7 +635,7 @@ function reducer(state, action) {
 }
 
 export function GameProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, undefined, loadInitialState)
+  const [state, dispatch] = useReducer(reducer, undefined, init)
 
   // Persistência automática
   useEffect(() => {
@@ -503,7 +672,12 @@ export function GameProvider({ children }) {
   const updateSettings = useCallback((payload) => dispatch({ type: 'UPDATE_SETTINGS', payload }), [])
   const completeBoss = useCallback((payload) => dispatch({ type: 'COMPLETE_BOSS', payload }), [])
   const addPlayTime = useCallback((seconds) => dispatch({ type: 'ADD_PLAY_TIME', seconds }), [])
-  const resetProgress = useCallback(() => dispatch({ type: 'RESET' }), [])
+  const resetProgress    = useCallback(() => dispatch({ type: 'RESET' }), [])
+  const purchaseAnimal   = useCallback((animalId) => dispatch({ type: 'PURCHASE_ANIMAL', payload: { animalId } }), [])
+  const useHelper        = useCallback((animalId) => dispatch({ type: 'USE_HELPER', payload: { animalId } }), [])
+  const activatePartner  = useCallback((animalId) => dispatch({ type: 'ACTIVATE_PARTNER', payload: { animalId } }), [])
+  const tickPartners     = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
+  const equipAlly        = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
 
   const value = {
     state,
@@ -512,7 +686,8 @@ export function GameProvider({ children }) {
     buyItem, selectMascot, useHint,
     tickStocks, buyStock, sellStock,
     buyProduct, sellProduct, applyMarketEvent, advanceRound,
-    updateSettings, completeBoss, addPlayTime, resetProgress
+    updateSettings, completeBoss, addPlayTime, resetProgress,
+    purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly
   }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
