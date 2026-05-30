@@ -331,6 +331,20 @@ export const STRINGS = {
       outOfTop:     'Estás em #{rank}. Continua a jogar para subir!',
       errorLoad:    'Erro ao carregar o ranking. Tenta de novo.',
     },
+    logout: {
+      sectionTitle:    'Conta',
+      buttonLabel:     'Sair da conta',
+      modalTitle:      'Tens a certeza?',
+      cofrinhoSays:    'Antes de saíres, copia o teu código secreto!',
+      yourCode:        'O teu código:',
+      whyImportant:    'Sem ele não vais conseguir voltar à tua conta.',
+      copyCode:        'Copiar código',
+      copied:          '✅ Copiado!',
+      confirmCheckbox: 'Eu copiei o meu código secreto',
+      cancel:          'Cancelar',
+      confirmLogout:   'Sim, sair da conta',
+      goodbye:         'Adeus, {nickname}! Volta sempre 👋',
+    },
   },
 
   en: {
@@ -653,6 +667,20 @@ export const STRINGS = {
       you:          'You!',
       outOfTop:     'You are #{rank}. Keep playing to climb!',
       errorLoad:    'Failed to load ranking. Try again.',
+    },
+    logout: {
+      sectionTitle:    'Account',
+      buttonLabel:     'Log out',
+      modalTitle:      'Are you sure?',
+      cofrinhoSays:    'Before you leave, copy your secret code!',
+      yourCode:        'Your code:',
+      whyImportant:    'Without it, you cannot come back to this account.',
+      copyCode:        'Copy code',
+      copied:          '✅ Copied!',
+      confirmCheckbox: 'I copied my secret code',
+      cancel:          'Cancel',
+      confirmLogout:   'Yes, log out',
+      goodbye:         'Goodbye, {nickname}! Come back soon 👋',
     },
   }
 }

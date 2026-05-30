@@ -668,6 +668,14 @@ function reducer(state, action) {
         },
       }
 
+    case 'LOGOUT':
+      return {
+        ...initialState,
+        stocks:    initialStocks(),
+        portfolio: initialPortfolio(),
+        settings:  state.settings,
+      }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -729,6 +737,10 @@ export function GameProvider({ children }) {
     dispatch({ type: 'HYDRATE_FROM_CLOUD', payload: { gameState } })
   }, [])
   const clearPlayer     = useCallback(() => dispatch({ type: 'CLEAR_PLAYER' }), [])
+  const logout = useCallback(() => {
+    try { storage.remove('game_state') } catch (err) { console.warn('[logout]', err) }
+    dispatch({ type: 'LOGOUT' })
+  }, [])
 
   const syncMeta = useCloudSync(state.player?.id, {
     coins:          state.coins,
@@ -760,7 +772,7 @@ export function GameProvider({ children }) {
     buyProduct, sellProduct, applyMarketEvent, advanceRound,
     updateSettings, completeBoss, addPlayTime, resetProgress,
     purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly,
-    setPlayer, markOnboarded, hydrateFromCloud, clearPlayer,
+    setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
     syncMeta,
   }
 

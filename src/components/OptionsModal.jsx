@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { createPortal } from 'react-dom'
-import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye } from 'react-icons/fa'
+import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye, FaSignOutAlt } from 'react-icons/fa'
+import LogoutModal from './LogoutModal'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings, LANGUAGES } from '../i18n/index.js'
@@ -13,6 +14,7 @@ export default function OptionsModal({ onClose }) {
   const s = useStrings()
   const [confirmReset, setConfirmReset] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
+  const [logoutOpen, setLogoutOpen] = useState(false)
 
   const recoveryCode = state.player?.recoveryCode
 
@@ -257,6 +259,35 @@ export default function OptionsModal({ onClose }) {
           </div>
         )}
 
+        {state.player?.id && (
+          <div className="options-group">
+            <label className="options-label">
+              <FaSignOutAlt /> {s.logout.sectionTitle}
+            </label>
+            <button
+              type="button"
+              onClick={() => setLogoutOpen(true)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '2px solid var(--color-danger)',
+                borderRadius: 12,
+                background: 'var(--color-white)',
+                color: 'var(--color-danger)',
+                fontWeight: 800,
+                fontSize: '0.95rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+              }}
+            >
+              <FaSignOutAlt /> {s.logout.buttonLabel}
+            </button>
+          </div>
+        )}
+
         <div className="options-danger">
           {confirmReset ? (
             <div className="options-confirm">
@@ -289,5 +320,13 @@ export default function OptionsModal({ onClose }) {
     </motion.div>
   )
 
-  return createPortal(modalContent, modalRoot)
+  return (
+    <>
+      {createPortal(modalContent, modalRoot)}
+      <LogoutModal
+        isOpen={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+      />
+    </>
+  )
 }
