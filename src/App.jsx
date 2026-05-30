@@ -22,6 +22,7 @@ import EscolinhaScreen from './components/EscolinhaScreen.jsx'
 import QuizScreen from './components/QuizScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import ShopScreen from './components/ShopScreen.jsx'
+import CooperativaScreen from './components/Cooperativa/index.jsx'
 import AchievementsScreen from './components/AchievementsScreen.jsx'
 // import StockMarketScreen from './components/StockMarketScreen.jsx'
 import FeirinhaScreen from './components/Feirinha/index.jsx'
@@ -43,6 +44,7 @@ const SCREENS = {
   QUIZ: 'quiz',
   RESULT: 'result',
   SHOP: 'shop',
+  COOPERATIVA: 'cooperativa',
   ACHIEVEMENTS: 'achievements',
   STOCKS: 'stocks',
   CREDITS: 'credits',
@@ -144,7 +146,8 @@ export default function App() {
         return (
           <FarmMap
             onEscolinha={() => goTo(SCREENS.ESCOLINHA)}
-            onShop={() => goTo(SCREENS.SHOP)}
+            onShop={() => goTo(SCREENS.COOPERATIVA)}
+            onCooperativa={() => goTo(SCREENS.COOPERATIVA)}
             onStocks={() => goTo(SCREENS.STOCKS)}
             onAchievements={() => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
@@ -176,8 +179,11 @@ export default function App() {
             onPlayAgain={() => goTo(SCREENS.QUIZ)}
           />
         )
+      case SCREENS.COOPERATIVA:
+        return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.SHOP:
-        return <ShopScreen onBack={() => goTo(SCREENS.FARM)} />
+        // Redirect legado — saves antigos abrem a Cooperativa
+        return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.ACHIEVEMENTS:
         return <AchievementsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.STOCKS:

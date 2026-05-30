@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
+import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
 import './FarmMap.css'
 import styles from './FarmMap/FarmMap.module.css'
 
@@ -25,11 +26,11 @@ const MAP_NODES = [
     position: { left: 375, top: 373 },
   },
   {
-    id: 'loja',
-    emoji: '🏪',
-    screen: 'shop',
+    id: 'cooperativa',
+    emoji: '🐾',
+    screen: 'cooperativa',
     borderColor: 'var(--color-warning)',
-    shadowColor: '#C49B00',
+    shadowColor: 'var(--color-warning)',
     position: { left: 684, top: 370 },
   },
   {
@@ -47,7 +48,7 @@ const DECOS = [
   { id: 'deco-tree-2', emoji: '🌲', left: '42%', top: '34%', size: 2.4 },
   { id: 'deco-sunflower-1', emoji: '🌻', left: '24%', top: '86%', size: 1.9 },
   { id: 'deco-sunflower-2', emoji: '🌻', left: '70%', top: '84%', size: 1.9 },
-  { id: 'deco-chicken', emoji: '🐔', left: '38%', top: '85%', size: 1.9 },
+  { id: 'deco-chicken', emoji: '🐷', left: '38%', top: '85%', size: 1.9 },
   { id: 'deco-cow', emoji: '🐄', left: '60%', top: '55%', size: 2.3 },
   { id: 'deco-butterfly', emoji: '🦋', left: '56%', top: '30%', size: 1.5 },
   { id: 'deco-grain-1', emoji: '🌾', left: '6%', top: '86%', size: 2 },
@@ -60,7 +61,7 @@ const CLOUDS = [
   { id: 'cloud-3', left: '80%', top: '14%', size: 2.8, dur: 30 }
 ]
 
-export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents }) {
+export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents }) {
   const { state } = useGame()
   const s = useStrings()
 
@@ -243,7 +244,7 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           sound.play('click')
           if (node.id === 'escolinha') onEscolinha()
           if (node.id === 'feirinha') onStocks()
-          if (node.id === 'loja') onShop()
+          if (node.id === 'cooperativa') onCooperativa?.()
           if (node.id === 'conquistas') onAchievements()
         }
 
@@ -275,6 +276,15 @@ export default function FarmMap({ onEscolinha, onShop, onStocks, onAchievements,
           </motion.div>
         )
       })}
+
+      <motion.div
+        className={styles.allyBadgeOverlay}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+      >
+        <ActiveAllyBadge onSwapClick={onCooperativa} />
+      </motion.div>
     </div>
   )
 }
