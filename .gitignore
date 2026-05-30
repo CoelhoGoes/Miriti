@@ -17,9 +17,13 @@ build/
 # Arquivos de ambiente
 .env
 .env.local
+.env.*.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Supabase / Vercel — segredos
+.vercel
 
 # Arquivos de Sistema e Editores
 .DS_Store
