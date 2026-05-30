@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  border-bottom: 2px solid var(--color-surface-2);
+  gap: 0;
+}
+
+.tab {
+  position: relative;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.18s;
+  white-space: nowrap;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+.active {
+  color: var(--color-primary-dark);
+}
+
+.underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px 2px 0 0;
+}

@@ -90,6 +90,7 @@ export const STRINGS = {
       cancel: 'Cancelar',
       resetYes: 'Apagar tudo'
     },
+    // DEPRECATED — substituído pela Cooperativa (src/components/Cooperativa/)
     shop: {
       title: '🏪 Loja da Fazenda',
       subtitle: 'Use suas moedas para comprar itens e mascotes',
@@ -234,8 +235,46 @@ export const STRINGS = {
         escolinha: 'Escola',
         feirinha: 'Feira do Jutaiteua',
         loja: 'Loja',
-        conquistas: 'Conquistas'
+        conquistas: 'Conquistas',
+        cooperativa: 'Cooperativa'
       }
+    },
+    cooperativa: {
+      title: 'Cooperativa dos Bichos',
+      tabs: {
+        ajudante: 'Ajudantes',
+        parceiro:  'Parceiros',
+        aliado:    'Aliados',
+      },
+      buttons: {
+        ajudanteBuy:    'Chamar',
+        ajudanteUse:    'Usar',
+        parceiroBuy:    'Convidar',
+        parceiroUse:    'Ativar',
+        aliadoBuy:      'Adotar',
+        aliadoEquip:    'Equipar',
+        aliadoEquipped: 'Em campo',
+      },
+      labels: {
+        owned:                'Adotado ✓',
+        stock:                'Em estoque: {n}',
+        cooldown:             'Restam {n} rondas',
+        marketControlBlocked: 'Já há um animal de mercado ativo.',
+        notEnoughCoins:       'Moedas insuficientes!',
+        stockFull:            'Estoque cheio.',
+      },
+      activeAlly: {
+        title:   'Aliado em campo',
+        swap:    'Trocar',
+        confirm: 'Equipar',
+        cancel:  'Cancelar',
+      },
+      purchaseModal: {
+        title:   'Adotar este aliado?',
+        confirm: 'Sim, adotar',
+        cancel:  'Cancelar',
+        cost:    'Custo: {n} moedas',
+      },
     }
   },
 
@@ -319,6 +358,7 @@ export const STRINGS = {
       cancel: 'Cancel',
       resetYes: 'Erase everything'
     },
+    // DEPRECATED — replaced by Cooperative (src/components/Cooperativa/)
     shop: {
       title: '🏪 Farm Shop',
       subtitle: 'Use your coins to buy items and mascots',
@@ -463,8 +503,46 @@ export const STRINGS = {
         escolinha: 'School',
         feirinha: 'Jutaiteua Fair',
         loja: 'Shop',
-        conquistas: 'Achievements'
+        conquistas: 'Achievements',
+        cooperativa: 'Cooperative'
       }
+    },
+    cooperativa: {
+      title: 'Animal Cooperative',
+      tabs: {
+        ajudante: 'Helpers',
+        parceiro:  'Partners',
+        aliado:    'Allies',
+      },
+      buttons: {
+        ajudanteBuy:    'Call',
+        ajudanteUse:    'Use',
+        parceiroBuy:    'Invite',
+        parceiroUse:    'Activate',
+        aliadoBuy:      'Adopt',
+        aliadoEquip:    'Equip',
+        aliadoEquipped: 'Equipped',
+      },
+      labels: {
+        owned:                'Adopted ✓',
+        stock:                'In stock: {n}',
+        cooldown:             '{n} rounds left',
+        marketControlBlocked: 'A market animal is already active.',
+        notEnoughCoins:       'Not enough coins!',
+        stockFull:            'Stock full.',
+      },
+      activeAlly: {
+        title:   'Active Ally',
+        swap:    'Swap',
+        confirm: 'Equip',
+        cancel:  'Cancel',
+      },
+      purchaseModal: {
+        title:   'Adopt this ally?',
+        confirm: 'Yes, adopt',
+        cancel:  'Cancel',
+        cost:    'Cost: {n} coins',
+      },
     }
   }
 }

@@ -1,0 +1,54 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-success-light);
+  border: 2px solid var(--color-success);
+  border-radius: 24px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-success) 20%, transparent);
+}
+
+.icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-success);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.name {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swapBtn {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: 14px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

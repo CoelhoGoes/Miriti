@@ -1,0 +1,102 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 360px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.28);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.allyItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--color-surface-4);
+  border: 2px solid var(--color-surface-2);
+  transition: border-color 0.15s;
+}
+
+.allyActive {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.allyIcon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.allyName {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.equipBtn {
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.equipBtn:disabled {
+  background: var(--color-success);
+  cursor: default;
+}
+
+.closeBtn {
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px solid var(--color-surface-2);
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.closeBtn:hover {
+  border-color: var(--color-text-secondary);
+}
