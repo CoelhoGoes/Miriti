@@ -1,0 +1,142 @@
+/* ── Wrapper ─────────────────────────────────────── */
+.wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    160deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary)      45%,
+    var(--color-secondary)    100%
+  );
+  z-index: 1000;
+  padding: 24px;
+}
+
+.card {
+  background: var(--color-white);
+  border: 3px solid var(--color-surface-2);
+  border-radius: 24px;
+  padding: 32px 28px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Nickname Screen ─────────────────────────────── */
+.title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: 3px solid var(--color-surface-2);
+  border-radius: 16px;
+  background: var(--color-surface-4);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.feedback {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 12px 0;
+  min-height: 24px;
+  text-align: center;
+}
+
+.feedbackOk       { color: var(--color-success); }
+.feedbackError    { color: var(--color-danger); }
+.feedbackChecking { color: var(--color-text-secondary); }
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 8px 0 24px;
+}
+
+.button {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 16px;
+  background: var(--color-success);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.button:disabled {
+  background: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ── Recovery Celebration ────────────────────────── */
+.cofrinho {
+  font-size: 5rem;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.codeBox {
+  background: var(--color-warning-light);
+  border: 3px dashed var(--color-warning);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.code {
+  font-family: 'Courier New', monospace;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  letter-spacing: 0.05em;
+  margin: 0;
+  word-break: break-all;
+}
+
+.copyButton {
+  margin-top: 12px;
+  padding: 10px 20px;
+  border: 2px solid var(--color-primary);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tipFooter {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: 16px;
+}
