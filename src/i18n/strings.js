@@ -300,6 +300,20 @@ export const STRINGS = {
       letsPlay:         'Vamos jogar!',
       tipFooter:        '💡 Podes ver este código sempre que quiseres nas Configurações.',
     },
+    leaderboard: {
+      title:        'Ranking dos Aventureiros',
+      subtitle:     'Os que mais juntaram moedas',
+      yourPosition: 'A tua posição',
+      empty:        'Ainda não há jogadores. Sê o primeiro!',
+      loading:      'A carregar...',
+      refresh:      'Actualizar',
+      back:         'Voltar',
+      coins:        'moedas',
+      rank:         '#',
+      you:          'Tu!',
+      outOfTop:     'Estás em #{rank}. Continua a jogar para subir!',
+      errorLoad:    'Erro ao carregar o ranking. Tenta de novo.',
+    },
   },
 
   en: {
@@ -591,6 +605,20 @@ export const STRINGS = {
       copied:           '✅ Copied!',
       letsPlay:         'Let us play!',
       tipFooter:        '💡 You can see this code anytime in Settings.',
+    },
+    leaderboard: {
+      title:        'Adventurer Ranking',
+      subtitle:     'Those who collected the most coins',
+      yourPosition: 'Your position',
+      empty:        'No players yet. Be the first!',
+      loading:      'Loading...',
+      refresh:      'Refresh',
+      back:         'Back',
+      coins:        'coins',
+      rank:         '#',
+      you:          'You!',
+      outOfTop:     'You are #{rank}. Keep playing to climb!',
+      errorLoad:    'Failed to load ranking. Try again.',
     },
   }
 }

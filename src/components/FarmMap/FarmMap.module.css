@@ -96,6 +96,27 @@ font-size: 14px;
 filter: drop-shadow(0 0 4px rgba(253, 224, 71, 0.95));
 }
 
+.headerRight {
+display: flex;
+align-items: center;
+gap: 8px;
+flex-shrink: 0;
+}
+
+.headerTrophyButton {
+background: var(--color-warning-light);
+border: 2.5px solid var(--color-warning);
+border-radius: 50%;
+width: 42px;
+height: 42px;
+font-size: 1.1rem;
+color: var(--color-warning);
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
 .coinsBadge {
 background: var(--color-success-light);
 border: 2.5px solid var(--color-success);

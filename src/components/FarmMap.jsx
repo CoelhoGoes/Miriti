@@ -4,6 +4,7 @@ import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
 import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
+import { FaTrophy } from 'react-icons/fa'
 import './FarmMap.css'
 import styles from './FarmMap/FarmMap.module.css'
 
@@ -61,7 +62,7 @@ const CLOUDS = [
   { id: 'cloud-3', left: '80%', top: '14%', size: 2.8, dur: 30 }
 ]
 
-export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents }) {
+export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents, onLeaderboard }) {
   const { state } = useGame()
   const s = useStrings()
 
@@ -149,9 +150,22 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
           <h1>{s.farmMap.title}</h1>
         </div>
 
-        <div className={styles.coinsBadge}>
-          <span aria-hidden="true">🪙</span>
-          <span>{state.coins}</span>
+        <div className={styles.headerRight}>
+          <motion.button
+            type="button"
+            className={styles.headerTrophyButton}
+            onClick={() => onLeaderboard?.()}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            aria-label={s.leaderboard?.title}
+            title={s.leaderboard?.title}
+          >
+            <FaTrophy />
+          </motion.button>
+          <div className={styles.coinsBadge}>
+            <span aria-hidden="true">🪙</span>
+            <span>{state.coins}</span>
+          </div>
         </div>
       </motion.header>
 

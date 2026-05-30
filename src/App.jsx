@@ -6,6 +6,7 @@ import EscolinhaScreen from './components/EscolinhaScreen.jsx'
 import QuizScreen from './components/QuizScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import CooperativaScreen from './components/Cooperativa/index.jsx'
+import LeaderboardScreen from './components/Leaderboard/LeaderboardScreen.jsx'
 import NicknameScreen from './components/Onboarding/NicknameScreen.jsx'
 import RecoveryCelebration from './components/Onboarding/RecoveryCelebration.jsx'
 import AchievementsScreen from './components/AchievementsScreen.jsx'
@@ -29,8 +30,9 @@ const SCREENS = {
   RESULT:      'result',
   SHOP:        'shop',
   COOPERATIVA: 'cooperativa',
-  ACHIEVEMENTS:'achievements',
-  STOCKS:      'stocks',
+  ACHIEVEMENTS: 'achievements',
+  LEADERBOARD:  'leaderboard',
+  STOCKS:       'stocks',
   CREDITS:     'credits',
   PARENTS:     'parents',
   BOSS:        'boss',
@@ -127,6 +129,7 @@ export default function App() {
             onEscolinha={() => goTo(SCREENS.ESCOLINHA)}
             onShop={() => goTo(SCREENS.COOPERATIVA)}
             onCooperativa={() => goTo(SCREENS.COOPERATIVA)}
+            onLeaderboard={() => goTo(SCREENS.LEADERBOARD)}
             onStocks={() => goTo(SCREENS.STOCKS)}
             onAchievements={() => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
@@ -156,6 +159,8 @@ export default function App() {
       case SCREENS.COOPERATIVA:
       case SCREENS.SHOP:
         return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
+      case SCREENS.LEADERBOARD:
+        return <LeaderboardScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.ACHIEVEMENTS:
         return <AchievementsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.STOCKS:
