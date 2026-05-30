@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PRODUCTS } from '../../data/products'
 import { MARKET_EVENTS } from '../../data/marketEvents'
+import { ANIMALS } from '../../data/animals'
 import { useGame } from '../../context/GameContext.jsx'
-import { useStrings } from '../../i18n/index.js'
+import { useStrings, useLanguage } from '../../i18n/index.js'
 import EventCard from './EventCard'
 import ProductCard from './ProductCard'
 import CestaDaFamilia from './CestaDaFamilia'
@@ -18,6 +19,8 @@ function pickEvent(lastEventId) {
 export default function FeirinhaScreen({ onBack }) {
     const { state, dispatch } = useGame()
     const s = useStrings()
+    const lang = useLanguage()
+    const t = (obj) => obj?.[lang] ?? obj?.pt ?? obj
     const [activeEvent, setActiveEvent] = useState(null)
     const [showTip, setShowTip] = useState(false)
     const didInitRef = useRef(false)
@@ -26,6 +29,7 @@ export default function FeirinhaScreen({ onBack }) {
         if (didInitRef.current) return
         didInitRef.current = true
 
+        dispatch({ type: 'TICK_PARTNERS' })
         dispatch({ type: 'ADVANCE_ROUND' })
 
         const nextVisitCount = (state.market?.visitCount || 0) + 1
@@ -92,6 +96,29 @@ export default function FeirinhaScreen({ onBack }) {
                         ← {s.common.back}
                     </motion.button>
                 </header>
+
+                {(state.cooperativa?.activePartners?.length ?? 0) > 0 && (
+                    <motion.div
+                        className={styles.activeBuffs}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                    >
+                        {state.cooperativa.activePartners.map(p => {
+                            const animal = ANIMALS.find(a => a.id === p.id)
+                            if (!animal) return null
+                            return (
+                                <div
+                                    key={p.id}
+                                    className={styles.buffBadge}
+                                    title={t(animal.description)}
+                                >
+                                    <span>{animal.icon}</span>
+                                    <span>{p.roundsLeft}r</span>
+                                </div>
+                            )
+                        })}
+                    </motion.div>
+                )}
 
                 <div className={styles.meta}>
                     <span>🎯 {s.feirinha.round} {state.market.round}</span>

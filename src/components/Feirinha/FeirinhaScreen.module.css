@@ -63,6 +63,27 @@
   box-shadow: 0 6px 14px rgba(14, 165, 233, 0.5);
 }
 
+.activeBuffs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 0.9rem 0.5rem;
+}
+
+.buffBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--color-warning-light);
+  border: 2px solid var(--color-warning);
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-warning);
+  cursor: default;
+}
+
 .meta {
   display: flex;
   align-items: center;
