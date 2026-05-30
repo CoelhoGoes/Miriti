@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import './AnimatedBackground.css'
 
-const EMOJIS = ['🌻', '🐔', '🦋', '🐝', '🍃', '🐄', '🌾', '🐸', '🌳', '🐔', '🐞', '🌷']
+const EMOJIS = ['🌻', '🐷', '🦋', '🐝', '🍃', '🐄', '🌾', '🐸', '🌳', '🐷', '🐞', '🌷']
 
 /**
  * Fundo decorativo. As animações são feitas só com CSS (sem framer-motion),

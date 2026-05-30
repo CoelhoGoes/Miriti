@@ -64,7 +64,7 @@ export default function Tutorial({ onFinish }) {
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
           >
-            🐔
+            🐷
           </motion.span>
         </div>
 

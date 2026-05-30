@@ -84,7 +84,7 @@ export default function HomeScreen({ onStart }) {
             animate={{ y: [0, -12, 0], rotate: [-2, 2, -2] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
-            🐔
+            🐷
           </motion.div>
         </motion.div>
 

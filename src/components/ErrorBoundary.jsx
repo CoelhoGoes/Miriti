@@ -29,7 +29,7 @@ export default class ErrorBoundary extends Component {
       return (
         <div className="error-screen">
           <div className="error-box">
-            <div className="error-emoji">🐔</div>
+            <div className="error-emoji">🐷</div>
             <h2>{t.title}</h2>
             <p>{t.message}</p>
             <pre className="error-detail">
