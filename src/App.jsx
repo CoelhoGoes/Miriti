@@ -1,19 +1,3 @@
-/*
-Requested mapping:
-- energy: none.
-- energia: none.
-- maxEnergy: none.
-- currentEnergy: none.
-- recharge: none.
-- energyTimer: none.
-- energyCost: none.
-- spendEnergy: none.
-- tickEnergyRecharge: none.
-- refillEnergy: none.
-- lastEnergyRecharge: none.
-- energyRechargeRate: none.
-- hasEnergy: none.
-*/
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import HomeScreen from './components/HomeScreen.jsx'
@@ -21,10 +5,12 @@ import FarmMap from './components/FarmMap.jsx'
 import EscolinhaScreen from './components/EscolinhaScreen.jsx'
 import QuizScreen from './components/QuizScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
-import ShopScreen from './components/ShopScreen.jsx'
 import CooperativaScreen from './components/Cooperativa/index.jsx'
+import LeaderboardScreen from './components/Leaderboard/LeaderboardScreen.jsx'
+import NicknameScreen from './components/Onboarding/NicknameScreen.jsx'
+import RecoveryCelebration from './components/Onboarding/RecoveryCelebration.jsx'
+import RecoveryScreen from './components/Onboarding/RecoveryScreen.jsx'
 import AchievementsScreen from './components/AchievementsScreen.jsx'
-// import StockMarketScreen from './components/StockMarketScreen.jsx'
 import FeirinhaScreen from './components/Feirinha/index.jsx'
 import OptionsModal from './components/OptionsModal.jsx'
 import CreditsScreen from './components/CreditsScreen.jsx'
@@ -38,18 +24,19 @@ import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
 
 const SCREENS = {
-  HOME: 'home',
-  FARM: 'farm',
-  ESCOLINHA: 'escolinha',
-  QUIZ: 'quiz',
-  RESULT: 'result',
-  SHOP: 'shop',
+  HOME:        'home',
+  FARM:        'farm',
+  ESCOLINHA:   'escolinha',
+  QUIZ:        'quiz',
+  RESULT:      'result',
+  SHOP:        'shop',
   COOPERATIVA: 'cooperativa',
   ACHIEVEMENTS: 'achievements',
-  STOCKS: 'stocks',
-  CREDITS: 'credits',
-  PARENTS: 'parents',
-  BOSS: 'boss'
+  LEADERBOARD:  'leaderboard',
+  STOCKS:       'stocks',
+  CREDITS:     'credits',
+  PARENTS:     'parents',
+  BOSS:        'boss',
 }
 
 const screenVariants = {
@@ -58,12 +45,14 @@ const screenVariants = {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState(SCREENS.HOME)
-  const [optionsOpen, setOptionsOpen] = useState(false)
+  const [screen, setScreen]               = useState(SCREENS.HOME)
+  const [optionsOpen, setOptionsOpen]     = useState(false)
   const [mascotChatOpen, setMascotChatOpen] = useState(false)
-  const [tutorialOpen, setTutorialOpen] = useState(false)
-  const [bossPhase, setBossPhase] = useState(0)
-  const [lastResult, setLastResult] = useState(null)
+  const [tutorialOpen, setTutorialOpen]   = useState(false)
+  const [bossPhase, setBossPhase]         = useState(0)
+  const [lastResult, setLastResult]       = useState(null)
+  const [pendingPlayerData, setPendingPlayerData] = useState(null)
+  const [showRecovery, setShowRecovery] = useState(false)
   const { state, updateSettings, addPlayTime } = useGame()
   const s = useStrings()
 
@@ -84,61 +73,68 @@ export default function App() {
     }
   }, [state.settings.musicVolume, state.settings.sfxVolume])
 
-  // Tracker simples de tempo de jogo (acumula segundos enquanto a aba está visível)
   const playTickRef = useRef(null)
   useEffect(() => {
     const start = () => {
       if (playTickRef.current) return
       playTickRef.current = setInterval(() => {
-        if (document.visibilityState === 'visible') {
-          addPlayTime(5)
-        }
+        if (document.visibilityState === 'visible') addPlayTime(5)
       }, 5000)
     }
     const stop = () => {
-      if (playTickRef.current) {
-        clearInterval(playTickRef.current)
-        playTickRef.current = null
-      }
+      if (playTickRef.current) { clearInterval(playTickRef.current); playTickRef.current = null }
     }
     const onVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') stop()
-      else start()
+      if (document.visibilityState === 'hidden') stop(); else start()
     }
     start()
     document.addEventListener('visibilitychange', onVisibilityChange)
-    return () => {
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-      stop()
-    }
+    return () => { document.removeEventListener('visibilitychange', onVisibilityChange); stop() }
   }, [addPlayTime])
 
-  const goTo = useCallback((target) => {
-    sound.play('transition')
-    setScreen(target)
-  }, [])
-
-  const handleQuizComplete = useCallback((result) => {
-    setLastResult(result)
-    setScreen(SCREENS.RESULT)
-  }, [])
-
-  const startBoss = useCallback((phaseIndex) => {
-    setBossPhase(phaseIndex)
-    goTo(SCREENS.BOSS)
-  }, [goTo])
-
-  // Dispara o tutorial ao chegar na fazenda pela primeira vez
   useEffect(() => {
-    if (screen === SCREENS.FARM && !state.settings.tutorialDone) {
-      setTutorialOpen(true)
-    }
+    if (screen === SCREENS.FARM && !state.settings.tutorialDone) setTutorialOpen(true)
   }, [screen, state.settings.tutorialDone])
 
-  const finishTutorial = useCallback(() => {
-    updateSettings({ tutorialDone: true })
-    setTutorialOpen(false)
-  }, [updateSettings])
+  const fontScale = state.settings.fontScale || 1
+  useEffect(() => {
+    const SCALE_MAP = { 1: '16px', 2: '17.92px', 3: '20px', 4: '22.4px' }
+    document.documentElement.style.fontSize = SCALE_MAP[fontScale] ?? '16px'
+    return () => { document.documentElement.style.fontSize = '' }
+  }, [fontScale])
+
+  const goTo = useCallback((target) => { sound.play('transition'); setScreen(target) }, [])
+  const handleQuizComplete = useCallback((result) => { setLastResult(result); setScreen(SCREENS.RESULT) }, [])
+  const startBoss = useCallback((phaseIndex) => { setBossPhase(phaseIndex); goTo(SCREENS.BOSS) }, [goTo])
+  const finishTutorial = useCallback(() => { updateSettings({ tutorialDone: true }); setTutorialOpen(false) }, [updateSettings])
+
+  // ── Onboarding gate (after all hooks) ──────────────────────────────────────
+  if (!state.player?.id) {
+    if (showRecovery) {
+      return (
+        <RecoveryScreen
+          onBack={() => setShowRecovery(false)}
+          onRecovered={() => setShowRecovery(false)}
+        />
+      )
+    }
+    return (
+      <NicknameScreen
+        onComplete={(data) => setPendingPlayerData(data)}
+        onSwitchToRecovery={() => setShowRecovery(true)}
+      />
+    )
+  }
+  if (!state.player?.hasOnboarded && pendingPlayerData) {
+    return (
+      <RecoveryCelebration
+        playerData={pendingPlayerData}
+        onComplete={() => setPendingPlayerData(null)}
+      />
+    )
+  }
+
+  const animationsEnabled = state.settings.animationsEnabled !== false
 
   const renderScreen = () => {
     switch (screen) {
@@ -148,6 +144,7 @@ export default function App() {
             onEscolinha={() => goTo(SCREENS.ESCOLINHA)}
             onShop={() => goTo(SCREENS.COOPERATIVA)}
             onCooperativa={() => goTo(SCREENS.COOPERATIVA)}
+            onLeaderboard={() => goTo(SCREENS.LEADERBOARD)}
             onStocks={() => goTo(SCREENS.STOCKS)}
             onAchievements={() => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
@@ -165,12 +162,7 @@ export default function App() {
           />
         )
       case SCREENS.QUIZ:
-        return (
-          <QuizScreen
-            onComplete={handleQuizComplete}
-            onQuit={() => goTo(SCREENS.ESCOLINHA)}
-          />
-        )
+        return <QuizScreen onComplete={handleQuizComplete} onQuit={() => goTo(SCREENS.ESCOLINHA)} />
       case SCREENS.RESULT:
         return (
           <ResultScreen
@@ -180,10 +172,10 @@ export default function App() {
           />
         )
       case SCREENS.COOPERATIVA:
-        return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.SHOP:
-        // Redirect legado — saves antigos abrem a Cooperativa
         return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
+      case SCREENS.LEADERBOARD:
+        return <LeaderboardScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.ACHIEVEMENTS:
         return <AchievementsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.STOCKS:
@@ -199,25 +191,6 @@ export default function App() {
         return <HomeScreen onStart={() => goTo(SCREENS.FARM)} />
     }
   }
-
-  const animationsEnabled = state.settings.animationsEnabled !== false
-  const fontScale = state.settings.fontScale || 1
-
-  // Escala de fonte global: altera o font-size do <html> para que
-  // TODOS os valores rem do projecto escalem correctamente.
-  // Cleanup restaura o default ao desmontar (hot reload seguro).
-  useEffect(() => {
-    const SCALE_MAP = {
-      1: '16px',
-      2: '17.92px',
-      3: '20px',
-      4: '22.4px'
-    }
-    document.documentElement.style.fontSize = SCALE_MAP[fontScale] ?? '16px'
-    return () => {
-      document.documentElement.style.fontSize = ''
-    }
-  }, [fontScale])
 
   return (
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
@@ -243,15 +216,9 @@ export default function App() {
         </div>
 
         <AnimatePresence>
-          {optionsOpen && (
-            <OptionsModal onClose={() => setOptionsOpen(false)} />
-          )}
-          {mascotChatOpen && (
-            <MascotChat onClose={() => setMascotChatOpen(false)} />
-          )}
-          {tutorialOpen && (
-            <Tutorial onFinish={finishTutorial} />
-          )}
+          {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
+          {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
+          {tutorialOpen && <Tutorial onFinish={finishTutorial} />}
         </AnimatePresence>
       </div>
     </MotionConfig>

@@ -1,0 +1,80 @@
+.indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2.5px solid;
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1.1rem;
+}
+
+.indicator.idle,
+.indicator.success {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.indicator.pending,
+.indicator.syncing {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.indicator.error {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.indicator.offline {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-3);
+}
+
+.spinning {
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 200;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  border: 6px solid transparent;
+  border-bottom-color: var(--color-text-primary);
+  border-top: 0;
+}
+
+.tooltipMain { font-weight: 800; }
+.tooltipSub  {
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-top: 2px;
+}

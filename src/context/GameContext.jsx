@@ -15,6 +15,7 @@ Requested mapping:
 - hasEnergy: none.
 */
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react'
+import { useCloudSync } from '../hooks/useCloudSync'
 import { storage } from '../utils/storage.js'
 import { PHASES } from '../data/questions.js'
 import { STOCKS, STOCK_META } from '../data/stocks.js'
@@ -114,6 +115,12 @@ const initialState = {
     activeAlly:     'cofrinho',
   },
   quizFlags: {},
+  player: {
+    id:           null,
+    nickname:     null,
+    recoveryCode: null,
+    hasOnboarded: false,
+  },
   settings: {
     musicVolume: 0.4,
     sfxVolume: 0.6,
@@ -182,6 +189,10 @@ function loadInitialState() {
       ...saved.cooperativa,
     },
     quizFlags: { ...saved.quizFlags },
+    player: {
+      ...initialState.player,
+      ...(saved.player || {}),
+    },
     settings: {
       ...initialState.settings,
       ...(saved.settings || {}),
@@ -626,6 +637,45 @@ function reducer(state, action) {
       }
     }
 
+    case 'SET_PLAYER':
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          id:           action.payload.id,
+          nickname:     action.payload.nickname,
+          recoveryCode: action.payload.recoveryCode,
+        },
+      }
+
+    case 'MARK_ONBOARDED':
+      return { ...state, player: { ...state.player, hasOnboarded: true } }
+
+    case 'HYDRATE_FROM_CLOUD':
+      return {
+        ...action.payload.gameState,
+        player: state.player,
+      }
+
+    case 'CLEAR_PLAYER':
+      return {
+        ...state,
+        player: {
+          id:           null,
+          nickname:     null,
+          recoveryCode: null,
+          hasOnboarded: false,
+        },
+      }
+
+    case 'LOGOUT':
+      return {
+        ...initialState,
+        stocks:    initialStocks(),
+        portfolio: initialPortfolio(),
+        settings:  state.settings,
+      }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -679,6 +729,40 @@ export function GameProvider({ children }) {
   const tickPartners     = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
   const equipAlly        = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
 
+  const setPlayer = useCallback((id, nickname, recoveryCode) => {
+    dispatch({ type: 'SET_PLAYER', payload: { id, nickname, recoveryCode } })
+  }, [])
+  const markOnboarded   = useCallback(() => dispatch({ type: 'MARK_ONBOARDED' }), [])
+  const hydrateFromCloud = useCallback((gameState) => {
+    dispatch({ type: 'HYDRATE_FROM_CLOUD', payload: { gameState } })
+  }, [])
+  const clearPlayer     = useCallback(() => dispatch({ type: 'CLEAR_PLAYER' }), [])
+  const logout = useCallback(() => {
+    try { storage.remove('game_state') } catch (err) { console.warn('[logout]', err) }
+    dispatch({ type: 'LOGOUT' })
+  }, [])
+
+  const syncMeta = useCloudSync(state.player?.id, {
+    coins:          state.coins,
+    basket:         state.basket,
+    market:         state.market,
+    cooperativa:    state.cooperativa,
+    achievements:   state.achievements,
+    inventory:      state.inventory,
+    selectedMascot: state.selectedMascot,
+    settings:       state.settings,
+    stars:          state.stars,
+    phaseResults:   state.phaseResults,
+    bossClears:     state.bossClears,
+    unlockedPhases: state.unlockedPhases,
+    totalScore:     state.totalScore,
+    stocks:         state.stocks,
+    portfolio:      state.portfolio,
+    playTimeSec:    state.playTimeSec,
+    quizFlags:      state.quizFlags,
+    ownedMascots:   state.ownedMascots,
+  })
+
   const value = {
     state,
     dispatch,
@@ -687,7 +771,9 @@ export function GameProvider({ children }) {
     tickStocks, buyStock, sellStock,
     buyProduct, sellProduct, applyMarketEvent, advanceRound,
     updateSettings, completeBoss, addPlayTime, resetProgress,
-    purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly
+    purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly,
+    setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
+    syncMeta,
   }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
