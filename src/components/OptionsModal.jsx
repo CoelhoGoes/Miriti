@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion'
 import { createPortal } from 'react-dom'
-import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye, FaSignOutAlt } from 'react-icons/fa'
+import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye, FaSignOutAlt, FaUserSlash, FaTrashAlt } from 'react-icons/fa'
 import LogoutModal from './LogoutModal'
+import DeactivateAccountModal from './Account/DeactivateAccountModal'
+import DeleteAccountModal from './Account/DeleteAccountModal'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings, LANGUAGES } from '../i18n/index.js'
@@ -14,7 +16,9 @@ export default function OptionsModal({ onClose }) {
   const s = useStrings()
   const [confirmReset, setConfirmReset] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
-  const [logoutOpen, setLogoutOpen] = useState(false)
+  const [logoutOpen, setLogoutOpen]         = useState(false)
+  const [deactivateOpen, setDeactivateOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen]         = useState(false)
 
   const recoveryCode = state.player?.recoveryCode
 
@@ -288,6 +292,58 @@ export default function OptionsModal({ onClose }) {
           </div>
         )}
 
+        {state.player?.id && (
+          <>
+            <div className="options-group">
+              <button
+                type="button"
+                onClick={() => setDeactivateOpen(true)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid var(--color-warning)',
+                  borderRadius: 12,
+                  background: 'var(--color-white)',
+                  color: 'var(--color-warning)',
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                }}
+              >
+                <FaUserSlash /> {s.deactivate.buttonLabel}
+              </button>
+            </div>
+
+            <div className="options-group">
+              <button
+                type="button"
+                onClick={() => setDeleteOpen(true)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid var(--color-danger)',
+                  borderRadius: 12,
+                  background: 'var(--color-white)',
+                  color: 'var(--color-danger)',
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                }}
+              >
+                <FaTrashAlt /> {s.deleteAccount.buttonLabel}
+              </button>
+            </div>
+          </>
+        )}
+
         <div className="options-danger">
           {confirmReset ? (
             <div className="options-confirm">
@@ -326,6 +382,14 @@ export default function OptionsModal({ onClose }) {
       <LogoutModal
         isOpen={logoutOpen}
         onClose={() => { setLogoutOpen(false); onClose() }}
+      />
+      <DeactivateAccountModal
+        isOpen={deactivateOpen}
+        onClose={() => { setDeactivateOpen(false); onClose() }}
+      />
+      <DeleteAccountModal
+        isOpen={deleteOpen}
+        onClose={() => { setDeleteOpen(false); onClose() }}
       />
     </>
   )

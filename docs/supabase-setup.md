@@ -53,3 +53,16 @@ No Supabase Studio → **Table Editor** devem aparecer:
 
 E em **Database → Indexes** deve existir:
 - `idx_saves_total_coins` (para o leaderboard)
+
+## 8. Migração — Estado da Conta (Inativar/Apagar)
+
+Aplicar quando implementares as funcionalidades de inativar e apagar conta nas Configurações.
+
+1. SQL Editor → New query
+2. Copiar conteúdo de `supabase/migration_account_status.sql`
+3. Run
+4. Validar:
+   - Table Editor → players → confirmar coluna `is_active` (default: true)
+   - Database → Views → leaderboard → confirmar que a query inclui `WHERE p.is_active = true`
+   - Authentication → Policies → confirmar 2 novas policies em players:
+     `"Anyone can update player status"` e `"Anyone can delete account"`
