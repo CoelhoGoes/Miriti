@@ -81,7 +81,7 @@
 }
 
 .neutral {
-    color: #7f8c8d;
+    color: var(--color-text-secondary);
 }
 
 .inlineModal {

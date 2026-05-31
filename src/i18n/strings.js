@@ -345,6 +345,20 @@ export const STRINGS = {
       confirmLogout:   'Sim, sair da conta',
       goodbye:         'Adeus, {nickname}! Volta sempre 👋',
     },
+    sync: {
+      idle:       'Tudo guardado',
+      pending:    'A guardar...',
+      syncing:    'A sincronizar...',
+      success:    'Tudo guardado',
+      error:      'Erro ao guardar',
+      offline:    'Sem ligação',
+      lastSync:   'Último save: há {time}',
+      justNow:    'agora mesmo',
+      secondsAgo: '{n}s',
+      minutesAgo: '{n}min',
+      hoursAgo:   '{n}h',
+      forceSync:  'Sincronizar agora',
+    },
   },
 
   en: {
@@ -681,6 +695,20 @@ export const STRINGS = {
       cancel:          'Cancel',
       confirmLogout:   'Yes, log out',
       goodbye:         'Goodbye, {nickname}! Come back soon 👋',
+    },
+    sync: {
+      idle:       'All saved',
+      pending:    'Saving...',
+      syncing:    'Syncing...',
+      success:    'All saved',
+      error:      'Save error',
+      offline:    'Offline',
+      lastSync:   'Last save: {time} ago',
+      justNow:    'just now',
+      secondsAgo: '{n}s',
+      minutesAgo: '{n}min',
+      hoursAgo:   '{n}h',
+      forceSync:  'Sync now',
     },
   }
 }

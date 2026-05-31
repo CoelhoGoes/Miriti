@@ -4,6 +4,7 @@ import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
 import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
+import SyncIndicator from './SyncIndicator/SyncIndicator.jsx'
 import { FaTrophy } from 'react-icons/fa'
 import './FarmMap.css'
 import styles from './FarmMap/FarmMap.module.css'
@@ -66,21 +67,8 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
   const { state } = useGame()
   const s = useStrings()
 
-  const openSettings = () => {
-    if (onSettings) {
-      onSettings()
-      return
-    }
-    console.log('settings')
-  }
-
-  const openCredits = () => {
-    if (onCredits) {
-      onCredits()
-      return
-    }
-    console.log('credits')
-  }
+  const openSettings = () => { if (onSettings) onSettings() }
+  const openCredits  = () => { if (onCredits)  onCredits()  }
 
   const handleMascot = () => {
     sound.play('pop')
@@ -151,6 +139,7 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
         </div>
 
         <div className={styles.headerRight}>
+          <SyncIndicator />
           <motion.button
             type="button"
             className={styles.headerTrophyButton}
