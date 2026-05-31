@@ -114,7 +114,7 @@ export default function App() {
       return (
         <RecoveryScreen
           onBack={() => setShowRecovery(false)}
-          onRecovered={() => setShowRecovery(false)}
+          onRecovered={() => { setShowRecovery(false); setScreen(SCREENS.FARM) }}
         />
       )
     }
@@ -129,7 +129,7 @@ export default function App() {
     return (
       <RecoveryCelebration
         playerData={pendingPlayerData}
-        onComplete={() => setPendingPlayerData(null)}
+        onComplete={() => { setPendingPlayerData(null); setScreen(SCREENS.FARM) }}
       />
     )
   }
