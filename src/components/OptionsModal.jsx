@@ -325,7 +325,7 @@ export default function OptionsModal({ onClose }) {
       {createPortal(modalContent, modalRoot)}
       <LogoutModal
         isOpen={logoutOpen}
-        onClose={() => setLogoutOpen(false)}
+        onClose={() => { setLogoutOpen(false); onClose() }}
       />
     </>
   )
