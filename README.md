@@ -1,118 +1,173 @@
 # 🐷 Miriti — Educação Financeira para Crianças
 
-Um jogo educacional completo em React focado em ensinar conceitos de educação financeira para crianças de forma divertida, com visual moderno, animações fluidas e experiência polida.
+Jogo educacional em React que ensina conceitos de finanças pessoais a crianças de forma lúdica. Inclui quiz por fases, feirinha de produtos, cooperativa de animais, ranking global e sincronização de progresso na nuvem.
 
 ![Made with React](https://img.shields.io/badge/Made%20with-React-61dafb?style=flat-square&logo=react)
 ![Vite](https://img.shields.io/badge/Built%20with-Vite-646cff?style=flat-square&logo=vite)
+![Supabase](https://img.shields.io/badge/Backend-Supabase-3ecf8e?style=flat-square&logo=supabase)
 
-## ✨ Características
-
-- 🎮 **3 fases × 10 perguntas = 30 desafios educacionais** sobre dinheiro, planejamento e investimentos
-- 🎨 **Visual moderno e lúdico** com gradientes, glow, partículas, confete e mascote
-- 🎵 **Som e música 100% sintetizados** via Web Audio API — sem arquivos externos
-- ⚡ **React Spring + Framer Motion** para animações fluidas e profissionais
-- 💾 **Progresso salvo em localStorage** — moedas, estrelas, conquistas e configurações
-- 📱 **Totalmente responsivo** — funciona em desktop e dispositivos móveis
-- ♿ **Acessível** — foco visível, navegação por teclado
-- 🏆 **Sistema de progressão** com estrelas, moedas, troféus e conquistas
+---
 
 ## 🚀 Como rodar
 
-Pré-requisito: **Node.js 18+** e **npm**.
+### Pré-requisitos
+
+- **Node.js 20+** e **npm**
+
+### 1. Instalar dependências
 
 ```bash
-# Instalar dependências
 npm install
+```
 
-# Iniciar em modo desenvolvimento
+### 2. Configurar variáveis de ambiente
+
+```bash
+cp .env.example .env
+```
+
+> O `.env.example` já contém as credenciais do projecto Supabase de desenvolvimento.
+> Basta copiar — não é necessário alterar nada para o ambiente local.
+
+### 3. Iniciar em modo desenvolvimento
+
+```bash
 npm run dev
-
-# Build de produção
-npm run build
-
-# Visualizar build
-npm run preview
 ```
 
-O servidor de desenvolvimento abrirá automaticamente em **http://localhost:5173**.
+O servidor abrirá em <http://localhost:5173>.
 
-## 📁 Estrutura do projeto
+### 4. Build de produção
 
+```bash
+npm run build   # gera dist/
+npm run preview # serve o build localmente
 ```
+
+---
+
+## ☁️ Ligação ao Supabase
+
+O jogo funciona **offline** com localStorage como fallback. A ligação ao Supabase activa:
+
+| Funcionalidade         | Sem Supabase | Com Supabase |
+| ---------------------- | :----------: | :----------: |
+| Jogar                  | ✅           | ✅           |
+| Progresso local        | ✅           | ✅           |
+| Criar conta (nickname) | ❌           | ✅           |
+| Sync entre dispositivos| ❌           | ✅           |
+| Recovery code          | ❌           | ✅           |
+| Leaderboard global     | ❌           | ✅           |
+
+Se `VITE_SUPABASE_URL` ou `VITE_SUPABASE_ANON_KEY` não estiverem definidas, o jogo arranca normalmente mas salta o onboarding de conta e o ranking fica inactivo.
+
+### Variáveis de ambiente
+
+| Variável                | Descrição                                               |
+| ----------------------- | ------------------------------------------------------- |
+| `VITE_SUPABASE_URL`     | URL do projecto (Settings → API → Project URL)          |
+| `VITE_SUPABASE_ANON_KEY`| Chave pública anon (Settings → API → anon public)       |
+
+> ⚠️ Usar **sempre** a `anon` key, nunca a `service_role`. A `anon` key é segura para expor no cliente.
+
+### Setup de um projecto Supabase próprio
+
+Consultar **[docs/supabase-setup.md](docs/supabase-setup.md)** para instruções completas de criação de tabelas, políticas RLS e configuração na Vercel.
+
+---
+
+## ✨ Funcionalidades
+
+- 🎓 **Escolinha** — 3 fases × 10 perguntas sobre dinheiro, poupança e investimentos
+- 🧺 **Feirinha do Jutaiteua** — comprar e vender produtos com flutuação de preços e eventos de mercado
+- 🐾 **Cooperativa dos Bichos** — sistema de aliados, parceiros e ajudantes com buffs reais no jogo
+- 🏆 **Leaderboard global** — top 10 com medalhas + posição do jogador fora do top
+- 👤 **Conta de jogador** — nickname único, recovery code para continuar noutro dispositivo
+- ☁️ **Sync automático** — progresso guardado na nuvem com debounce de 3s, indicador visual no header
+- 🎵 **Som sintetizado** — música e efeitos via Web Audio API, sem ficheiros externos
+- ♿ **Acessibilidade** — modo daltónico (deuter/protan/tritan), escala de fonte, navegação por teclado
+- 📱 **Responsivo** — desktop e tablet
+
+---
+
+## 📁 Estrutura do projecto
+
+```text
 miriti/
-├── package.json
-├── vite.config.js
-├── index.html
-├── public/
-│   └── favicon.svg
+├── .env.example              # credenciais Supabase (copiar para .env)
+├── docs/
+│   └── supabase-setup.md     # guia de setup do banco de dados
+├── supabase/
+│   ├── schema.sql            # tabelas players + saves + view leaderboard
+│   └── policies.sql          # políticas RLS
 └── src/
-    ├── main.jsx              # entrada do React
-    ├── App.jsx               # controlador de telas
-    ├── index.css             # estilos globais e tokens de design
-    ├── components/
-    │   ├── HomeScreen.jsx        # tela inicial com logo animado
-    │   ├── MainMenu.jsx          # menu principal
-    │   ├── PhaseSelect.jsx       # seleção de fase
-    │   ├── QuizScreen.jsx        # tela do quiz
-    │   ├── QuestionCard.jsx      # card de pergunta
-    │   ├── ResultScreen.jsx      # resultado animado
-    │   ├── OptionsModal.jsx      # modal de configurações
-    │   ├── CreditsScreen.jsx     # créditos
-    │   ├── ProgressBar.jsx       # barra de progresso
-    │   ├── AnimatedBackground.jsx# fundo animado
-    │   ├── Confetti.jsx          # efeito de confete
-    │   └── SoundManager.js       # re-export do singleton de áudio
+    ├── App.jsx               # controlador de telas e gate de onboarding
     ├── context/
-    │   └── GameContext.jsx       # estado global do jogo
-    ├── data/
-    │   └── questions.js          # banco de 30 perguntas
+    │   └── GameContext.jsx   # estado global + reducer + sync com Supabase
     ├── hooks/
-    │   └── useSound.js           # hook conveniente para sons
-    └── utils/
-        ├── sound.js              # sistema completo de Web Audio
-        └── storage.js            # wrapper de localStorage
+    │   ├── useCloudSync.js   # sync automático com debounce e detecção offline
+    │   └── useOnlineStatus.js
+    ├── lib/
+    │   ├── supabaseClient.js
+    │   └── api/
+    │       ├── players.js    # criar jogador, verificar nickname
+    │       ├── saves.js      # guardar/carregar estado do jogo
+    │       ├── leaderboard.js
+    │       └── recovery.js   # recuperar conta por código secreto
+    ├── components/
+    │   ├── Onboarding/       # NicknameScreen, RecoveryCelebration, RecoveryScreen
+    │   ├── Cooperativa/      # ecrã da cooperativa de animais
+    │   ├── Feirinha/         # mercado de produtos
+    │   ├── Leaderboard/      # ranking global
+    │   ├── SyncIndicator/    # badge ☁️ no header com 6 estados
+    │   ├── LogoutModal.jsx   # logout defensivo com confirmação do código
+    │   ├── FarmMap.jsx       # mapa principal da fazenda
+    │   ├── HomeScreen.jsx
+    │   ├── QuizScreen.jsx
+    │   ├── OptionsModal.jsx  # configurações + código de recuperação
+    │   └── ...
+    ├── data/
+    │   ├── questions.js      # banco de perguntas
+    │   ├── animals.js        # dados da cooperativa
+    │   └── animalEffects.js  # efeitos dos animais no estado do jogo
+    ├── i18n/
+    │   └── strings.js        # todas as strings PT/EN
+    └── styles/
+        └── tokens.css        # variáveis CSS de cor e tipografia
 ```
 
-## 🎯 Fluxo do jogo
+---
 
-1. **Tela Inicial** — logo Miriti animado; toque ou tecle para começar
-2. **Menu Principal** — Iniciar Jogo, Opções, Créditos
-3. **Seleção de Fase** — escolha entre 3 fases (desbloqueadas progressivamente)
-4. **Quiz** — 10 perguntas com feedback imediato e explicação educativa
-5. **Resultado** — estrelas, moedas, troféus e mensagem motivacional
+## 🔑 Fluxo de primeiro login
 
-## 🎨 Sistema de design
+```text
+Abrir jogo
+  └─ player.id == null?
+       ├─ SIM → NicknameScreen
+       │         ├─ Criar conta → RecoveryCelebration (mostra código secreto)
+       │         └─ "Já joguei antes" → RecoveryScreen (inserir código)
+       └─ NÃO → HomeScreen → FarmMap (jogo normal)
+```
 
-Cores, tipografia e bordas centralizados em **variáveis CSS** em `src/index.css`. Para customizar a paleta, edite os tokens em `:root`.
+O **recovery code** (formato `PALAVRA-NNNN-PALAVRA`) permite recuperar o progresso completo noutro dispositivo ou após limpar o cache.
 
-Fontes: **Baloo 2** e **Fredoka** (carregadas via Google Fonts).
-
-## 🔊 Sistema de som
-
-Todos os sons (clique, hover, acerto, erro, vitória, moedas, música ambiente) são **sintetizados em tempo real** via Web Audio API. Isso mantém o bundle leve e elimina a necessidade de arquivos de áudio externos. Veja `src/utils/sound.js` para detalhes.
-
-A música ambiente toca uma melodia infantil em loop, com baixo, em volume suave.
-
-## 💾 Persistência
-
-Tudo é salvo em `localStorage` com o prefixo `miriti_`:
-- progresso das fases
-- estrelas, moedas e conquistas
-- volumes de música e efeitos
-- preferência de animações
-
-Use o botão **Apagar progresso** nas opções para resetar tudo.
+---
 
 ## 🛠️ Tecnologias
 
-- [React 18](https://react.dev/)
-- [Vite 5](https://vitejs.dev/)
-- [React Spring](https://www.react-spring.dev/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [React Icons](https://react-icons.github.io/react-icons/)
-- Web Audio API
-- CSS moderno (gradients, backdrop-filter, custom properties)
+| Tecnologia                                                    | Uso                                    |
+| ------------------------------------------------------------- | -------------------------------------- |
+| [React 18](https://react.dev/)                                | UI e estado                            |
+| [Vite 5](https://vitejs.dev/)                                 | Build e dev server                     |
+| [Supabase](https://supabase.com/)                             | Base de dados, auth-less, RLS          |
+| [Framer Motion](https://www.framer.com/motion/)               | Animações                              |
+| [React Spring](https://www.react-spring.dev/)                 | Animações de física                    |
+| [React Icons](https://react-icons.github.io/react-icons/)     | Ícones                                 |
+| Web Audio API                                                 | Som sintetizado sem ficheiros externos |
+| CSS Modules + custom properties                               | Estilos isolados com tokens de design  |
+
+---
 
 ## 📝 Licença
 
-Projeto educacional aberto. Sinta-se livre para usar, modificar e ensinar! 💜
+Projecto educacional aberto. Livre para usar, modificar e ensinar. 💜
