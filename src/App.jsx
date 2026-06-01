@@ -19,6 +19,7 @@ import MascotChat from './components/MascotChat.jsx'
 import Tutorial from './components/Tutorial.jsx'
 import ParentsPanel from './components/ParentsPanel.jsx'
 import BossQuiz from './components/BossQuiz.jsx'
+import RotateDevice from './components/RotateDevice/RotateDevice.jsx'
 import { useGame } from './context/GameContext.jsx'
 import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
@@ -220,6 +221,8 @@ export default function App() {
           {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
           {tutorialOpen && <Tutorial onFinish={finishTutorial} />}
         </AnimatePresence>
+
+        <RotateDevice />
       </div>
     </MotionConfig>
   )
