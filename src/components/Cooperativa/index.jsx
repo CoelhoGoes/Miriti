@@ -9,11 +9,14 @@ import ActiveAllyBadge from './ActiveAllyBadge.jsx'
 import PurchaseModal from './PurchaseModal.jsx'
 import EquipAllyModal from './EquipAllyModal.jsx'
 import styles from './index.module.css'
+import { useSecondaryTutorial } from '../../hooks/useSecondaryTutorial'
+import TutorialHelpButton from '../Tutorial/TutorialHelpButton'
 
 export default function Cooperativa({ onBack }) {
   const { state, dispatch } = useGame()
   const s = useStrings()
   const lang = useLanguage()
+  useSecondaryTutorial('COOPERATIVA', true)
   const t = (obj) => (obj && typeof obj === 'object') ? (obj[lang] ?? obj.pt) : obj
 
   const [activeTab, setActiveTab] = useState('ajudante')
@@ -78,26 +81,28 @@ export default function Cooperativa({ onBack }) {
         </motion.button>
         <h1 className={styles.title}>{s.cooperativa.title}</h1>
         <div className={styles.headerRight}>
+          <TutorialHelpButton tutorialKey="COOPERATIVA" />
           <span className={styles.coinsBadge}>
             <span aria-hidden="true">🪙</span>
             <span>{state.coins}</span>
           </span>
-          <ActiveAllyBadge onSwapClick={() => setShowSwapModal(true)} />
+          <div data-tutorial="active-ally-coop"><ActiveAllyBadge onSwapClick={() => setShowSwapModal(true)} /></div>
         </div>
       </header>
 
-      <CategoryTabs active={activeTab} onChange={setActiveTab} />
+      <div data-tutorial="coop-tabs"><CategoryTabs active={activeTab} onChange={setActiveTab} /></div>
 
       <div className={styles.grid}>
-        {animals.map(animal => (
-          <AnimalCard
-            key={animal.id}
-            animal={animal}
-            owned={cooperativa.alliesOwned.includes(animal.id)}
-            stock={cooperativa.helpers[animal.id] ?? 0}
-            isEquipped={cooperativa.activeAlly === animal.id}
-            onAction={() => handleAction(animal)}
-          />
+        {animals.map((animal, idx) => (
+          <div key={animal.id} {...(idx === 0 ? { 'data-tutorial': 'animal-card' } : {})} style={{ display: 'contents' }}>
+            <AnimalCard
+              animal={animal}
+              owned={cooperativa.alliesOwned.includes(animal.id)}
+              stock={cooperativa.helpers[animal.id] ?? 0}
+              isEquipped={cooperativa.activeAlly === animal.id}
+              onAction={() => handleAction(animal)}
+            />
+          </div>
         ))}
       </div>
 

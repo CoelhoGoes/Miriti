@@ -6,12 +6,15 @@ import { useGame } from '../../context/GameContext'
 import { getTopPlayers, getPlayerRank } from '../../lib/api/leaderboard'
 import LeaderboardRow from './LeaderboardRow'
 import styles from './Leaderboard.module.css'
+import { useSecondaryTutorial } from '../../hooks/useSecondaryTutorial'
+import TutorialHelpButton from '../Tutorial/TutorialHelpButton'
 
 const TOP_LIMIT = 10
 
 export default function LeaderboardScreen({ onBack }) {
   const s = useStrings()
   const { state } = useGame()
+  useSecondaryTutorial('RANKING', true)
   const playerId = state.player?.id
 
   const [topPlayers, setTopPlayers] = useState([])
@@ -61,8 +64,11 @@ export default function LeaderboardScreen({ onBack }) {
         </button>
 
         <div className={styles.headerCenter}>
-          <h1 className={styles.title}>🏆 {s.leaderboard.title}</h1>
-          <p className={styles.subtitle}>{s.leaderboard.subtitle}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <h1 className={styles.title}>🏆 {s.leaderboard.title}</h1>
+            <TutorialHelpButton tutorialKey="RANKING" />
+          </div>
+          <p className={styles.subtitle} data-tutorial="ranking-subtitle">{s.leaderboard.subtitle}</p>
         </div>
 
         <button
@@ -70,6 +76,7 @@ export default function LeaderboardScreen({ onBack }) {
           className={styles.iconButton}
           onClick={fetchData}
           aria-label={s.leaderboard.refresh}
+          data-tutorial="refresh-button"
           disabled={loading}
         >
           <FaSyncAlt />
@@ -96,6 +103,7 @@ export default function LeaderboardScreen({ onBack }) {
             index={index}
             isYou={row.nickname === state.player?.nickname}
             strings={s.leaderboard}
+            {...(index === 0 ? { 'data-tutorial': 'podium' } : {})}
           />
         ))}
 

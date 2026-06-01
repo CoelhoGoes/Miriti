@@ -15,6 +15,8 @@ import PriceHistoryModal from './PriceHistoryModal'
 import ProductFilterTabs, { FILTER_TYPES } from './ProductFilterTabs'
 import { getBarometerLevel } from './Barometer'
 import styles from './FeirinhaScreen.module.css'
+import { useSecondaryTutorial } from '../../hooks/useSecondaryTutorial'
+import TutorialHelpButton from '../Tutorial/TutorialHelpButton'
 
 function pickEvent(lastEventId) {
   const pool = MARKET_EVENTS.filter(event => event.id !== lastEventId)
@@ -23,6 +25,7 @@ function pickEvent(lastEventId) {
 }
 
 export default function FeirinhaScreen({ onBack }) {
+  useSecondaryTutorial('FEIRA', true)
   const { state, dispatch } = useGame()
   const s = useStrings()
   const [activeEvent, setActiveEvent]   = useState(null)
@@ -103,10 +106,13 @@ export default function FeirinhaScreen({ onBack }) {
             <FaArrowLeft />
           </button>
           <div className={styles.headerInfo}>
-            <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
+              <TutorialHelpButton tutorialKey="FEIRA" />
+            </div>
             <div className={styles.headerBadges}>
               <span className={styles.badge}>
-                {s.feirinha.header.round.replace('{n}', state.market.round)}
+                <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', state.market.round)}</span>
               </span>
               <span className={`${styles.badge} ${styles.badgeCoins}`}>
                 🪙 {state.coins} {s.feirinha.header.coinsAvailable}
@@ -141,29 +147,32 @@ export default function FeirinhaScreen({ onBack }) {
           </div>
         </div>
 
-        <ProductFilterTabs
-          active={activeFilter}
-          counts={filterCounts}
-          onChange={setActiveFilter}
-        />
+        <div data-tutorial="fair-tabs">
+          <ProductFilterTabs
+            active={activeFilter}
+            counts={filterCounts}
+            onChange={setActiveFilter}
+          />
+        </div>
       </div>
 
       {/* ── Secção scrollável (produtos + cesta) ───────────── */}
       <div className={styles.scrollSection}>
         <div className={styles.productsGrid}>
-          {filteredCards.map(({ product, currentPrice, previousPrice, history, basketSlot }) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              currentPrice={currentPrice}
-              previousPrice={previousPrice}
-              basketSlot={basketSlot}
-              round={state.market.round}
-              priceHistory={history}
-              onBuy={handleBuy}
-              onSell={handleSell}
-              onShowHistory={handleShowHistory}
-            />
+          {filteredCards.map(({ product, currentPrice, previousPrice, history, basketSlot }, idx) => (
+            <div key={product.id} {...(idx === 0 ? { 'data-tutorial': 'product-card' } : {})} style={{ display: 'contents' }}>
+              <ProductCard
+                product={product}
+                currentPrice={currentPrice}
+                previousPrice={previousPrice}
+                basketSlot={basketSlot}
+                round={state.market.round}
+                priceHistory={history}
+                onBuy={handleBuy}
+                onSell={handleSell}
+                onShowHistory={handleShowHistory}
+              />
+            </div>
           ))}
           {filteredCards.length === 0 && (
             <div style={{
@@ -185,12 +194,14 @@ export default function FeirinhaScreen({ onBack }) {
           />
         </div>
 
-        <CestaDaFamilia
-          basket={state.basket}
-          marketPrices={state.market.prices}
-          round={state.market.round}
-          onSell={handleSell}
-        />
+        <div data-tutorial="basket-section">
+          <CestaDaFamilia
+            basket={state.basket}
+            marketPrices={state.market.prices}
+            round={state.market.round}
+            onSell={handleSell}
+          />
+        </div>
       </div>
 
       <AnimatePresence>

@@ -8,11 +8,14 @@ import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings, useLanguage, pick } from '../i18n/index.js'
 import './EscolinhaScreen.css'
+import { useSecondaryTutorial } from '../hooks/useSecondaryTutorial'
+import TutorialHelpButton from './Tutorial/TutorialHelpButton'
 
 export default function EscolinhaScreen({ onPlayLesson, onBack, onPlayBoss }) {
   const { state, setPhase } = useGame()
   const s = useStrings()
   const lang = useLanguage()
+  useSecondaryTutorial('ESCOLA', true)
 
   const handleLesson = (i, unlocked) => {
     if (!unlocked) { sound.play('wrong'); return }
@@ -45,13 +48,16 @@ export default function EscolinhaScreen({ onPlayLesson, onBack, onPlayBoss }) {
           <FaArrowLeft /> {s.common.back}
         </motion.button>
 
-        <motion.h1
-          className="esc-title"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          🏫 {s.escolinha.title}
-        </motion.h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <motion.h1
+            className="esc-title"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            🏫 {s.escolinha.title}
+          </motion.h1>
+          <TutorialHelpButton tutorialKey="ESCOLA" />
+        </div>
         <motion.p
           className="esc-subtitle"
           initial={{ opacity: 0 }}
@@ -88,19 +94,20 @@ export default function EscolinhaScreen({ onPlayLesson, onBack, onPlayBoss }) {
                     <div className="lesson-num">{s.escolinha.lessonLabel(i + 1)}</div>
                     <div className="lesson-name">{pick(phase.name, lang)}</div>
                     {unlocked ? (
-                      <div className="lesson-stars">
+                      <div className="lesson-stars" data-tutorial="lesson-stars">
                         {[0, 1, 2].map(st => (
                           <FaStar key={st} className={`lesson-star ${st < stars ? 'earned' : ''}`} />
                         ))}
                       </div>
                     ) : (
-                      <div className="lesson-locked-text">{s.escolinha.locked}</div>
+                      <div className="lesson-locked-text" data-tutorial="lesson-locked">{s.escolinha.locked}</div>
                     )}
                   </div>
                 </motion.button>
 
                 <motion.button
                   type="button"
+                  data-tutorial="boss-badge"
                   className={`boss-node ${bossUnlocked ? 'unlocked' : 'locked'} ${bossBeaten ? 'beaten' : ''}`}
                   onClick={() => handleBoss(i, unlocked, stars > 0)}
                   onMouseEnter={() => bossUnlocked && sound.play('hover')}

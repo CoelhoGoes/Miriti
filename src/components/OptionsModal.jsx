@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { createPortal } from 'react-dom'
-import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye, FaSignOutAlt, FaUserSlash, FaTrashAlt } from 'react-icons/fa'
+import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye, FaSignOutAlt, FaUserSlash, FaTrashAlt, FaQuestionCircle } from 'react-icons/fa'
 import LogoutModal from './LogoutModal'
 import DeactivateAccountModal from './Account/DeactivateAccountModal'
 import DeleteAccountModal from './Account/DeleteAccountModal'
@@ -8,7 +8,47 @@ import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings, LANGUAGES } from '../i18n/index.js'
 import { useState } from 'react'
+import { useTutorial } from '../hooks/useTutorial'
+import { useSecondaryTutorialData } from '../data/secondaryTutorials'
 import './OptionsModal.css'
+
+function ReplayTutorialButton({ tutorialKey, label, onClose }) {
+  const tutorialData = useSecondaryTutorialData(tutorialKey)
+  const { start, isActive } = useTutorial()
+
+  if (!tutorialData) return null
+
+  const handleClick = () => {
+    if (isActive) return
+    start(tutorialData.id, tutorialData.steps, tutorialData.reward, { force: true })
+    onClose()
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={isActive}
+      style={{
+        width: '100%',
+        textAlign: 'left',
+        padding: '10px 14px',
+        marginTop: 6,
+        background: 'var(--color-surface-4)',
+        border: '2px solid var(--color-surface-2)',
+        borderRadius: 12,
+        fontWeight: 700,
+        fontSize: 'var(--ms-text-sm)',
+        color: 'var(--color-text-primary)',
+        cursor: isActive ? 'not-allowed' : 'pointer',
+        opacity: isActive ? 0.5 : 1,
+        transition: 'background 0.2s',
+      }}
+    >
+      {label}
+    </button>
+  )
+}
 
 export default function OptionsModal({ onClose }) {
   const { state, updateSettings, resetProgress } = useGame()
@@ -153,6 +193,21 @@ export default function OptionsModal({ onClose }) {
               {settings.animationsEnabled ? s.options.on : s.options.off}
             </span>
           </button>
+        </div>
+
+        {/* Refazer Tutoriais */}
+        <div className="options-a11y">
+          <div className="options-a11y-title">
+            <FaQuestionCircle /> {s.options.tutorialsSection}
+          </div>
+          <p style={{ fontSize: 'var(--ms-text-xs)', color: 'var(--color-text-secondary)', margin: '4px 0 2px' }}>
+            {s.options.tutorialsDescription}
+          </p>
+          <ReplayTutorialButton tutorialKey="ESCOLA"        label={s.options.replayEscola}        onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="FEIRA"         label={s.options.replayFeira}         onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="COOPERATIVA"   label={s.options.replayCooperativa}   onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="CONQUISTAS"    label={s.options.replayConquistas}    onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="RANKING"       label={s.options.replayRanking}       onClose={onClose} />
         </div>
 
         {/* Acessibilidade */}
