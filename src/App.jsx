@@ -16,8 +16,10 @@ import OptionsModal from './components/OptionsModal.jsx'
 import CreditsScreen from './components/CreditsScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import MascotChat from './components/MascotChat.jsx'
-import Tutorial from './components/Tutorial.jsx'
 import ParentsPanel from './components/ParentsPanel.jsx'
+import { TutorialProvider } from './context/TutorialContext.jsx'
+import RewardModal from './components/Tutorial/RewardModal.jsx'
+import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
 import RotateDevice from './components/RotateDevice/RotateDevice.jsx'
 import { useGame } from './context/GameContext.jsx'
@@ -49,12 +51,17 @@ export default function App() {
   const [screen, setScreen]               = useState(SCREENS.HOME)
   const [optionsOpen, setOptionsOpen]     = useState(false)
   const [mascotChatOpen, setMascotChatOpen] = useState(false)
-  const [tutorialOpen, setTutorialOpen]   = useState(false)
   const [bossPhase, setBossPhase]         = useState(0)
   const [lastResult, setLastResult]       = useState(null)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
   const [showRecovery, setShowRecovery] = useState(false)
-  const { state, updateSettings, addPlayTime } = useGame()
+  const { state, addPlayTime, clearTutorialReward } = useGame()
+
+  const lastReward = state.tutorialState?.lastReward ?? null
+  const lastCompletedId = state.tutorialState?.completed?.length
+    ? state.tutorialState.completed[state.tutorialState.completed.length - 1]
+    : null
+  const badgeToShow = lastReward ? getBadgeByTutorialId(lastCompletedId) : null
   const s = useStrings()
 
   useEffect(() => {
@@ -93,10 +100,6 @@ export default function App() {
     return () => { document.removeEventListener('visibilitychange', onVisibilityChange); stop() }
   }, [addPlayTime])
 
-  useEffect(() => {
-    if (screen === SCREENS.FARM && !state.settings.tutorialDone) setTutorialOpen(true)
-  }, [screen, state.settings.tutorialDone])
-
   const fontScale = state.settings.fontScale || 1
   useEffect(() => {
     const SCALE_MAP = { 1: '16px', 2: '17.92px', 3: '20px', 4: '22.4px' }
@@ -107,7 +110,6 @@ export default function App() {
   const goTo = useCallback((target) => { sound.play('transition'); setScreen(target) }, [])
   const handleQuizComplete = useCallback((result) => { setLastResult(result); setScreen(SCREENS.RESULT) }, [])
   const startBoss = useCallback((phaseIndex) => { setBossPhase(phaseIndex); goTo(SCREENS.BOSS) }, [goTo])
-  const finishTutorial = useCallback(() => { updateSettings({ tutorialDone: true }); setTutorialOpen(false) }, [updateSettings])
 
   // ── Onboarding gate (after all hooks) ──────────────────────────────────────
   if (!state.player?.id) {
@@ -195,35 +197,42 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
-      <div
-        className={[
-          'app-root',
-          animationsEnabled ? '' : 'animations-off',
-          `font-scale-${fontScale}`
-        ].filter(Boolean).join(' ')}
-      >
-        <div className="app-content">
-          <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
-            <motion.div
-              key={screen}
-              className="screen"
-              variants={screenVariants}
-              initial="initial"
-              animate="animate"
-            >
-              {renderScreen()}
-            </motion.div>
-          </ErrorBoundary>
+      <TutorialProvider>
+        <div
+          className={[
+            'app-root',
+            animationsEnabled ? '' : 'animations-off',
+            `font-scale-${fontScale}`
+          ].filter(Boolean).join(' ')}
+        >
+          <div className="app-content">
+            <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
+              <motion.div
+                key={screen}
+                className="screen"
+                variants={screenVariants}
+                initial="initial"
+                animate="animate"
+              >
+                {renderScreen()}
+              </motion.div>
+            </ErrorBoundary>
+          </div>
+
+          <AnimatePresence>
+            {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
+            {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
+          </AnimatePresence>
+
+          <RotateDevice />
         </div>
 
-        <AnimatePresence>
-          {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
-          {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
-          {tutorialOpen && <Tutorial onFinish={finishTutorial} />}
-        </AnimatePresence>
-
-        <RotateDevice />
-      </div>
+        <RewardModal
+          badge={badgeToShow}
+          coinsEarned={lastReward?.coins ?? 0}
+          onClose={clearTutorialReward}
+        />
+      </TutorialProvider>
     </MotionConfig>
   )
 }

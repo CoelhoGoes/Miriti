@@ -1,0 +1,58 @@
+/* ════════════════════════════════════════════════════════════
+   SPOTLIGHT OVERLAY — escurece a tela com "buraco" no alvo
+   Técnica: box-shadow gigante invertida (compatível iOS Safari)
+   ════════════════════════════════════════════════════════════ */
+
+.spotlight {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9000;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 9999px rgba(15, 23, 42, 0.78),
+    0 0 0 3px rgba(255, 215, 0, 0.85),
+    0 0 32px 4px rgba(255, 215, 0, 0.45);
+  transition:
+    top    0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    left   0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    width  0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: spotlightPulse 2.4s ease-in-out infinite;
+}
+
+.spotlightCentered {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.78);
+  pointer-events: none;
+  z-index: 9000;
+}
+
+.clickBlocker {
+  position: fixed;
+  inset: 0;
+  z-index: 8999;
+  background: transparent;
+  pointer-events: auto;
+  cursor: default;
+}
+
+@keyframes spotlightPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 9999px rgba(15, 23, 42, 0.78),
+      0 0 0 3px rgba(255, 215, 0, 0.85),
+      0 0 32px 4px rgba(255, 215, 0, 0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 0 9999px rgba(15, 23, 42, 0.78),
+      0 0 0 4px rgba(255, 215, 0, 1),
+      0 0 48px 8px rgba(255, 215, 0, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight { animation: none; transition: none; }
+}

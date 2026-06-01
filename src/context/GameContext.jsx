@@ -115,6 +115,14 @@ const initialState = {
     activeAlly:     'cofrinho',
   },
   quizFlags: {},
+  tutorialState: {
+    completed:    [],
+    visitedAreas: [],
+    lastReward:   null,
+  },
+  badges: {
+    unlocked: [],
+  },
   player: {
     id:           null,
     nickname:     null,
@@ -201,6 +209,39 @@ function loadInitialState() {
   }
 }
 
+function migrateTutorialState(state) {
+  let next = state.tutorialState
+    ? state
+    : {
+        ...state,
+        tutorialState: {
+          completed:    [],
+          visitedAreas: [],
+          lastReward:   null,
+        },
+      }
+
+  // saves antigos com tutorialDone=true: marcar 'tutorial.first-time' como concluído
+  const legacyDone     = next.settings?.tutorialDone === true
+  const newAlreadyDone = next.tutorialState.completed.includes('tutorial.first-time')
+  if (legacyDone && !newAlreadyDone) {
+    next = {
+      ...next,
+      tutorialState: {
+        ...next.tutorialState,
+        completed: [...next.tutorialState.completed, 'tutorial.first-time'],
+      },
+    }
+  }
+
+  return next
+}
+
+function migrateBadges(state) {
+  if (state.badges) return state
+  return { ...state, badges: { unlocked: [] } }
+}
+
 function migrateLegacyShop(state) {
   if (state.cooperativa?.alliesOwned?.length > 0) return state
 
@@ -243,7 +284,7 @@ function migrateLegacyShop(state) {
 }
 
 function init() {
-  return migrateLegacyShop(loadInitialState())
+  return migrateBadges(migrateTutorialState(migrateLegacyShop(loadInitialState())))
 }
 
 /* Concede conquistas com base no estado atual + ids extras de eventos. */
@@ -679,6 +720,69 @@ function reducer(state, action) {
         },
       }
 
+    case 'TUTORIAL_COMPLETE': {
+      const { tutorialId, reward } = action.payload
+      const alreadyDone = state.tutorialState.completed.includes(tutorialId)
+
+      // efeito colateral: tutorial inicial → settings.tutorialDone=true (backward-compat)
+      const isInitial   = tutorialId === 'tutorial.first-time'
+      const nextSettings = isInitial
+        ? { ...state.settings, tutorialDone: true }
+        : state.settings
+
+      return {
+        ...state,
+        settings: nextSettings,
+        coins: alreadyDone ? state.coins : state.coins + (reward?.coins ?? 0),
+        tutorialState: {
+          ...state.tutorialState,
+          completed: alreadyDone
+            ? state.tutorialState.completed
+            : [...state.tutorialState.completed, tutorialId],
+          lastReward: alreadyDone ? null : (reward ?? null),
+        },
+      }
+    }
+
+    case 'TUTORIAL_RESET': {
+      const { tutorialId } = action.payload
+      return {
+        ...state,
+        tutorialState: {
+          ...state.tutorialState,
+          completed: state.tutorialState.completed.filter(id => id !== tutorialId),
+          lastReward: null,
+        },
+      }
+    }
+
+    case 'TUTORIAL_VISIT_AREA': {
+      const { area } = action.payload
+      if (state.tutorialState.visitedAreas.includes(area)) return state
+      return {
+        ...state,
+        tutorialState: {
+          ...state.tutorialState,
+          visitedAreas: [...state.tutorialState.visitedAreas, area],
+        },
+      }
+    }
+
+    case 'TUTORIAL_CLEAR_REWARD':
+      return {
+        ...state,
+        tutorialState: { ...state.tutorialState, lastReward: null },
+      }
+
+    case 'UNLOCK_BADGE': {
+      const { badgeId } = action.payload
+      if (state.badges.unlocked.includes(badgeId)) return state
+      return {
+        ...state,
+        badges: { ...state.badges, unlocked: [...state.badges.unlocked, badgeId] },
+      }
+    }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -732,6 +836,23 @@ export function GameProvider({ children }) {
   const tickPartners     = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
   const equipAlly        = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
 
+  const unlockBadge = useCallback((badgeId) => {
+    dispatch({ type: 'UNLOCK_BADGE', payload: { badgeId } })
+  }, [])
+
+  const completeTutorial  = useCallback((tutorialId, reward = null) => {
+    dispatch({ type: 'TUTORIAL_COMPLETE', payload: { tutorialId, reward } })
+  }, [])
+  const resetTutorial = useCallback((tutorialId) => {
+    dispatch({ type: 'TUTORIAL_RESET', payload: { tutorialId } })
+  }, [])
+  const visitArea = useCallback((area) => {
+    dispatch({ type: 'TUTORIAL_VISIT_AREA', payload: { area } })
+  }, [])
+  const clearTutorialReward = useCallback(() => {
+    dispatch({ type: 'TUTORIAL_CLEAR_REWARD' })
+  }, [])
+
   const setPlayer = useCallback((id, nickname, recoveryCode) => {
     dispatch({ type: 'SET_PLAYER', payload: { id, nickname, recoveryCode } })
   }, [])
@@ -764,6 +885,8 @@ export function GameProvider({ children }) {
     playTimeSec:    state.playTimeSec,
     quizFlags:      state.quizFlags,
     ownedMascots:   state.ownedMascots,
+    tutorialState:  state.tutorialState,
+    badges:         state.badges,
   })
 
   const value = {
@@ -776,6 +899,7 @@ export function GameProvider({ children }) {
     updateSettings, completeBoss, addPlayTime, resetProgress,
     purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly,
     setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
+    unlockBadge, completeTutorial, resetTutorial, visitArea, clearTutorialReward,
     syncMeta,
   }
 

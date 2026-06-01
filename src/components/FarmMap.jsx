@@ -5,6 +5,7 @@ import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
 import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
 import SyncIndicator from './SyncIndicator/SyncIndicator.jsx'
+import { useSecondaryTutorial } from '../hooks/useSecondaryTutorial'
 import { FaTrophy } from 'react-icons/fa'
 import './FarmMap.css'
 import styles from './FarmMap/FarmMap.module.css'
@@ -70,7 +71,7 @@ const CLOUDS = [
 export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents, onLeaderboard }) {
   const { state } = useGame()
   const s = useStrings()
-
+  useSecondaryTutorial('INITIAL', true)
   const openSettings = () => { if (onSettings) onSettings() }
   const openCredits  = () => { if (onCredits)  onCredits()  }
 
@@ -259,6 +260,7 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
           <motion.div
             key={node.id}
             className={styles.mapNode}
+            data-tutorial={`node-${node.id}`}
             style={{
               left: `${node.position.leftPct}%`,
               top: `calc(${node.position.pathYPct}% - var(--ms-node-size))`,
@@ -289,12 +291,14 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
 
       <motion.div
         className={styles.allyBadgeOverlay}
+        data-tutorial="active-ally-overlay"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
         <ActiveAllyBadge onSwapClick={onCooperativa} />
       </motion.div>
+
     </div>
   )
 }

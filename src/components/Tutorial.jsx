@@ -1,3 +1,8 @@
+/**
+ * @deprecated Substituído pelo sistema de tutoriais via SpotlightOverlay + CofrinhoBubble.
+ * Mantido como backup/referência. Não importado em lado nenhum desde 2026-06-01.
+ * Para tutoriais, usar: src/data/secondaryTutorials.js + src/hooks/useSecondaryTutorial.js
+ */
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'

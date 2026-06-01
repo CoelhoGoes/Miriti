@@ -7,11 +7,14 @@ import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings, useLanguage, pick } from '../i18n/index.js'
 import './AchievementsScreen.css'
+import { useSecondaryTutorial } from '../hooks/useSecondaryTutorial'
+import TutorialHelpButton from './Tutorial/TutorialHelpButton'
 
 export default function AchievementsScreen({ onBack }) {
   const { state } = useGame()
   const s = useStrings()
   const lang = useLanguage()
+  useSecondaryTutorial('CONQUISTAS', true)
 
   const unlockedCount = ACHIEVEMENTS.filter(a => state.achievements.includes(a.id)).length
 
@@ -33,9 +36,12 @@ export default function AchievementsScreen({ onBack }) {
           <FaArrowLeft /> {s.common.back}
         </motion.button>
 
-        <motion.h1 className="ach-title" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          {s.achievements.title}
-        </motion.h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <motion.h1 className="ach-title" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+            {s.achievements.title}
+          </motion.h1>
+          <TutorialHelpButton tutorialKey="CONQUISTAS" />
+        </div>
         <p className="ach-subtitle">{s.achievements.subtitle}</p>
         <div className="ach-progress-badge">
           {s.achievements.progress(unlockedCount, ACHIEVEMENTS.length)}
@@ -48,6 +54,9 @@ export default function AchievementsScreen({ onBack }) {
               <motion.div
                 key={a.id}
                 className={`ach-card ${unlocked ? 'unlocked' : 'locked'}`}
+                {...(!unlocked && i === ACHIEVEMENTS.findIndex(x => !state.achievements.includes(x.id))
+                  ? { 'data-tutorial': 'achievement-locked' }
+                  : {})}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 + i * 0.05 }}
