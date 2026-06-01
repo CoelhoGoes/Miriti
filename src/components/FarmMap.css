@@ -5,6 +5,7 @@
 }
 
 /* ---- Céu ---- */
+/* DEPRECATED — substituído pelo gradient em .farmContainer (FarmMap.module.css)
 .farm-sky {
   position: absolute;
   inset: 0;
@@ -16,6 +17,7 @@
     #fef3c7 74%,
     #fde68a 100%);
 }
+*/
 
 .farm-sun {
   position: absolute;

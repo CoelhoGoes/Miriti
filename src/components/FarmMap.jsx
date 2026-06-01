@@ -9,7 +9,11 @@ import { FaTrophy } from 'react-icons/fa'
 import './FarmMap.css'
 import styles from './FarmMap/FarmMap.module.css'
 
-/* Locais clicáveis da fazenda — cada um abre uma funcionalidade. */
+/* Locais clicáveis da fazenda — cada um abre uma funcionalidade.
+   leftPct  — % horizontal do viewBox 1200×680.
+   pathYPct — % vertical onde o caminho SVG passa naquela X.
+   O top CSS usa calc(pathYPct% - var(--ms-node-size)) para que a borda
+   inferior do círculo toque sempre o caminho, em qualquer resolução. */
 const MAP_NODES = [
   {
     id: 'escolinha',
@@ -17,7 +21,7 @@ const MAP_NODES = [
     screen: 'escolinha',
     borderColor: 'var(--color-primary-dark)',
     shadowColor: '#2E6DA4',
-    position: { left: 140, top: 388 },
+    position: { leftPct: 11.67, pathYPct: 71.2 },
   },
   {
     id: 'feirinha',
@@ -25,7 +29,7 @@ const MAP_NODES = [
     screen: 'stocks',
     borderColor: 'var(--color-secondary)',
     shadowColor: '#B35A0A',
-    position: { left: 375, top: 373 },
+    position: { leftPct: 31.25, pathYPct: 67.1 },
   },
   {
     id: 'cooperativa',
@@ -33,7 +37,7 @@ const MAP_NODES = [
     screen: 'cooperativa',
     borderColor: 'var(--color-warning)',
     shadowColor: 'var(--color-warning)',
-    position: { left: 684, top: 370 },
+    position: { leftPct: 57, pathYPct: 65.7 },
   },
   {
     id: 'conquistas',
@@ -41,7 +45,7 @@ const MAP_NODES = [
     screen: 'achievements',
     borderColor: 'var(--color-warning)',
     shadowColor: '#C47A00',
-    position: { left: 925, top: 380 },
+    position: { leftPct: 77.08, pathYPct: 68.2 },
   },
 ]
 
@@ -255,7 +259,10 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
           <motion.div
             key={node.id}
             className={styles.mapNode}
-            style={{ left: node.position.left, top: node.position.top }}
+            style={{
+              left: `${node.position.leftPct}%`,
+              top: `calc(${node.position.pathYPct}% - var(--ms-node-size))`,
+            }}
             initial={{ opacity: 0, y: 30, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.2 + index * 0.1, type: 'spring', stiffness: 200, damping: 18 }}

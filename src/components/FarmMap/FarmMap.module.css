@@ -2,73 +2,87 @@
 position: relative;
 width: 100%;
 height: 100vh;
+height: 100dvh;
 overflow: hidden;
 background: linear-gradient(
-	180deg,
-	var(--color-sky-top) 0%,
-	var(--color-sky-bottom) 55%,
-	var(--color-ground) 100%
+  180deg,
+  var(--color-sky-top)    0%,
+  var(--color-sky-bottom) 55%,
+  var(--color-ground)     100%
 );
 }
 
 .gameHeader {
 position: absolute;
 top: 0; left: 0; right: 0;
-height: 70px;
-background: var(--color-white);
-backdrop-filter: blur(14px);
+height: var(--ms-header-height);
+height: calc(var(--ms-header-height) + env(safe-area-inset-top, 0px));
+padding: 0 var(--ms-header-padding);
+padding-top: env(safe-area-inset-top, 0px);
+box-sizing: border-box;
+background: rgba(255, 255, 255, 0.92);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
 border-bottom: 3px solid var(--color-surface-2);
 display: flex;
 align-items: center;
-padding: 0 18px;
+justify-content: space-between;
+gap: var(--ms-gap-sm);
 box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 z-index: 100;
 }
 
 .headerUtils {
 display: flex;
-gap: 7px;
+gap: var(--ms-gap-xs);
 flex-shrink: 0;
 }
 
 .headerUtils button {
-background: linear-gradient(135deg, #fff, #fef3c7);
-border: 2.5px solid #fde68a;
+background: var(--color-surface-3, #f5f5f5);
+border: 2px solid var(--color-surface-2, #e5e5e5);
 border-radius: 50%;
-width: 40px; height: 40px;
-font-size: 17px;
+width: var(--ms-icon-button);
+height: var(--ms-icon-button);
+font-size: var(--ms-icon-button-font);
 cursor: pointer;
 display: flex;
 align-items: center;
 justify-content: center;
 padding: 0;
-box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
-transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+transition: background 0.2s;
 }
 
-.headerUtils button:hover {
-background: linear-gradient(135deg, #fffbeb, #fde68a);
-border-color: #fbbf24;
-box-shadow: 0 6px 14px rgba(245, 158, 11, 0.35);
-transform: translateY(-1px);
-}
+.headerUtils button:hover { background: var(--color-surface-2, #e5e5e5); }
 
 .headerTitle {
 flex: 1;
 display: flex;
 align-items: center;
 justify-content: center;
-gap: 12px;
+gap: var(--ms-gap-xs);
+min-width: 0;
 }
 
 .headerTitle h1 {
 font-family: var(--font-display);
-font-size: 24px;
+font-size: var(--ms-text-lg);
 font-weight: 900;
 color: var(--color-text-primary);
 margin: 0;
 text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
 letter-spacing: 0.01em;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+.headerTitle h1 { font-size: var(--ms-text-xl); }
+}
+
+@media (min-width: 1280px) {
+.headerTitle h1 { font-size: var(--ms-text-2xl); }
 }
 
 .mascotButton {
@@ -85,6 +99,7 @@ cursor: pointer;
 box-shadow: 0 5px 14px rgba(245, 158, 11, 0.45), inset 0 -3px 6px rgba(0, 0, 0, 0.08);
 padding: 0;
 position: relative;
+flex-shrink: 0;
 }
 
 .mascotButton::after {
@@ -99,7 +114,7 @@ filter: drop-shadow(0 0 4px rgba(253, 224, 71, 0.95));
 .headerRight {
 display: flex;
 align-items: center;
-gap: 8px;
+gap: var(--ms-gap-xs);
 flex-shrink: 0;
 }
 
@@ -107,9 +122,9 @@ flex-shrink: 0;
 background: var(--color-warning-light);
 border: 2.5px solid var(--color-warning);
 border-radius: 50%;
-width: 42px;
-height: 42px;
-font-size: 1.1rem;
+width: var(--ms-icon-button);
+height: var(--ms-icon-button);
+font-size: var(--ms-icon-button-font);
 color: var(--color-warning);
 cursor: pointer;
 display: flex;
@@ -121,37 +136,51 @@ justify-content: center;
 background: var(--color-success-light);
 border: 2.5px solid var(--color-success);
 border-radius: 22px;
-padding: 6px 16px;
+padding: var(--ms-badge-pad);
 display: flex;
 align-items: center;
-gap: 6px;
+gap: var(--ms-gap-xs);
 font-family: var(--font-display);
-font-size: 15px;
+font-size: var(--ms-badge-size);
 font-weight: 900;
 color: var(--color-success);
-box-shadow: 0 4px 10px rgba(39, 174, 96, 0.22);
+white-space: nowrap;
 }
 
 .coinsBadge span:first-child {
-font-size: 18px;
+font-size: 1.1em;
 filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .hintBar {
 position: absolute;
-top: 70px; left: 0; right: 0;
-height: 38px;
-background: var(--color-white);
-border-bottom: 2px solid var(--color-surface-2);
+top: calc(var(--ms-header-height) + env(safe-area-inset-top, 0px));
+left: 0; right: 0;
+height: 32px;
+background: rgba(255, 248, 220, 0.9);
+border-bottom: 2px solid rgba(210, 180, 90, 0.5);
 display: flex;
 align-items: center;
 justify-content: center;
 font-family: var(--font-display);
-font-size: 13px;
-font-weight: 800;
-color: var(--color-text-primary);
+font-size: var(--ms-text-xs);
+font-weight: 600;
+color: #7A5C00;
 z-index: 90;
-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+text-align: center;
+padding: 0 var(--ms-gap-md);
+}
+
+@media (min-width: 768px) {
+.hintBar { height: 36px; font-size: var(--ms-text-sm); }
+}
+
+@media (min-width: 1280px) {
+.hintBar { height: 44px; font-size: var(--ms-text-base); font-weight: 700; }
+}
+
+@media (min-width: 1920px) {
+.hintBar { height: 54px; font-size: var(--ms-text-lg); }
 }
 
 .mapNode {
@@ -165,24 +194,21 @@ transform: translateX(-50%);
 }
 
 .nodeCircle {
-width: 116px;
-height: 116px;
-background:
-	radial-gradient(circle at 38% 28%, var(--color-white) 0%, var(--color-warning-light) 55%, var(--color-warning-light) 100%);
-border-width: 5px;
+width: var(--ms-node-size);
+height: var(--ms-node-size);
+background: radial-gradient(circle at 38% 28%, var(--color-white) 0%, var(--color-warning-light) 55%, var(--color-warning-light) 100%);
+border-width: clamp(3px, 0.4vw, 5px);
 border-style: solid;
 border-radius: 50%;
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 54px;
+font-size: var(--ms-node-emoji);
 box-shadow:
-	0 6px 0 var(--node-shadow-color),
-	0 12px 24px rgba(0, 0, 0, 0.28),
-	inset 0 -6px 12px rgba(0, 0, 0, 0.06),
-	inset 0 4px 8px rgba(255, 255, 255, 0.6);
+  0 6px 0 var(--node-shadow-color, var(--color-text-secondary, #666)),
+  0 8px 20px rgba(0, 0, 0, 0.22);
 position: relative;
-transition: transform 0.18s, box-shadow 0.18s;
+transition: transform 0.15s ease;
 }
 
 .nodeCircle::after {
@@ -199,50 +225,75 @@ pointer-events: none;
 
 .mapNode:hover .nodeCircle {
 box-shadow:
-	0 8px 0 var(--node-shadow-color),
-	0 16px 30px rgba(0, 0, 0, 0.32),
-	inset 0 -6px 12px rgba(0, 0, 0, 0.06),
-	inset 0 4px 8px rgba(255, 255, 255, 0.6);
+  0 8px 0 var(--node-shadow-color, var(--color-text-secondary, #666)),
+  0 16px 30px rgba(0, 0, 0, 0.32),
+  inset 0 -6px 12px rgba(0, 0, 0, 0.06),
+  inset 0 4px 8px rgba(255, 255, 255, 0.6);
 }
 
 .nodeLabel {
-margin-top: 12px;
+margin-top: var(--ms-gap-xs);
 background: var(--color-text-primary);
 color: var(--color-text-inverse);
-padding: 7px 20px;
-border-radius: 16px;
+padding: var(--ms-node-label-pad);
+border-radius: 12px;
 font-family: var(--font-display);
-font-size: 14px;
+font-size: var(--ms-node-label-size);
 font-weight: 900;
 letter-spacing: 0.02em;
-box-shadow:
-  0 5px 0 rgba(0, 0, 0, 0.3),
-  0 8px 14px rgba(0, 0, 0, 0.18);
+box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.15);
 white-space: nowrap;
-	border: 2px solid var(--color-surface-2);
+text-align: center;
+max-width: 90vw;
+overflow: hidden;
+text-overflow: ellipsis;
 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+border: 2px solid var(--color-surface-2, #e5e5e5);
 }
 
 .allyBadgeOverlay {
-  position: absolute;
-  bottom: 18px;
-  right: 18px;
-  z-index: 50;
+position: absolute;
+bottom: calc(var(--ms-gap-md) + env(safe-area-inset-bottom, 0px));
+right: var(--ms-gap-md);
+z-index: 50;
+transform-origin: bottom right;
 }
+
+@media (max-width: 767px) {
+.allyBadgeOverlay {
+  bottom: var(--ms-gap-sm);
+  right: var(--ms-gap-sm);
+  transform: scale(0.85);
+}
+}
+
 
 .nodeBadge {
 position: absolute;
 top: -6px;
 right: -6px;
 background: var(--color-danger);
-color: #FFFFFF;
+color: var(--color-text-inverse, #fff);
 border-radius: 50%;
-width: 26px; height: 26px;
+width: clamp(20px, 2.4vw, 28px);
+height: clamp(20px, 2.4vw, 28px);
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 12px;
+font-size: clamp(10px, 1.2vw, 13px);
 font-weight: 900;
-border: 2px solid white;
+border: 2px solid var(--color-white, #fff);
 z-index: 35;
+}
+
+.farmDecoration {
+position: absolute;
+font-size: clamp(1.5rem, 3vw, 2.5rem);
+z-index: 18;
+pointer-events: none;
+filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+@media (max-width: 767px) {
+.farmDecoration[data-priority='low'] { display: none; }
 }
