@@ -79,6 +79,13 @@ export const STRINGS = {
     },
     options: {
       title: '⚙️ Configurações',
+      tutorialsSection:     'Refazer Tutoriais',
+      tutorialsDescription: 'Reveja o tutorial de cada área a qualquer momento.',
+      replayEscola:         '🏫 Tutorial da Escola',
+      replayFeira:          '🛒 Tutorial da Feira',
+      replayCooperativa:    '🐾 Tutorial da Cooperativa',
+      replayConquistas:     '🏆 Tutorial das Conquistas',
+      replayRanking:        '👥 Tutorial do Ranking',
       music: 'Volume da música',
       sfx: 'Volume dos efeitos',
       animations: 'Animações',
@@ -159,14 +166,72 @@ export const STRINGS = {
       next: 'Próximo',
       finish: 'Começar!',
       back: 'Anterior',
+      controls: {
+        skip:   'Pular',
+        prev:   'Voltar',
+        next:   'Próximo',
+        finish: 'Concluir',
+      },
       steps: [
         { title: 'Bem-vindo à Fazenda!', text: 'Eu sou seu mascote Cofrinho 🐷. Vou te guiar pelos primeiros passos da educação financeira.' },
         { title: 'Escola 🏫', text: 'Comece pela Escola. Cada lição ensina algo novo sobre dinheiro.' },
         { title: 'Feira 🧺', text: 'Compre e venda produtos da Amazônia para treinar suas escolhas.' },
-        { title: 'Loja 🏪', text: 'Use suas moedas 🪙 para comprar dicas e novos mascotes!' },
-        { title: 'Conquistas 🏆', text: 'Veja seus troféus e meta a meta cumpra desafios.' },
-        { title: 'Toque no mascote!', text: 'No topo da tela, toque no seu mascote para ouvir curiosidades sobre dinheiro.' }
+        { title: 'Cooperativa 🐾', text: 'Aqui você adota animais que te ajudam: Ajudantes, Parceiros e Aliados!' },
+        { title: 'Conquistas 🏆', text: 'Veja seus troféus e cumpra desafios para ganhar mais moedas.' },
+        { title: 'Aliado em Campo', text: 'O Cofrinho é seu primeiro Aliado! Você pode trocar quando adotar outros na Cooperativa.' }
       ]
+    },
+    tutorialHelp: {
+      buttonAria:  'Refazer tutorial desta tela',
+      buttonTitle: 'Refazer tutorial',
+      shortLabel:  '❓',
+    },
+    secondaryTutorials: {
+      escola: {
+        step1: { title: 'Escola Miriti',           text: 'Aqui você aprende sobre dinheiro brincando! Cada lição ensina algo novo.' },
+        step2: { title: 'Estrelinhas ⭐',           text: 'Cada lição vale 3 estrelas. Você ganha mais estrelas quando acerta sem usar dica!' },
+        step3: { title: 'Lições Trancadas 🔒',      text: 'Algumas lições ficam trancadas até você terminar a anterior. Uma de cada vez!' },
+        step4: { title: 'Os Chefões 👹',            text: 'Depois de algumas lições aparecem Chefões! São difíceis, mas dão MUITAS moedas!' },
+        step5: { title: 'Pronto para começar!',    text: 'Toque numa lição para começar. Boa sorte, aluno atento!' },
+      },
+      feira: {
+        step1: { title: 'Feira do Jutaiteua',      text: 'Bem-vindo à Feira! Aqui você compra e vende produtos da nossa região.' },
+        step2: { title: 'O Termômetro 🌡️',          text: 'Olhe o termômetro: azul = barato (compre!), vermelho = caro (venda!).' },
+        step3: { title: 'Sua Cesta 🧺',             text: 'Tudo que você comprar vai para a Cesta. Ela tem 8 espaços.' },
+        step4: { title: 'Filtros Espertos',        text: 'Use os filtros para ver só produtos baratos, caros, ou os que já tem na cesta!' },
+        step5: { title: 'Cuidado com o tempo!',   text: 'Cada vez que você sai e volta, passa uma rodada. Os preços mudam — e eventos podem aparecer!' },
+      },
+      cooperativa: {
+        step1: { title: 'Cooperativa dos Bichos',  text: 'Aqui você adota bichinhos da Amazônia que te ajudam de verdade no jogo!' },
+        step2: { title: '3 Tipos de Amigos',       text: 'Ajudantes 🟢 vão e voltam. Parceiros 🔵 ficam um pouco. Aliados 🟡 ficam pra sempre!' },
+        step3: { title: 'Aliado em Campo',         text: 'Só pode ter 1 Aliado activo por vez. Quando adotar mais, é só trocar!' },
+        step4: { title: 'Cada bicho, um poder',   text: 'Cada animal usa o que faz na natureza para te ajudar! Tucano vê longe = mostra o futuro!' },
+      },
+      conquistas: {
+        step1: { title: 'Mural de Conquistas',     text: 'Aqui ficam todas as suas conquistas! Quanto mais você joga, mais desbloqueia.' },
+        step2: { title: 'Conquistas Bloqueadas 🔒', text: 'As cinzas você ainda não pegou. Toque para ver o que precisa fazer!' },
+        step3: { title: 'Ganhe Recompensas',       text: 'Cada conquista te dá moedas extras! Quanto mais difícil, mais moedas. Bora colecionar! 🏆' },
+      },
+      ranking: {
+        step1: { title: 'Pódio dos Aventureiros',  text: 'Os 3 primeiros ganham medalha 🥇🥈🥉! Tente chegar no pódio!' },
+        step2: { title: 'Como funciona',           text: 'É por moedas TOTAIS! Quem economiza mais, sobe no ranking!' },
+        step3: { title: 'Atualizar',               text: 'O ranking atualiza sozinho. Mas se quiser ver agora, é só apertar o botão!' },
+      },
+    },
+    rewardModal: {
+      title:         'Tutorial Completo!',
+      subtitle:      'Você desbloqueou um Badge!',
+      coinsEarned:   'Você ganhou {n} 🪙',
+      badgeUnlocked: 'Badge desbloqueado:',
+      keepGoing:     'Continuar',
+      viewBadges:    'Ver meus Badges',
+    },
+    badges: {
+      sectionTitle: 'Badges Educativos',
+      empty:        'Você ainda não tem badges. Conclua os tutoriais para colecioná-los!',
+      progress:     '{n} de {total} desbloqueados',
+      lockedBadge:  'Bloqueado',
+      unlocked:     'Desbloqueado!',
     },
     rotateDevice: {
       title:    'Gire a tela!',
@@ -559,6 +624,13 @@ export const STRINGS = {
     },
     options: {
       title: '⚙️ Settings',
+      tutorialsSection:     'Replay Tutorials',
+      tutorialsDescription: "Watch each area's tutorial again whenever you want.",
+      replayEscola:         '🏫 School Tutorial',
+      replayFeira:          '🛒 Market Tutorial',
+      replayCooperativa:    '🐾 Cooperative Tutorial',
+      replayConquistas:     '🏆 Achievements Tutorial',
+      replayRanking:        '👥 Ranking Tutorial',
       music: 'Music volume',
       sfx: 'Sound effects volume',
       animations: 'Animations',
@@ -639,14 +711,72 @@ export const STRINGS = {
       next: 'Next',
       finish: 'Start!',
       back: 'Back',
+      controls: {
+        skip:   'Skip',
+        prev:   'Back',
+        next:   'Next',
+        finish: 'Finish',
+      },
       steps: [
         { title: 'Welcome to the Farm!', text: "I'm Piggy 🐷, your mascot. I'll guide you through your first steps with money." },
         { title: 'School 🏫', text: 'Start at the School. Each lesson teaches something new about money.' },
         { title: 'Market Fair 🧺', text: 'Buy and sell Amazon products to train your choices.' },
-        { title: 'Shop 🏪', text: 'Use your coins 🪙 to buy hints and new mascots!' },
-        { title: 'Achievements 🏆', text: 'See your trophies and conquer challenges.' },
-        { title: 'Tap the mascot!', text: 'At the top of the screen, tap your mascot to hear fun facts about money.' }
+        { title: 'Cooperative 🐾', text: 'Adopt animals that help you here: Helpers, Partners and Allies!' },
+        { title: 'Achievements 🏆', text: 'See your trophies and complete challenges to earn more coins.' },
+        { title: 'Active Ally', text: 'Piggy is your first Ally! You can swap once you adopt others at the Cooperative.' }
       ]
+    },
+    tutorialHelp: {
+      buttonAria:  'Replay tutorial for this screen',
+      buttonTitle: 'Replay tutorial',
+      shortLabel:  '❓',
+    },
+    secondaryTutorials: {
+      escola: {
+        step1: { title: 'Miriti School',           text: 'Here you learn about money while playing! Each lesson teaches something new.' },
+        step2: { title: 'Stars ⭐',                text: 'Each lesson is worth 3 stars. You earn more stars when you answer without hints!' },
+        step3: { title: 'Locked Lessons 🔒',       text: 'Some lessons stay locked until you finish the previous one. One at a time!' },
+        step4: { title: 'The Bosses 👹',           text: 'After some lessons, Bosses appear! They are hard, but give LOTS of coins!' },
+        step5: { title: 'Ready to start!',        text: 'Tap a lesson to begin. Good luck, attentive student!' },
+      },
+      feira: {
+        step1: { title: 'Jutaiteua Market',        text: 'Welcome to the Market! Here you buy and sell products from our region.' },
+        step2: { title: 'The Thermometer 🌡️',       text: 'Look at the thermometer: blue = cheap (buy!), red = expensive (sell!).' },
+        step3: { title: 'Your Basket 🧺',           text: 'Everything you buy goes to the Basket. It has 8 spaces.' },
+        step4: { title: 'Smart Filters',           text: 'Use the filters to see only cheap, expensive, or basket products!' },
+        step5: { title: 'Watch the time!',        text: 'Each time you leave and come back, a round passes. Prices change — and events can appear!' },
+      },
+      cooperativa: {
+        step1: { title: 'Animal Cooperative',      text: 'Here you adopt little Amazon animals that really help you in the game!' },
+        step2: { title: '3 Types of Friends',      text: 'Helpers 🟢 come and go. Partners 🔵 stay a while. Allies 🟡 stay forever!' },
+        step3: { title: 'Active Ally',             text: 'You can only have 1 active Ally at a time. When you adopt more, just swap!' },
+        step4: { title: 'Each animal, a power',   text: 'Each animal uses what it does in nature to help you! Toucan sees far = shows the future!' },
+      },
+      conquistas: {
+        step1: { title: 'Achievement Wall',        text: 'All your achievements live here! The more you play, the more you unlock.' },
+        step2: { title: 'Locked Achievements 🔒',  text: 'The grey ones you have not gotten yet. Tap to see what you need to do!' },
+        step3: { title: 'Earn Rewards',            text: 'Each achievement gives you extra coins! The harder, the more coins. Let us collect! 🏆' },
+      },
+      ranking: {
+        step1: { title: 'Adventurers Podium',      text: 'The top 3 get medals 🥇🥈🥉! Try to reach the podium!' },
+        step2: { title: 'How it works',            text: 'By TOTAL coins! Whoever saves the most, climbs the ranking!' },
+        step3: { title: 'Refresh',                 text: 'The ranking updates by itself. But if you want to see now, just tap the button!' },
+      },
+    },
+    rewardModal: {
+      title:         'Tutorial Complete!',
+      subtitle:      'You unlocked a Badge!',
+      coinsEarned:   'You earned {n} 🪙',
+      badgeUnlocked: 'Badge unlocked:',
+      keepGoing:     'Continue',
+      viewBadges:    'View my Badges',
+    },
+    badges: {
+      sectionTitle: 'Educational Badges',
+      empty:        'You have no badges yet. Complete tutorials to collect them!',
+      progress:     '{n} of {total} unlocked',
+      lockedBadge:  'Locked',
+      unlocked:     'Unlocked!',
     },
     rotateDevice: {
       title:    'Rotate your screen!',
