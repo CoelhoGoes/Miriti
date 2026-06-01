@@ -3,6 +3,8 @@
  * Vencer com ≥ 70% de acerto desbloqueia o mascote exclusivo da matéria.
  */
 
+import { shuffleOptions } from './questions.js'
+
 const DEFAULT_LANG = 'pt'
 
 /** Mascotes exclusivos liberados ao vencer o chefão de cada matéria. */
@@ -437,13 +439,26 @@ function tr(field, lang) {
   return field[lang] ?? field[DEFAULT_LANG] ?? ''
 }
 
-export function getBossQuestions(phaseIndex, lang = DEFAULT_LANG) {
+function hashString(str) {
+  let h = 2166136261 >>> 0
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i)
+    h = Math.imul(h, 16777619) >>> 0
+  }
+  return h
+}
+
+export function getBossQuestions(phaseIndex, lang = DEFAULT_LANG, sessionSeed = null) {
   const list = BOSS_QUESTIONS[phaseIndex] || []
-  return list.map(q => ({
-    id: q.id,
-    correct: q.correct,
-    question: tr(q.question, lang),
-    options: q.options[lang] || q.options[DEFAULT_LANG],
-    explanation: tr(q.explanation, lang)
-  }))
+  const baseSeed = sessionSeed ?? Math.floor(Math.random() * 1e9)
+  return list.map((q, idx) => {
+    const translated = {
+      id: q.id,
+      correct: q.correct,
+      question: tr(q.question, lang),
+      options: q.options[lang] || q.options[DEFAULT_LANG],
+      explanation: tr(q.explanation, lang)
+    }
+    return shuffleOptions(translated, hashString(`${q.id}-${baseSeed}-${idx}`))
+  })
 }

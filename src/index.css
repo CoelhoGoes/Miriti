@@ -191,25 +191,15 @@ h1, h2, h3, h4, h5, h6 {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  font-size: calc(1rem * var(--font-scale, 1));
 }
 
-/* Acessibilidade — escala de fonte (multiplica o tamanho de texto) */
-.app-root.font-scale-1 { --font-scale: 1; }
-.app-root.font-scale-2 { --font-scale: 1.12; }
-.app-root.font-scale-3 { --font-scale: 1.25; }
-.app-root.font-scale-4 { --font-scale: 1.4; }
-
-/* Aplica fator de escala apenas em texto, mantendo emojis/ícones intactos */
-.app-root.font-scale-2 p,
-.app-root.font-scale-2 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
-.app-root.font-scale-2 li,
-.app-root.font-scale-2 label,
-.app-root.font-scale-2 button,
-.app-root.font-scale-2 h1,
-.app-root.font-scale-2 h2,
-.app-root.font-scale-2 h3,
-.app-root.font-scale-2 h4 { font-size: 1.12em; }
+/*
+ * Acessibilidade — escala de fonte
+ *
+ * A escala é aplicada via `document.documentElement.style.fontSize` em App.jsx
+ * (16px → 17.92px → 20px → 22.4px). Como tudo no jogo usa rem/em, isso já
+ * escala automaticamente. Não duplicar com regras CSS ou ocorre double-scale.
+ */
 
 /* ════════════════════════════════════════════════════════════
    SAFE AREAS — Compatibilidade com iPhone notch e dynamic island

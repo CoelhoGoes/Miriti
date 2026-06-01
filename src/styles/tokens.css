@@ -82,3 +82,45 @@ body.colorblind-mode[data-colorblind-mode='deuter'] {
 --color-danger:       #D55E00;
 --color-warning:      #E69F00;
 }
+
+/*
+ * Tokens *-soft: versões claras de success/danger/warning usadas em fundos
+ * de cards e badges. Em modo daltônico, mudam junto com os tons fortes,
+ * para que o gradiente do botão de "correto" / "errado" inteiro se desloque
+ * para a paleta azul/laranja segura (Okabe-Ito), sem quebrar o visual.
+ */
+:root {
+  --color-success-soft: #d1fae5;
+  --color-success-mid:  #10b981;
+  --color-danger-soft:  #fee2e2;
+  --color-danger-mid:   #ef4444;
+  --color-warning-soft: #fde68a;
+  --color-warning-mid:  #f59e0b;
+}
+
+body.colorblind-mode {
+  --color-success-soft: #BFE4D3;
+  --color-success-mid:  #009E73;
+  --color-danger-soft:  #FFD3B6;
+  --color-danger-mid:   #D55E00;
+  --color-warning-soft: #FFE0A6;
+  --color-warning-mid:  #E69F00;
+}
+
+body.colorblind-mode[data-colorblind-mode='protan'] {
+  --color-success-soft: #BFE0CB;
+  --color-success-mid:  #2B9C67;
+  --color-danger-soft:  #FFCAA0;
+  --color-danger-mid:   #C05A00;
+  --color-warning-soft: #FFD89A;
+  --color-warning-mid:  #D89000;
+}
+
+body.colorblind-mode[data-colorblind-mode='tritan'] {
+  --color-success-soft: #B7DDC5;
+  --color-success-mid:  #2A8C60;
+  --color-danger-soft:  #FFCFA8;
+  --color-danger-mid:   #B85E00;
+  --color-warning-soft: #FFD08A;
+  --color-warning-mid:  #C77D00;
+}

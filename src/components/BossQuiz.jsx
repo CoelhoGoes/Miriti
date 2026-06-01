@@ -17,7 +17,11 @@ export default function BossQuiz({ phaseIndex, onExit }) {
   const s = useStrings()
   const lang = useLanguage()
   const phase = PHASES[phaseIndex]
-  const questions = useMemo(() => getBossQuestions(phaseIndex, lang), [phaseIndex, lang])
+  const sessionSeed = useMemo(() => Math.floor(Math.random() * 1e9), [phaseIndex, lang])
+  const questions = useMemo(
+    () => getBossQuestions(phaseIndex, lang, sessionSeed),
+    [phaseIndex, lang, sessionSeed]
+  )
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)

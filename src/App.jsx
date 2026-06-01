@@ -198,8 +198,7 @@ export default function App() {
       <div
         className={[
           'app-root',
-          animationsEnabled ? '' : 'animations-off',
-          `font-scale-${fontScale}`
+          animationsEnabled ? '' : 'animations-off'
         ].filter(Boolean).join(' ')}
       >
         <div className="app-content">
