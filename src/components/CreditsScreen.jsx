@@ -44,7 +44,7 @@ export default function CreditsScreen({ onBack }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring', damping: 14 }}
         >
-          🐔 Miriti
+          🐷 Miriti
         </motion.h1>
 
         <motion.p
