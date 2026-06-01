@@ -1,67 +1,58 @@
-import { useEffect, useMemo } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { useStrings } from '../../i18n/index.js';
-import styles from './Barometer.module.css';
+/* eslint-disable react/prop-types */
+import { motion } from 'framer-motion'
+import { useStrings } from '../../i18n/index.js'
+import styles from './Barometer.module.css'
 
-function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
+const LEVELS = [
+  { emoji: '❄️', class: 'level1', labelClass: 'labelLevel1' },
+  { emoji: '📉', class: 'level2', labelClass: 'labelLevel2' },
+  { emoji: '😐', class: 'level3', labelClass: 'labelLevel3' },
+  { emoji: '📈', class: 'level4', labelClass: 'labelLevel4' },
+  { emoji: '🔥', class: 'level5', labelClass: 'labelLevel5' },
+]
+
+/**
+ * Determina o nível (0-4) com base no preço dentro do range min-max.
+ */
+export function getBarometerLevel(currentPrice, minPrice, maxPrice) {
+  if (maxPrice <= minPrice) return 2
+  const range    = maxPrice - minPrice
+  const position = (currentPrice - minPrice) / range
+  return Math.min(4, Math.max(0, Math.floor(position * 5)))
 }
 
 export default function Barometer({ currentPrice, basePrice, minPrice, maxPrice }) {
-    const s = useStrings();
-    const controls = useAnimation();
+  const s = useStrings()
+  const activeIndex = getBarometerLevel(currentPrice, minPrice, maxPrice)
+  const activeLevel = LEVELS[activeIndex]
+  const label       = s.feirinha.barometer[`level${activeIndex + 1}`]
 
-    const getLevel = (percentage) => {
-        if (percentage <= 20) {
-            return { emoji: '❄️', label: s.feirinha.barometer.level1, color: 'var(--color-primary)' };
-        }
-        if (percentage <= 40) {
-            return { emoji: '📉', label: s.feirinha.barometer.level2, color: 'var(--color-secondary)' };
-        }
-        if (percentage <= 60) {
-            return { emoji: '😐', label: s.feirinha.barometer.level3, color: 'var(--color-warning)' };
-        }
-        if (percentage <= 80) {
-            return { emoji: '📈', label: s.feirinha.barometer.level4, color: 'var(--color-warning)' };
-        }
-        return { emoji: '🔥', label: s.feirinha.barometer.level5, color: 'var(--color-danger)' };
-    };
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.segments}>
+        {LEVELS.map((level, i) => {
+          const isActive = i === activeIndex
+          return (
+            <motion.div
+              key={level.class}
+              className={`${styles.segment} ${styles[level.class]} ${isActive ? styles.active : ''}`}
+              animate={isActive ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+              transition={{
+                duration: 2,
+                repeat: isActive ? Infinity : 0,
+                ease: 'easeInOut',
+              }}
+              aria-hidden="true"
+            >
+              {level.emoji}
+            </motion.div>
+          )
+        })}
+      </div>
 
-    const safeRange = maxPrice - minPrice;
-    const rawPercentage = safeRange > 0
-        ? ((currentPrice - minPrice) / safeRange) * 100
-        : 0;
-    const percentage = clamp(rawPercentage, 0, 100);
-
-    const level = useMemo(() => getLevel(percentage), [percentage, s]);
-
-    useEffect(() => {
-        controls.start({
-            width: `${percentage}%`,
-            backgroundColor: level.color,
-            transition: { duration: 0.6 },
-        });
-    }, [controls, percentage, level.color]);
-
-    return (
-        <div className={styles.wrapper}>
-            <div className={styles.header}>
-                <span className={styles.emoji} aria-hidden="true">{level.emoji}</span>
-                <span className={styles.label}>{level.label}</span>
-            </div>
-
-            <div className={styles.track}>
-                <motion.div
-                    className={styles.fill}
-                    initial={{ width: '0%', backgroundColor: 'var(--color-surface-3)' }}
-                    animate={controls}
-                />
-            </div>
-
-            <div className={styles.footer}>
-                <strong>{currentPrice} {s.feirinha.coins}</strong>
-                <span className={styles.base}>{s.feirinha.base.replace('{price}', basePrice)}</span>
-            </div>
-        </div>
-    );
+      <p className={`${styles.label} ${styles[activeLevel.labelClass]}`}>
+        {label}
+      </p>
+    </div>
+  )
 }

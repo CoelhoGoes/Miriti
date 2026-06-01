@@ -1,135 +1,190 @@
-import { useEffect, useMemo } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { useStrings, useLanguage } from '../../i18n/index.js';
-import { useGame } from '../../context/GameContext.jsx';
-import Barometer from './Barometer';
-import styles from './ProductCard.module.css';
+/* eslint-disable react/prop-types */
+import { motion, AnimatePresence } from 'framer-motion'
+import { useStrings, useLanguage } from '../../i18n/index.js'
+import Barometer, { getBarometerLevel } from './Barometer'
+import ActionHint from './ActionHint'
+import styles from './ProductCard.module.css'
 
 const cardVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.35 },
-    },
-};
+  hidden:  { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+}
 
-const trendVariants = {
-    up: { scale: [1, 1.12, 1], color: 'var(--color-success)' },
-    down: { scale: [1, 1.12, 1], color: 'var(--color-danger)' },
-    flat: { scale: 1, color: 'var(--color-text-secondary)' },
-};
+function pickLang(field, lang) {
+  if (!field) return ''
+  if (typeof field === 'string') return field
+  return field[lang] ?? field.pt ?? ''
+}
 
-function getTrend(currentPrice, previousPrice) {
-    if (currentPrice > previousPrice) return { key: 'up', emoji: '⬆️' };
-    if (currentPrice < previousPrice) return { key: 'down', emoji: '⬇️' };
-    return { key: 'flat', emoji: '➡️' };
+function getDiffInfo(currentPrice, basePrice, s) {
+  const diff = currentPrice - basePrice
+  if (diff === 0) return { className: styles.priceDiffEqual,         label: s.feirinha.card.diffEqual }
+  if (diff <= -3)  return { className: styles.priceDiffMuchCheaper,   label: s.feirinha.card.diffMuchCheap.replace('{n}', diff) }
+  if (diff < 0)   return { className: styles.priceDiffCheaper,       label: s.feirinha.card.diffCheaper.replace('{n}', diff) }
+  if (diff <= 3)  return { className: styles.priceDiffExpensive,     label: s.feirinha.card.diffExpensive.replace('{n}', diff) }
+  return               { className: styles.priceDiffMuchExpensive,  label: s.feirinha.card.diffMuchExp.replace('{n}', diff) }
 }
 
 export default function ProductCard({
-    product,
-    currentPrice,
-    previousPrice,
-    basketSlot,
-    round,
-    onBuy,
-    onSell,
+  product,
+  currentPrice,
+  previousPrice: _previousPrice,
+  basketSlot,
+  round,
+  priceHistory,
+  onBuy,
+  onSell,
+  onShowHistory,
 }) {
-    const { state } = useGame();
-    const s = useStrings();
-    const lang = useLanguage();
-    const t = (obj) => (obj && typeof obj === 'object') ? (obj[lang] ?? obj.pt) : obj;
+  const s    = useStrings()
+  const lang = useLanguage()
 
-    const trend = useMemo(
-        () => getTrend(currentPrice, previousPrice),
-        [currentPrice, previousPrice]
-    );
+  const ownedQuantity  = basketSlot?.quantity ?? 0
+  const hasOwned       = ownedQuantity > 0
+  const barometerLevel = getBarometerLevel(currentPrice, product.minPrice, product.maxPrice)
+  const diffInfo       = getDiffInfo(currentPrice, product.basePrice, s)
 
-    const trendControls = useAnimation();
-    useEffect(() => {
-        trendControls.start(trend.key);
-    }, [trendControls, trend.key]);
+  const isInCooldown = product.hasCooldown && hasOwned
+    && (round - basketSlot.roundBought) < (product.cooldownRounds ?? 0)
+  const roundsLeft   = isInCooldown
+    ? (product.cooldownRounds ?? 0) - (round - basketSlot.roundBought)
+    : 0
 
-    const basketLines = state.basket.length;
-    const productInBasket = Boolean(basketSlot);
-    const basketIsFullByRule = basketLines >= 8 && !productInBasket;
+  const cardClass = [
+    styles.card,
+    barometerLevel <= 0 && styles.cardCheap,
+    barometerLevel >= 4 && styles.cardHot,
+  ].filter(Boolean).join(' ')
 
-    const roundsHeld = basketSlot ? round - basketSlot.roundBought : 0;
-    const cooldownActive = Boolean(
-        product.hasCooldown
-        && basketSlot
-        && roundsHeld < product.cooldownRounds
-    );
-    const roundsLeft = cooldownActive ? product.cooldownRounds - roundsHeld : 0;
+  const buyButtonClass = barometerLevel <= 0
+    ? `${styles.btn} ${styles.btnBuyCheap}`
+    : `${styles.btn} ${styles.btnBuyNormal}`
 
-    return (
-        <motion.div
-            className={styles.card}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-        >
-            <div className={styles.header}>
-                <div className={styles.mainInfo}>
-                    <span className={styles.emoji} aria-hidden="true">{product.emoji}</span>
-                    <div className={styles.nameBlock}>
-                        <h3 className={styles.name}>{t(product.name)}</h3>
-                        <span className={styles.riskBadge}>{t(product.riskProfile)}</span>
-                    </div>
-                </div>
-                <motion.span
-                    className={styles.trend}
-                    variants={trendVariants}
-                    initial={false}
-                    animate={trendControls}
-                    aria-label="tendencia de preco"
-                >
-                    {trend.emoji}
-                </motion.span>
-            </div>
+  const productName      = pickLang(product.name, lang)
+  const historyAriaLabel = (s.feirinha.priceHistory?.openHistoryAria ?? 'View history of {product}')
+    .replace('{product}', productName)
 
-            <Barometer
-                currentPrice={currentPrice}
-                basePrice={product.basePrice}
-                minPrice={product.minPrice}
-                maxPrice={product.maxPrice}
-            />
+  const handleHeaderClick = () => {
+    if (typeof onShowHistory === 'function') onShowHistory(product, priceHistory)
+  }
 
-            <p className={styles.currentPrice}><strong>{currentPrice} {s.feirinha.coins}</strong></p>
+  return (
+    <motion.div
+      className={cardClass}
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {hasOwned && (
+        <div className={styles.ownedBadge}>
+          🧺 {s.feirinha.card.youOwn.replace('{n}', ownedQuantity)}
+        </div>
+      )}
 
-            {product.hasCooldown && basketSlot && (
-                cooldownActive ? (
-                    <div className={styles.cooldownBadge}>
-                        🔒 {s.feirinha.sellIn.replace('{n}', roundsLeft)}
-                    </div>
-                ) : (
-                    <div className={styles.readyBadge}>{s.feirinha.readyToSell}</div>
-                )
-            )}
+      {/* Header clicável — abre histórico de preços */}
+      <button
+        type="button"
+        className={`${styles.header} ${styles.headerClickable}`}
+        aria-label={historyAriaLabel}
+        onClick={handleHeaderClick}
+      >
+        <div className={styles.iconBox} aria-hidden="true">
+          {product.emoji}
+        </div>
+        <div className={styles.headerText}>
+          <h3 className={styles.title}>{productName}</h3>
+          <span className={styles.riskBadge}>
+            {pickLang(product.riskProfile, lang)}
+          </span>
+        </div>
+      </button>
 
-            <div className={styles.actions}>
-                <motion.button
-                    type="button"
-                    className={styles.buyButton}
-                    disabled={basketIsFullByRule}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => onBuy(product.id)}
-                >
-                    {s.feirinha.buy}
-                </motion.button>
+      <Barometer
+        currentPrice={currentPrice}
+        basePrice={product.basePrice}
+        minPrice={product.minPrice}
+        maxPrice={product.maxPrice}
+      />
 
-                {basketSlot && basketSlot.quantity > 0 && (
-                    <motion.button
-                        type="button"
-                        className={styles.sellButton}
-                        disabled={cooldownActive}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => onSell(product.id, 1)}
-                    >
-                        {s.feirinha.sell} ({basketSlot.quantity})
-                    </motion.button>
-                )}
-            </div>
-        </motion.div>
-    );
+      <ActionHint barometerLevel={barometerLevel} hasOwned={hasOwned} />
+
+      {isInCooldown && (
+        <div className={styles.cooldownLine}>
+          ⏳ {s.feirinha.sellIn.replace('{n}', roundsLeft)}
+        </div>
+      )}
+      {hasOwned && product.hasCooldown && !isInCooldown && (
+        <div className={styles.readyBadge}>
+          {s.feirinha.readyToSell}
+        </div>
+      )}
+
+      {/* Bloco de Preço — Agora + Normal + Diff */}
+      <div className={styles.priceBlock}>
+        <div className={styles.priceNowGroup}>
+          <span className={styles.priceLabel}>{s.feirinha.card.priceNow}</span>
+          <div className={styles.priceNowAnimWrapper}>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={currentPrice}
+                className={styles.priceNowValue}
+                initial={{ y: -16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 16, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                {currentPrice}<span className={styles.priceNowCoin}>🪙</span>
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div className={styles.priceNormalGroup}>
+          <span className={styles.priceLabel}>{s.feirinha.card.priceNormal}</span>
+          <span className={styles.priceNormalValue}>
+            {product.basePrice}<span className={styles.priceNormalCoin}>🪙</span>
+          </span>
+        </div>
+
+        <span className={`${styles.priceDiff} ${diffInfo.className}`}>
+          {diffInfo.label}
+        </span>
+      </div>
+
+      {/* Footer — botões centralizados */}
+      <div className={styles.footer}>
+        {hasOwned ? (
+          <>
+            <motion.button
+              type="button"
+              className={`${styles.btn} ${styles.btnSell}`}
+              whileTap={{ scale: 0.95 }}
+              disabled={isInCooldown}
+              onClick={() => onSell(product.id, 1)}
+            >
+              {s.feirinha.card.sellButton}
+            </motion.button>
+            <motion.button
+              type="button"
+              className={`${styles.btn} ${styles.btnBuyMore}`}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onBuy(product.id)}
+              aria-label={s.feirinha.card.buyButton}
+            >
+              +1
+            </motion.button>
+          </>
+        ) : (
+          <motion.button
+            type="button"
+            className={buyButtonClass}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onBuy(product.id)}
+          >
+            {s.feirinha.card.buyButton}
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
+  )
 }

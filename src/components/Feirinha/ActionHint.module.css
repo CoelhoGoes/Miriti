@@ -1,0 +1,37 @@
+.hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 2px solid;
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
+  text-align: center;
+  margin: 8px 0;
+}
+
+.icon {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+/* Estados — todos via tokens (compatível com daltonismo) */
+.buy {
+  background: var(--color-success-light);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.wait {
+  background: var(--color-warning-light);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.sell {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}

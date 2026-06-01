@@ -1,0 +1,156 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 32, 64, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2500;
+  padding: 16px;
+  backdrop-filter: blur(3px);
+}
+
+.modal {
+  background: var(--color-white);
+  border: 3px solid var(--color-surface-2);
+  border-radius: 22px;
+  padding: 24px 22px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.title {
+  font-size: var(--ms-text-lg);
+  font-weight: 900;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.productHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--color-surface-4);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.productEmoji { font-size: clamp(2.4rem, 5vw, 3.2rem); }
+
+.productName {
+  font-size: var(--ms-text-base);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.youHave {
+  font-size: var(--ms-text-xs);
+  color: var(--color-text-secondary);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.priceTable {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--color-surface-3);
+  border-radius: 10px;
+  font-size: var(--ms-text-sm);
+}
+
+.priceLabel { color: var(--color-text-secondary); font-weight: 600; }
+.priceValue { font-weight: 800; color: var(--color-text-primary); }
+
+/* Linha do lucro destacada */
+.profitRow {
+  background: var(--color-success-light);
+  border: 2px solid var(--color-success);
+  font-size: var(--ms-text-base);
+}
+.profitRow .priceLabel { color: var(--color-success); font-weight: 800; }
+.profitRow .priceValue { color: var(--color-success); }
+
+.lossRow {
+  background: rgba(231, 76, 60, 0.08);
+  border: 2px solid var(--color-danger);
+  font-size: var(--ms-text-base);
+}
+.lossRow .priceLabel { color: var(--color-danger); font-weight: 800; }
+.lossRow .priceValue { color: var(--color-danger); }
+
+.breakEvenRow {
+  background: var(--color-surface-4);
+  border: 2px solid var(--color-text-secondary);
+}
+.breakEvenRow .priceLabel { color: var(--color-text-secondary); font-weight: 800; }
+
+/* Total ao vender tudo */
+.totalGain {
+  font-size: var(--ms-text-base);
+  font-weight: 800;
+  color: var(--color-warning);
+  margin: 8px 0 14px;
+}
+
+/* Cooldown warning */
+.cooldownWarn {
+  background: var(--color-warning-light);
+  border: 2px solid var(--color-warning);
+  border-radius: 10px;
+  padding: 10px;
+  color: var(--color-warning);
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
+  margin-bottom: 12px;
+}
+
+/* Botões */
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.btn {
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
+  cursor: pointer;
+  color: var(--color-text-inverse);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s, opacity 0.2s;
+}
+
+.btn:active  { transform: translateY(1px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btnSell    { background: var(--color-danger); }
+.btnSellAll { background: var(--color-warning); grid-column: 1 / -1; }
+
+.btnClose {
+  width: 100%;
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: var(--ms-text-sm);
+}

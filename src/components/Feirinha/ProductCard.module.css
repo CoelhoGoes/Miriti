@@ -1,124 +1,263 @@
 .card {
+  background: var(--color-white);
+  border: 3px solid var(--color-surface-2);
+  border-radius: 18px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  padding: 1rem;
-  border-radius: 14px;
-  border: 1px solid var(--color-surface-2);
-  background: var(--color-surface-4);
-  box-shadow: 0 10px 24px rgba(19, 29, 51, 0.06);
+  gap: 8px;
+  position: relative;
+  transition: border-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Bordas coloridas conforme estado do mercado */
+.cardCheap { border-color: var(--color-primary); }
+.cardHot   { border-color: var(--color-danger); }
+
+/* Header clicável (abre histórico) */
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 10px;
 }
 
-.mainInfo {
+.headerClickable {
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 4px;
+  margin: -4px;
+  transition: background 0.2s;
+  /* Button reset */
+  background: none;
+  border: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+
+.headerClickable:hover        { background: var(--color-surface-3); }
+.headerClickable:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.iconBox {
+  width: clamp(40px, 6vw, 56px);
+  height: clamp(40px, 6vw, 56px);
+  background: var(--color-surface-4);
+  border: 2px solid var(--color-surface-2);
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  flex-shrink: 0;
 }
 
-.emoji {
-  font-size: 3rem;
-  line-height: 1;
+.headerText {
+  flex: 1;
+  min-width: 0;
 }
 
-.nameBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.name {
+.title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: var(--ms-text-base);
+  font-weight: 900;
   color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .riskBadge {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  display: inline-block;
+  margin-top: 2px;
   background: var(--color-surface-3);
   color: var(--color-text-secondary);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.trend {
-  font-size: 1.4rem;
-  line-height: 1;
-}
-
-.currentPrice {
-  margin: 0;
-  color: var(--color-text-primary);
-}
-
-.cooldownBadge,
-.readyBadge {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  padding: 0.3rem 0.55rem;
+  padding: 2px 8px;
   border-radius: 8px;
-  font-size: 0.82rem;
+  font-size: var(--ms-text-xs);
   font-weight: 700;
 }
 
-.cooldownBadge {
-  background: var(--color-warning-light);
+/* Owned badge */
+.ownedBadge {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  background: var(--color-warning);
+  color: var(--color-text-inverse);
+  border: 2px solid var(--color-white);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: var(--ms-text-xs);
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+/* Cooldown / Pronto */
+.cooldownLine {
+  text-align: center;
+  font-size: var(--ms-text-xs);
   color: var(--color-warning);
+  font-weight: 700;
+  background: var(--color-warning-light);
+  padding: 4px 8px;
+  border-radius: 8px;
 }
 
 .readyBadge {
-  background: var(--color-success-light);
+  text-align: center;
+  font-size: var(--ms-text-xs);
   color: var(--color-success);
+  font-weight: 800;
+  background: var(--color-success-light);
+  padding: 4px 8px;
+  border-radius: 8px;
 }
 
-.actions {
+/* ════════════════════════════════════════════════════════════
+   BLOCO DE PREÇO — Agora + Normal + Diff Badge
+   ════════════════════════════════════════════════════════════ */
+
+.priceBlock {
   display: flex;
-  gap: 0.55rem;
-  flex-wrap: wrap;
-}
-
-.buyButton,
-.sellButton {
-  border: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--color-surface-4);
   border-radius: 10px;
-  padding: 0.55rem 0.9rem;
+  margin: 4px 0;
+}
+
+.priceNowGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.priceNormalGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-left: 10px;
+  border-left: 2px dashed var(--color-surface-2);
+  flex-shrink: 0;
+}
+
+.priceLabel {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.priceNowValue {
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  font-weight: 900;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.priceNowCoin {
+  font-size: 0.7em;
+  margin-left: 2px;
+}
+
+.priceNormalValue {
+  font-size: 0.85rem;
   font-weight: 700;
+  color: var(--color-text-secondary);
+  line-height: 1.1;
+  margin-top: 2px;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.priceNormalCoin {
+  font-size: 0.85em;
+  margin-left: 2px;
+}
+
+.priceNowAnimWrapper {
+  position: relative;
+  height: clamp(1.4rem, 2.6vw, 1.7rem);
+  overflow: hidden;
+}
+
+.priceDiff {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.priceDiffMuchCheaper  { background: var(--color-primary);       color: var(--color-text-inverse); }
+.priceDiffCheaper      { background: var(--color-surface-3);     color: var(--color-primary-dark); }
+.priceDiffEqual        { background: var(--color-surface-3);     color: var(--color-text-secondary); }
+.priceDiffExpensive    { background: var(--color-warning-light); color: var(--color-warning); }
+.priceDiffMuchExpensive { background: var(--color-danger);       color: var(--color-text-inverse); }
+
+@media (max-width: 420px) {
+  .priceBlock { flex-wrap: wrap; }
+  .priceDiff  { width: 100%; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   FOOTER — botões centralizados
+   ════════════════════════════════════════════════════════════ */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.btn {
+  flex: 1;
+  max-width: 180px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
   cursor: pointer;
-}
-
-.buyButton {
-  background: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: transform 0.15s, opacity 0.2s;
   color: var(--color-text-inverse);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
 }
 
-.sellButton {
-  background: var(--color-secondary);
-  color: var(--color-text-inverse);
-}
+.btn:active  { transform: translateY(1px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.buyButton:disabled,
-.sellButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (max-width: 640px) {
-  .card {
-    padding: 0.85rem;
-  }
-
-  .emoji {
-    font-size: 2.4rem;
-  }
-}
+.btnBuyCheap  { background: var(--color-success); }
+.btnBuyNormal { background: var(--color-secondary); }
+.btnBuyMore   { background: var(--color-secondary); flex: 0 0 50px; padding: 10px 8px; max-width: 60px; }
+.btnSell      { background: var(--color-danger); }

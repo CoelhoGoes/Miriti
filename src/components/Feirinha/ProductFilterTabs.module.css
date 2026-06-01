@@ -1,0 +1,70 @@
+.tabsWrapper {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 12px;
+  padding: 4px;
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.tabsWrapper::-webkit-scrollbar { display: none; }
+
+.tab {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  font-weight: 800;
+  font-size: var(--ms-text-xs);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 8px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s;
+}
+
+.tab:hover { color: var(--color-text-primary); }
+
+.tabActive { color: var(--color-text-inverse); }
+
+.tabHighlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--color-primary);
+  z-index: 0;
+  box-shadow: 0 2px 6px rgba(26, 43, 140, 0.25);
+}
+
+/* Texto e ícones acima do highlight */
+.tabIcon,
+.tab > span {
+  position: relative;
+  z-index: 1;
+}
+
+.tabIcon { font-size: 0.95em; }
+
+.tabBadge {
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-inverse);
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 6px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tabBadgeInactive {
+  background: var(--color-surface-3);
+  color: var(--color-text-secondary);
+}

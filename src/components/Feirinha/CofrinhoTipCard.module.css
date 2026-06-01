@@ -1,0 +1,39 @@
+.tipCard {
+  background: linear-gradient(
+    135deg,
+    var(--color-warning-light) 0%,
+    var(--color-success-light) 100%
+  );
+  border: 3px dashed var(--color-warning);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  min-height: 280px;
+}
+
+.cofrinhoEmoji {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.tipTitle {
+  font-size: var(--ms-text-sm);
+  font-weight: 900;
+  color: var(--color-warning);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tipText {
+  font-size: var(--ms-text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
