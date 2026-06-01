@@ -673,7 +673,10 @@ function reducer(state, action) {
         ...initialState,
         stocks:    initialStocks(),
         portfolio: initialPortfolio(),
-        settings:  state.settings,
+        settings: {
+          ...state.settings,
+          tutorialDone: false,
+        },
       }
 
     case 'RESET':

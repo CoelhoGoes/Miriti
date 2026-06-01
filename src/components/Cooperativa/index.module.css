@@ -75,7 +75,23 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
-  padding: 28px 24px 24px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--ms-gap-md);
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 24px;
+  }
 }

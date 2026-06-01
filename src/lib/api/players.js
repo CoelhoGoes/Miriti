@@ -67,3 +67,43 @@ export async function getPlayerById(playerId) {
   if (error) return { ok: false, error: error.message }
   return { ok: true, data }
 }
+
+export async function deactivateAccount(playerId) {
+  if (!playerId) return { ok: false, error: 'playerId é obrigatório' }
+
+  const { data, error } = await supabase
+    .from('players')
+    .update({ is_active: false })
+    .eq('id', playerId)
+    .select()
+    .single()
+
+  if (error) return { ok: false, error: error.message }
+  return { ok: true, data }
+}
+
+export async function reactivateAccount(playerId) {
+  if (!playerId) return { ok: false, error: 'playerId é obrigatório' }
+
+  const { data, error } = await supabase
+    .from('players')
+    .update({ is_active: true })
+    .eq('id', playerId)
+    .select()
+    .single()
+
+  if (error) return { ok: false, error: error.message }
+  return { ok: true, data }
+}
+
+export async function deleteAccount(playerId) {
+  if (!playerId) return { ok: false, error: 'playerId é obrigatório' }
+
+  const { error } = await supabase
+    .from('players')
+    .delete()
+    .eq('id', playerId)
+
+  if (error) return { ok: false, error: error.message }
+  return { ok: true }
+}

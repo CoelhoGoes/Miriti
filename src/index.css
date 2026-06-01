@@ -4,7 +4,44 @@
   MIRITI — Estilos Globais
   ============================================ */
 
+/* ════════════════════════════════════════════════════════════
+   TOKENS RESPONSIVOS — Escalam suavemente entre breakpoints
+   Usar via var(--ms-*) em qualquer componente.
+   ════════════════════════════════════════════════════════════ */
+
 :root {
+  /* ── Tamanhos de header ────────────────────────────────── */
+  --ms-header-height:    56px;
+  --ms-header-padding:   12px;
+
+  /* ── Tipografia escalonada ──────────────────────────────── */
+  --ms-text-xs:    clamp(0.70rem, 1.4vw + 0.4rem, 0.85rem);
+  --ms-text-sm:    clamp(0.85rem, 1.6vw + 0.5rem, 1rem);
+  --ms-text-base:  clamp(1rem,    1.8vw + 0.6rem, 1.15rem);
+  --ms-text-lg:    clamp(1.15rem, 2vw + 0.7rem, 1.4rem);
+  --ms-text-xl:    clamp(1.3rem, 2.4vw + 0.8rem, 1.7rem);
+  --ms-text-2xl:   clamp(1.6rem, 3vw + 0.9rem, 2.2rem);
+
+  /* ── Tamanhos de nodes do mapa ──────────────────────────── */
+  --ms-node-size:        80px;
+  --ms-node-emoji:       2.4rem;
+  --ms-node-label-pad:   5px 12px;
+  --ms-node-label-size:  0.78rem;
+
+  /* ── Botões circulares (sync, trophy, settings) ────────── */
+  --ms-icon-button:      36px;
+  --ms-icon-button-font: 0.95rem;
+
+  /* ── Badge de moedas e similares ────────────────────────── */
+  --ms-badge-pad:        4px 10px;
+  --ms-badge-size:       0.85rem;
+
+  /* ── Gaps e espaçamentos ────────────────────────────────── */
+  --ms-gap-xs:  6px;
+  --ms-gap-sm:  10px;
+  --ms-gap-md:  16px;
+  --ms-gap-lg:  24px;
+
   /* Paleta principal — tema amazônico */
   --color-primary-light: #22c55e;
   --color-accent: #f59e0b;
@@ -44,6 +81,54 @@
   --color-text-light: #6b7280;
 }
 
+/* ── Tablet 768px+ ────────────────────────────────────────── */
+@media (min-width: 768px) {
+  :root {
+    --ms-header-height:    66px;
+    --ms-header-padding:   16px;
+    --ms-node-size:        110px;
+    --ms-node-emoji:       3.3rem;
+    --ms-node-label-pad:   7px 18px;
+    --ms-node-label-size:  1.05rem;
+    --ms-icon-button:      40px;
+    --ms-icon-button-font: 1rem;
+    --ms-badge-pad:        5px 14px;
+    --ms-badge-size:       0.95rem;
+  }
+}
+
+/* ── Laptop 1280px+ ───────────────────────────────────────── */
+@media (min-width: 1280px) {
+  :root {
+    --ms-header-height:    76px;
+    --ms-header-padding:   20px;
+    --ms-node-size:        135px;
+    --ms-node-emoji:       3.9rem;
+    --ms-node-label-pad:   9px 24px;
+    --ms-node-label-size:  1.25rem;
+    --ms-icon-button:      44px;
+    --ms-icon-button-font: 1.1rem;
+    --ms-badge-pad:        6px 18px;
+    --ms-badge-size:       1rem;
+  }
+}
+
+/* ── Desktop FHD 1920px+ ──────────────────────────────────── */
+@media (min-width: 1920px) {
+  :root {
+    --ms-header-height:    86px;
+    --ms-header-padding:   24px;
+    --ms-node-size:        160px;
+    --ms-node-emoji:       4.6rem;
+    --ms-node-label-pad:   11px 30px;
+    --ms-node-label-size:  1.5rem;
+    --ms-icon-button:      48px;
+    --ms-icon-button-font: 1.2rem;
+    --ms-badge-pad:        7px 22px;
+    --ms-badge-size:       1.1rem;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -59,12 +144,7 @@ html, body, #root {
 body {
   font-family: var(--font-body);
   color: var(--color-text-primary);
-  background: linear-gradient(
-    180deg,
-    var(--color-sky-top) 0%,
-    var(--color-sky-bottom) 55%,
-    var(--color-ground) 100%
-  );
+  background: var(--color-surface-4, #0e7490);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
@@ -111,6 +191,37 @@ h1, h2, h3, h4, h5, h6 {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  font-size: calc(1rem * var(--font-scale, 1));
+}
+
+/* Acessibilidade — escala de fonte (multiplica o tamanho de texto) */
+.app-root.font-scale-1 { --font-scale: 1; }
+.app-root.font-scale-2 { --font-scale: 1.12; }
+.app-root.font-scale-3 { --font-scale: 1.25; }
+.app-root.font-scale-4 { --font-scale: 1.4; }
+
+/* Aplica fator de escala apenas em texto, mantendo emojis/ícones intactos */
+.app-root.font-scale-2 p,
+.app-root.font-scale-2 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
+.app-root.font-scale-2 li,
+.app-root.font-scale-2 label,
+.app-root.font-scale-2 button,
+.app-root.font-scale-2 h1,
+.app-root.font-scale-2 h2,
+.app-root.font-scale-2 h3,
+.app-root.font-scale-2 h4 { font-size: 1.12em; }
+
+/* ════════════════════════════════════════════════════════════
+   SAFE AREAS — Compatibilidade com iPhone notch e dynamic island
+   ════════════════════════════════════════════════════════════ */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .app-root {
+    padding-top:    env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left:   env(safe-area-inset-left);
+    padding-right:  env(safe-area-inset-right);
+    box-sizing: border-box;
+  }
 }
 
 /* Utilitários de animação */
@@ -194,26 +305,6 @@ h1, h2, h3, h4, h5, h6 {
   transition-duration: 0.001ms !important;
   transition-delay: 0ms !important;
 }
-
-/* Acessibilidade — escala de fonte (multiplica o tamanho de texto) */
-.app-root {
-  font-size: calc(1rem * var(--font-scale, 1));
-}
-.app-root.font-scale-1 { --font-scale: 1; }
-.app-root.font-scale-2 { --font-scale: 1.12; }
-.app-root.font-scale-3 { --font-scale: 1.25; }
-.app-root.font-scale-4 { --font-scale: 1.4; }
-
-/* Aplica fator de escala apenas em texto, mantendo emojis/ícones intactos */
-.app-root.font-scale-2 p,
-.app-root.font-scale-2 span:not([aria-hidden="true"]):not(.lesson-emoji):not(.farm-spot-emoji),
-.app-root.font-scale-2 li,
-.app-root.font-scale-2 label,
-.app-root.font-scale-2 button,
-.app-root.font-scale-2 h1,
-.app-root.font-scale-2 h2,
-.app-root.font-scale-2 h3,
-.app-root.font-scale-2 h4 { font-size: 1.12em; }
 
 /* Tela de erro (ErrorBoundary) */
 .error-screen {

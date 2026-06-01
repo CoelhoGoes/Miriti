@@ -1,0 +1,205 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 32, 64, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: 24px;
+  padding: 28px 24px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.modalDeactivate { border: 3px solid var(--color-warning); }
+.modalDelete     { border: 3px solid var(--color-danger); }
+
+.cofrinho {
+  font-size: 4rem;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin: 0 0 8px;
+}
+
+.titleDeactivate { color: var(--color-warning); }
+.titleDelete     { color: var(--color-danger); }
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+.bulletTitle {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  text-align: left;
+  margin: 16px 0 4px;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 14px 16px;
+  margin: 0 0 8px;
+  background: var(--color-surface-4);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.bulletList li {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 4px 0;
+}
+
+.codeBox {
+  background: var(--color-warning-light);
+  border: 3px dashed var(--color-warning);
+  border-radius: 16px;
+  padding: 14px;
+  margin: 12px 0;
+}
+
+.code {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  letter-spacing: 0.05em;
+  margin: 0 0 10px;
+  word-break: break-all;
+}
+
+.copyButton {
+  padding: 8px 18px;
+  border: 2px solid var(--color-primary);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-primary);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: var(--color-success);
+}
+
+.checkboxLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: left;
+}
+
+.typeConfirm {
+  margin: 16px 0;
+}
+
+.typeLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.typeKeyword {
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+  background: var(--color-danger);
+  color: var(--color-text-inverse);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.typeInput {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: 3px solid var(--color-surface-2);
+  border-radius: 12px;
+  background: var(--color-surface-4);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.typeInput:focus    { border-color: var(--color-danger); }
+.typeInputValid     { border-color: var(--color-success); }
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.actionButton {
+  flex: 1;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+}
+
+.cancelButton      { background: var(--color-surface-2); color: var(--color-text-primary); }
+.confirmDeactivate { background: var(--color-warning);   color: var(--color-text-inverse); }
+.confirmDelete     { background: var(--color-danger);    color: var(--color-text-inverse); }
+
+.confirmDeactivate:disabled,
+.confirmDelete:disabled {
+  background: var(--color-text-secondary);
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.successMsg {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-success);
+  margin: 24px 0;
+}
+
+.errorMsg {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-danger);
+  margin: 12px 0;
+}

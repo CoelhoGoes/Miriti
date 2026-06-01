@@ -1,4 +1,5 @@
 import { supabase } from '../supabaseClient'
+import { reactivateAccount } from './players'
 
 export async function recoverByCode(recoveryCode) {
   const code = recoveryCode.trim().toUpperCase()
@@ -16,6 +17,13 @@ export async function recoverByCode(recoveryCode) {
   if (playerErr) return { ok: false, error: playerErr.message }
   if (!player) {
     return { ok: false, error: 'Código não encontrado. Verifica e tenta de novo.' }
+  }
+
+  // Se a conta estiver inactiva, reactivar automaticamente
+  if (player.is_active === false) {
+    const result = await reactivateAccount(player.id)
+    if (result.ok) player.is_active = true
+    // Se falhar, continua: conta funciona, apenas não aparece no leaderboard
   }
 
   const { data: save } = await supabase
