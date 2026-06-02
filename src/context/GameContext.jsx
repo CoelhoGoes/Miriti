@@ -108,6 +108,10 @@ const initialState = {
   },
   basket: [],
   playTimeSec: 0,
+  mascotChatViews: 0,
+  distinctProductsBought: [],
+  hasSoldAtProfit: false,
+  hasSoldAny: false,
   cooperativa: {
     helpers:        {},
     activePartners: [],
@@ -172,6 +176,10 @@ function loadInitialState() {
     phaseResults: { ...(saved.phaseResults || {}) },
     bossClears: { ...(saved.bossClears || {}) },
     playTimeSec: typeof saved.playTimeSec === 'number' ? saved.playTimeSec : 0,
+    mascotChatViews: typeof saved.mascotChatViews === 'number' ? saved.mascotChatViews : 0,
+    distinctProductsBought: Array.isArray(saved.distinctProductsBought) ? saved.distinctProductsBought : [],
+    hasSoldAny: !!saved.hasSoldAny,
+    hasSoldAtProfit: !!saved.hasSoldAtProfit,
     achievements: Array.isArray(saved.achievements) ? saved.achievements : [],
     inventory: { ...initialState.inventory, ...(saved.inventory || {}) },
     stocks: { ...initialStocks(), ...(saved.stocks || {}) },
@@ -293,12 +301,23 @@ function grantAchievements(state, extra = []) {
   extra.forEach(id => have.add(id))
   const starsTotal = Object.values(state.stars).reduce((a, b) => a + b, 0)
   const lessonsDone = Object.keys(state.phaseResults).length
+  const alliesOwned = state.cooperativa?.alliesOwned?.length ?? 0
   if (lessonsDone >= 1) have.add('first_lesson')
   if (lessonsDone >= PHASES.length) have.add('all_lessons')
   if (Object.values(state.stars).some(s => s >= 3)) have.add('perfect')
   if (starsTotal >= 9) have.add('star_collector')
   if (state.coins >= 300) have.add('rich')
-  if (state.ownedMascots.length >= 3) have.add('collector')
+  if (state.coins >= 1000) have.add('big_saver')
+  if (alliesOwned >= 2) have.add('first_ally')  // cofrinho + 1
+  if (alliesOwned >= 4) have.add('collector')   // 3 aliados além do cofrinho
+  if (state.settings?.tutorialDone) have.add('tutorial_done')
+  if ((state.playTimeSec || 0) >= 30 * 60) have.add('time_traveler')
+  if ((state.mascotChatViews || 0) >= 5) have.add('curious')
+  if ((state.distinctProductsBought?.length || 0) >= 3) have.add('investor')
+  const amazonPride = ['acai', 'castanha', 'cacau']
+  if (amazonPride.every(p => (state.distinctProductsBought || []).includes(p))) {
+    have.add('amazon_pride')
+  }
   return [...have]
 }
 
@@ -440,11 +459,18 @@ function reducer(state, action) {
           },
         ]
 
-      return {
+      const productList = state.distinctProductsBought || []
+      const distinctNext = productList.includes(action.payload.productId)
+        ? productList
+        : [...productList, action.payload.productId]
+
+      const next = {
         ...state,
         coins: state.coins - totalCost,
         basket: newBasket,
+        distinctProductsBought: distinctNext,
       }
+      return { ...next, achievements: grantAchievements(next, ['shopper']) }
     }
 
     case 'SELL_PRODUCT': {
@@ -455,10 +481,13 @@ function reducer(state, action) {
       )
       if (!product || !slot || slot.quantity < action.payload.quantity) return state
 
-      // Verificar cooldown do Dende
+      // Verificar cooldown (alguns produtos exigem rodadas mínimas de espera).
+      // Aliado Jabuti reduz o cooldown em 1 rodada.
       if (product.hasCooldown) {
         const roundsHeld = state.market.round - slot.roundBought
-        if (roundsHeld < product.cooldownRounds) return state
+        const jabutiBonus = state.cooperativa?.activeAlly === 'jabuti' ? 1 : 0
+        const effectiveCd = Math.max(0, (product.cooldownRounds || 0) - jabutiBonus)
+        if (roundsHeld < effectiveCd) return state
       }
 
       const currentPrice = state.market.prices[action.payload.productId]
@@ -474,11 +503,17 @@ function reducer(state, action) {
             : b
         )
 
-      return {
+      const soldAtProfit = currentPrice > (slot.boughtAt || 0)
+      const next = {
         ...state,
         coins: state.coins + earnings,
         basket: newBasket,
+        hasSoldAny: true,
+        hasSoldAtProfit: state.hasSoldAtProfit || soldAtProfit,
       }
+      const extras = ['first_sale']
+      if (soldAtProfit) extras.push('market_trader')
+      return { ...next, achievements: grantAchievements(next, extras) }
     }
 
     case 'APPLY_MARKET_EVENT': {
@@ -535,8 +570,11 @@ function reducer(state, action) {
         newPrices[product.id] = updated
       })
 
+      // Bônus passivos do Aliado equipado:
+      //  • Galinha-caipira → +2 moedas/rodada (renda diária constante)
+      //  • Preguiça → +1% do saldo (juros compostos lentos)
       let bonusCoins = 0
-      if (state.cooperativa.activeAlly === 'galinha') bonusCoins += 2
+      if (state.cooperativa.activeAlly === 'galinha')  bonusCoins += 2
       if (state.cooperativa.activeAlly === 'preguica') bonusCoins += Math.floor(state.coins * 0.01)
 
       return {
@@ -552,8 +590,25 @@ function reducer(state, action) {
       }
     }
 
-    case 'UPDATE_SETTINGS':
-      return { ...state, settings: { ...state.settings, ...action.payload } }
+    case 'UPDATE_SETTINGS': {
+      const settings = { ...state.settings, ...action.payload }
+      const next = { ...state, settings }
+      // Concede a conquista de tutorial assim que ele for marcado como concluído.
+      const extras = settings.tutorialDone && !state.settings.tutorialDone
+        ? ['tutorial_done']
+        : []
+      return extras.length
+        ? { ...next, achievements: grantAchievements(next, extras) }
+        : next
+    }
+
+    case 'MASCOT_CHAT_VIEWED': {
+      const views = (state.mascotChatViews || 0) + 1
+      const next = { ...state, mascotChatViews: views }
+      return views >= 5
+        ? { ...next, achievements: grantAchievements(next, ['curious']) }
+        : next
+    }
 
     case 'COMPLETE_BOSS': {
       const { phase, mascot, accuracy } = action.payload
@@ -578,8 +633,15 @@ function reducer(state, action) {
       return { ...next, achievements: grantAchievements(next, extras) }
     }
 
-    case 'ADD_PLAY_TIME':
-      return { ...state, playTimeSec: (state.playTimeSec || 0) + (action.seconds || 0) }
+    case 'ADD_PLAY_TIME': {
+      const next = {
+        ...state,
+        playTimeSec: (state.playTimeSec || 0) + (action.seconds || 0)
+      }
+      return next.playTimeSec >= 30 * 60
+        ? { ...next, achievements: grantAchievements(next) }
+        : next
+    }
 
     case 'PURCHASE_ANIMAL': {
       const animal = ANIMALS.find(a => a.id === action.payload.animalId)
@@ -591,14 +653,20 @@ function reducer(state, action) {
 
       if (animal.category === 'aliado') {
         if (state.cooperativa.alliesOwned.includes(animal.id)) return state
-        return {
+        const newOwned = [...state.cooperativa.alliesOwned, animal.id]
+        const next = {
           ...state,
           coins: state.coins - finalCost,
           cooperativa: {
             ...state.cooperativa,
-            alliesOwned: [...state.cooperativa.alliesOwned, animal.id],
+            alliesOwned: newOwned,
           },
         }
+        const extras = ['shopper']
+        // 'full_team' quando o jogador adquire todos os aliados do catálogo.
+        const totalAllies = ANIMALS.filter(a => a.category === 'aliado').length
+        if (newOwned.length >= totalAllies) extras.push('full_team')
+        return { ...next, achievements: grantAchievements(next, extras) }
       }
 
       const currentStock = state.cooperativa.helpers[animal.id] ?? 0
@@ -829,6 +897,7 @@ export function GameProvider({ children }) {
   const updateSettings = useCallback((payload) => dispatch({ type: 'UPDATE_SETTINGS', payload }), [])
   const completeBoss = useCallback((payload) => dispatch({ type: 'COMPLETE_BOSS', payload }), [])
   const addPlayTime = useCallback((seconds) => dispatch({ type: 'ADD_PLAY_TIME', seconds }), [])
+  const markMascotChatViewed = useCallback(() => dispatch({ type: 'MASCOT_CHAT_VIEWED' }), [])
   const resetProgress    = useCallback(() => dispatch({ type: 'RESET' }), [])
   const purchaseAnimal   = useCallback((animalId) => dispatch({ type: 'PURCHASE_ANIMAL', payload: { animalId } }), [])
   const useHelper        = useCallback((animalId) => dispatch({ type: 'USE_HELPER', payload: { animalId } }), [])
@@ -885,8 +954,12 @@ export function GameProvider({ children }) {
     playTimeSec:    state.playTimeSec,
     quizFlags:      state.quizFlags,
     ownedMascots:   state.ownedMascots,
-    tutorialState:  state.tutorialState,
-    badges:         state.badges,
+    tutorialState:          state.tutorialState,
+    badges:                 state.badges,
+    mascotChatViews:        state.mascotChatViews,
+    distinctProductsBought: state.distinctProductsBought,
+    hasSoldAny:             state.hasSoldAny,
+    hasSoldAtProfit:        state.hasSoldAtProfit,
   })
 
   const value = {
@@ -896,7 +969,7 @@ export function GameProvider({ children }) {
     buyItem, selectMascot, useHint,
     tickStocks, buyStock, sellStock,
     buyProduct, sellProduct, applyMarketEvent, advanceRound,
-    updateSettings, completeBoss, addPlayTime, resetProgress,
+    updateSettings, completeBoss, addPlayTime, markMascotChatViewed, resetProgress,
     purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly,
     setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
     unlockBadge, completeTutorial, resetTutorial, visitArea, clearTutorialReward,

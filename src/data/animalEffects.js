@@ -21,7 +21,7 @@ export const ANIMAL_EFFECTS = {
   MARKET_GOOD_EVENT:     () => ({}),
 
   // ── ALIADOS (consultados via getActiveAllyEffect()) ──
-  ALLY_DENDE_COOLDOWN:      () => ({}),
+  ALLY_PRODUCT_COOLDOWN:    () => ({}),
   ALLY_PASSIVE_INTEREST:    () => ({}),
   ALLY_TRANSACTION_BONUS:   () => ({}),
   ALLY_NEGATIVE_SHIELD:     () => ({}),

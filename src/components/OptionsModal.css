@@ -261,9 +261,9 @@
 }
 
 .options-cb-btn.active {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  border-color: #10b981;
-  color: #047857;
+  background: linear-gradient(135deg, var(--color-success-soft), var(--color-success-mid));
+  border-color: var(--color-success-mid);
+  color: var(--color-text-inverse);
 }
 
 .options-help {
@@ -276,7 +276,7 @@
 
 .options-danger {
   padding-top: 0.9rem;
-  border-top: 2px dashed #e5e7eb;
+  border-top: 2px dashed var(--color-surface-2);
 }
 
 .options-reset-btn {
@@ -286,9 +286,9 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.7rem;
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  color: #b91c1c;
-  border: 2px solid #fca5a5;
+  background: linear-gradient(135deg, var(--color-danger-soft), var(--color-danger-soft));
+  color: var(--color-danger);
+  border: 2px solid var(--color-danger);
   border-radius: 14px;
   font-family: var(--font-display);
   font-weight: 700;
@@ -323,13 +323,13 @@
 }
 
 .options-confirm-btn.cancel {
-  background: #f3f4f6;
-  color: var(--color-text);
-  border-color: #d1d5db;
+  background: var(--color-surface-3);
+  color: var(--color-text-primary);
+  border-color: var(--color-surface-2);
 }
 
 .options-confirm-btn.confirm {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: #fff;
-  border-color: #b91c1c;
+  background: linear-gradient(135deg, var(--color-danger-mid), var(--color-danger));
+  color: var(--color-text-inverse);
+  border-color: var(--color-danger);
 }

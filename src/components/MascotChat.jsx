@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { FaTimes } from 'react-icons/fa'
@@ -16,11 +16,20 @@ function pickIndex(prevIndex) {
 }
 
 export default function MascotChat({ onClose }) {
-  const { state } = useGame()
+  const { state, markMascotChatViewed } = useGame()
   const s = useStrings()
   const lang = useLanguage()
   const initial = useMemo(() => Math.floor(Math.random() * MASCOT_STORIES.length), [])
   const [index, setIndex] = useState(initial)
+  const viewedRef = useRef(false)
+
+  // Conta apenas 1 visualização por abertura do modal (não por troca de
+  // curiosidade), para a conquista "curious" refletir o uso real do recurso.
+  useEffect(() => {
+    if (viewedRef.current) return
+    viewedRef.current = true
+    markMascotChatViewed?.()
+  }, [markMascotChatViewed])
 
   const story = MASCOT_STORIES[index]?.[lang] || MASCOT_STORIES[index]?.pt || ''
 

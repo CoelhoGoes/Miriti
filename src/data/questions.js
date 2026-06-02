@@ -551,17 +551,63 @@ function tr(field, lang) {
 }
 
 /**
- * Retorna as perguntas de uma fase já traduzidas para o idioma escolhido.
+ * Embaralha as opções de uma pergunta e ajusta o índice `correct`.
+ * Aceita seed opcional para reprodutibilidade (mesma fase + mesmo idioma → mesma ordem).
+ */
+export function shuffleOptions(question, seed) {
+  const indices = question.options.map((_, i) => i)
+  // Fisher-Yates com seed determinístico (mulberry32) quando informado.
+  let rand = Math.random
+  if (typeof seed === 'number') {
+    let s = seed >>> 0
+    rand = () => {
+      s = (s + 0x6D2B79F5) >>> 0
+      let t = s
+      t = Math.imul(t ^ (t >>> 15), t | 1)
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
+  }
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    ;[indices[i], indices[j]] = [indices[j], indices[i]]
+  }
+  const shuffledOptions = indices.map(i => question.options[i])
+  const newCorrect = indices.indexOf(question.correct)
+  return { ...question, options: shuffledOptions, correct: newCorrect }
+}
+
+/** Hash simples para gerar seed estável a partir de uma string. */
+function hashString(str) {
+  let h = 2166136261 >>> 0
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i)
+    h = Math.imul(h, 16777619) >>> 0
+  }
+  return h
+}
+
+/**
+ * Retorna as perguntas de uma fase já traduzidas e com as opções embaralhadas.
+ * O embaralhamento é determinístico por sessão de quiz (`sessionSeed`),
+ * para que o jogador veja a mesma ordem entre re-renders mas uma ordem
+ * diferente a cada nova tentativa.
+ *
  * Cada item: { id, correct, question, options: [...], explanation }.
  */
-export function getQuestions(phaseIndex, lang = DEFAULT_LANG) {
+export function getQuestions(phaseIndex, lang = DEFAULT_LANG, sessionSeed = null) {
   const phase = PHASES[phaseIndex]
   if (!phase) return []
-  return phase.questions.map(q => ({
-    id: q.id,
-    correct: q.correct,
-    question: tr(q.question, lang),
-    options: q.options[lang] || q.options[DEFAULT_LANG],
-    explanation: tr(q.explanation, lang)
-  }))
+  const baseSeed = sessionSeed ?? Math.floor(Math.random() * 1e9)
+  return phase.questions.map((q, idx) => {
+    const translated = {
+      id: q.id,
+      correct: q.correct,
+      question: tr(q.question, lang),
+      options: q.options[lang] || q.options[DEFAULT_LANG],
+      explanation: tr(q.explanation, lang)
+    }
+    const seed = hashString(`${q.id}-${baseSeed}-${idx}`)
+    return shuffleOptions(translated, seed)
+  })
 }

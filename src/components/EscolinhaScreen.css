@@ -128,10 +128,10 @@
   min-height: 88px;
   padding: 0.45rem 0.3rem;
   background:
-    radial-gradient(circle at 35% 28%, #4b5563 0%, #1f2937 50%, #7c2d12 100%);
-  border: 3px solid #fde047;
+    radial-gradient(circle at 35% 28%, var(--color-text-secondary) 0%, var(--color-text-primary) 50%, var(--color-danger) 100%);
+  border: 3px solid var(--color-warning);
   border-radius: 20px;
-  color: #fde047;
+  color: var(--color-warning);
   cursor: pointer;
   box-shadow:
     0 10px 22px rgba(0, 0, 0, 0.42),
@@ -154,9 +154,10 @@
 }
 
 .boss-node.beaten {
-  background: radial-gradient(circle at 35% 28%, #4ade80 0%, #15803d 60%, #14532d 100%);
-  border-color: #fff;
-  color: #fff;
+  background:
+    radial-gradient(circle at 35% 28%, var(--color-primary-light, #4ade80) 0%, var(--color-success) 60%, var(--color-primary-dark) 100%);
+  border-color: var(--color-white);
+  color: var(--color-text-inverse, #fff);
   box-shadow:
     0 10px 22px rgba(21, 128, 61, 0.55),
     inset 0 -3px 6px rgba(0, 0, 0, 0.25),
@@ -181,7 +182,7 @@
   top: 4px;
   right: 6px;
   font-size: 0.7rem;
-  color: #fde047;
+  color: var(--color-warning);
   opacity: 0.85;
 }
 
@@ -195,9 +196,9 @@
   width: 22px;
   height: 22px;
   background: rgba(0, 0, 0, 0.75);
-  border: 2px solid #fde047;
+  border: 2px solid var(--color-warning);
   border-radius: 50%;
-  color: #fde047;
+  color: var(--color-warning);
   font-size: 0.65rem;
 }
 
