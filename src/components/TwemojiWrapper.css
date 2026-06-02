@@ -1,26 +1,41 @@
-.twemoji-root .emoji,
-.twemoji-root svg.emoji,
-.twemoji-root img.emoji {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1em;
-  height: 1em;
-  min-width: 1em;
-  min-height: 1em;
-  line-height: 1;
-  font-size: inherit;
-  vertical-align: text-bottom;
-  flex-shrink: 0;
-  overflow: visible;
+/* ════════════════════════════════════════════════════════════
+   TWEMOJI — Normalização global de emojis SVG
+   ────────────────────────────────────────────────────────────
+   O react-twemoji injeta <img class="emoji" src="..."> em vez
+   de caracteres unicode. Estas regras garantem que o <img> se
+   comporta como texto inline (1em x 1em, alinhado com baseline).
+
+   IMPORTANTE: regras globais (sem prefixo .twemoji-root) para
+   cobrir também emojis em portais (createPortal → #modal-root).
+   ════════════════════════════════════════════════════════════ */
+
+img.emoji,
+svg.emoji {
+  width:          1em;
+  height:         1em;
+  min-width:      1em;
+  min-height:     1em;
+  max-width:      1em;
+  max-height:     1em;
+  display:        inline-block;
+  vertical-align: -0.125em;
+  margin:         0 0.05em 0 0.1em;
+  /* Preserva qualidade do SVG ao escalar */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
-.twemoji-root svg.emoji,
-.twemoji-root img.emoji {
-  width: 1em;
-  height: 1em;
+/* Garantir que botões e elementos clicáveis com emojis não
+   sofrem mudança de tamanho ao receber Twemoji */
+button img.emoji,
+a img.emoji {
+  pointer-events: none;
 }
 
-.twemoji-root .emoji {
-  position: relative;
+/* Reset para o caso de estilos de outras libs interferirem */
+img.emoji {
+  background: transparent;
+  border:     none;
+  box-shadow: none;
+  padding:    0;
 }
