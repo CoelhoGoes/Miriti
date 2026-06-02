@@ -70,40 +70,42 @@ export default function Cooperativa({ onBack }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22 }}
     >
-      <header className={styles.header}>
-        <motion.button
-          type="button"
-          className={styles.backBtn}
-          onClick={onBack}
-          whileTap={{ scale: 0.94 }}
-        >
-          ← {s.common.back}
-        </motion.button>
-        <h1 className={styles.title}>{s.cooperativa.title}</h1>
-        <div className={styles.headerRight}>
-          <TutorialHelpButton tutorialKey="COOPERATIVA" />
-          <span className={styles.coinsBadge}>
-            <span aria-hidden="true">🪙</span>
-            <span>{state.coins}</span>
-          </span>
-          <div data-tutorial="active-ally-coop"><ActiveAllyBadge onSwapClick={() => setShowSwapModal(true)} /></div>
-        </div>
-      </header>
-
-      <div data-tutorial="coop-tabs"><CategoryTabs active={activeTab} onChange={setActiveTab} /></div>
-
-      <div className={styles.grid}>
-        {animals.map((animal, idx) => (
-          <div key={animal.id} {...(idx === 0 ? { 'data-tutorial': 'animal-card' } : {})} style={{ display: 'contents' }}>
-            <AnimalCard
-              animal={animal}
-              owned={cooperativa.alliesOwned.includes(animal.id)}
-              stock={cooperativa.helpers[animal.id] ?? 0}
-              isEquipped={cooperativa.activeAlly === animal.id}
-              onAction={() => handleAction(animal)}
-            />
+      <div className={styles.screenInner}>
+        <header className={styles.header}>
+          <motion.button
+            type="button"
+            className={styles.backBtn}
+            onClick={onBack}
+            whileTap={{ scale: 0.94 }}
+          >
+            ← {s.common.back}
+          </motion.button>
+          <h1 className={styles.title}>{s.cooperativa.title}</h1>
+          <div className={styles.headerRight}>
+            <TutorialHelpButton tutorialKey="COOPERATIVA" />
+            <span className={styles.coinsBadge}>
+              <span aria-hidden="true">🪙</span>
+              <span>{state.coins}</span>
+            </span>
+            <div data-tutorial="active-ally-coop"><ActiveAllyBadge variant="compact" onSwapClick={() => setShowSwapModal(true)} /></div>
           </div>
-        ))}
+        </header>
+
+        <div data-tutorial="coop-tabs"><CategoryTabs active={activeTab} onChange={setActiveTab} /></div>
+
+        <div className={styles.grid}>
+          {animals.map((animal, idx) => (
+            <div key={animal.id} {...(idx === 0 ? { 'data-tutorial': 'animal-card' } : {})} style={{ display: 'contents' }}>
+              <AnimalCard
+                animal={animal}
+                owned={cooperativa.alliesOwned.includes(animal.id)}
+                stock={cooperativa.helpers[animal.id] ?? 0}
+                isEquipped={cooperativa.activeAlly === animal.id}
+                onAction={() => handleAction(animal)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <AnimatePresence>

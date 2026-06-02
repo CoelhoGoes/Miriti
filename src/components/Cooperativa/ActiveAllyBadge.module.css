@@ -88,6 +88,37 @@
   }
 }
 
+/* ════════════════════════════════════════════════════════════
+   VARIANT COMPACT — para uso em headers de outras telas.
+   Sobrescreve o escalonamento agressivo dos breakpoints acima,
+   que foi desenhado apenas para o overlay do FarmMap.
+   ════════════════════════════════════════════════════════════ */
+
+.pillCompact {
+  padding: 6px 12px !important;
+  gap:     8px !important;
+}
+.pillCompact .icon    { font-size: 1.2rem !important; }
+.pillCompact .label   { font-size: 0.65rem !important; }
+.pillCompact .name    { font-size: 0.85rem !important; }
+.pillCompact .swapBtn { font-size: 0.75rem !important; padding: 4px 10px !important; }
+
+@media (min-width: 1280px) {
+  .pillCompact              { padding: 6px 14px !important; gap: 8px !important; }
+  .pillCompact .icon        { font-size: 1.3rem !important; }
+  .pillCompact .label       { font-size: 0.7rem  !important; }
+  .pillCompact .name        { font-size: 0.9rem  !important; }
+  .pillCompact .swapBtn     { font-size: 0.8rem  !important; padding: 4px 10px !important; }
+}
+
+@media (min-width: 1920px) {
+  .pillCompact              { padding: 7px 16px !important; gap: 8px !important; }
+  .pillCompact .icon        { font-size: 1.4rem !important; }
+  .pillCompact .label       { font-size: 0.75rem !important; }
+  .pillCompact .name        { font-size: 1rem   !important; }
+  .pillCompact .swapBtn     { font-size: 0.85rem !important; padding: 5px 12px !important; }
+}
+
 /* ── Desktop FHD 1920px+ ───────────────────────────────────── */
 @media (min-width: 1920px) {
   .pill {
