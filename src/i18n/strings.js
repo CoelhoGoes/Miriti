@@ -240,11 +240,6 @@ export const STRINGS = {
     },
     a11y: {
       sectionTitle: 'Acessibilidade',
-      fontSize: 'Tamanho da fonte',
-      fontSmall: 'P',
-      fontMedium: 'M',
-      fontLarge: 'G',
-      fontXLarge: 'GG',
       colorblind: 'Modo daltônico',
       cbNone: 'Padrão',
       cbDeuter: 'Deutan',
@@ -798,11 +793,6 @@ export const STRINGS = {
     },
     a11y: {
       sectionTitle: 'Accessibility',
-      fontSize: 'Font size',
-      fontSmall: 'S',
-      fontMedium: 'M',
-      fontLarge: 'L',
-      fontXLarge: 'XL',
       colorblind: 'Colorblind mode',
       cbNone: 'Default',
       cbDeuter: 'Deutan',

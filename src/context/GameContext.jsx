@@ -139,7 +139,7 @@ const initialState = {
     animationsEnabled: true,
     language: 'pt',
     tutorialDone: false,
-    fontScale: 1,
+    fontScale: 1, // @deprecated — kept for backward-compat with old saves; not used by UI
     colorblindMode: 'none'
   }
 }
