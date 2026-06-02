@@ -1,6 +1,7 @@
 .wrapper {
   width: 100%;
   max-width: 1400px;
+  margin: 0 auto;
   height: 100vh;
   height: 100dvh;
   display: flex;
@@ -166,8 +167,7 @@
 @media (min-width: 1280px) {
   .productsGrid {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 1200px;
-    margin: 0 auto;
     width: 100%;
+    /* max-width e centralização herdados do .wrapper (1400px) */
   }
 }
