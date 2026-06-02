@@ -1,10 +1,11 @@
+import PropTypes from 'prop-types'
 import { motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext.jsx'
 import { useStrings, useLanguage } from '../../i18n/index.js'
 import { ANIMALS } from '../../data/animals.js'
 import styles from './ActiveAllyBadge.module.css'
 
-export default function ActiveAllyBadge({ onSwapClick }) {
+export default function ActiveAllyBadge({ onSwapClick, variant = 'full' }) {
   const { state } = useGame()
   const s = useStrings()
   const lang = useLanguage()
@@ -20,7 +21,7 @@ export default function ActiveAllyBadge({ onSwapClick }) {
   return (
     <motion.div
       layout
-      className={styles.pill}
+      className={`${styles.pill} ${variant === 'compact' ? styles.pillCompact : ''}`}
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 280, damping: 22 }}
@@ -43,4 +44,9 @@ export default function ActiveAllyBadge({ onSwapClick }) {
       )}
     </motion.div>
   )
+}
+
+ActiveAllyBadge.propTypes = {
+  onSwapClick: PropTypes.func,
+  variant:     PropTypes.oneOf(['full', 'compact']),
 }
