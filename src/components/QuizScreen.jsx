@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaArrowLeft, FaCoins, FaLightbulb } from 'react-icons/fa'
 import AnimatedBackground from './AnimatedBackground.jsx'
@@ -15,7 +15,13 @@ export default function QuizScreen({ onComplete, onQuit }) {
   const s = useStrings()
   const lang = useLanguage()
   const phase = PHASES[state.currentPhase]
-  const questions = getQuestions(state.currentPhase, lang)
+  // Seed por sessão de quiz — embaralha as opções de forma estável durante
+  // toda a tentativa, mas muda a cada nova entrada na tela.
+  const sessionSeed = useMemo(() => Math.floor(Math.random() * 1e9), [state.currentPhase, lang])
+  const questions = useMemo(
+    () => getQuestions(state.currentPhase, lang, sessionSeed),
+    [state.currentPhase, lang, sessionSeed]
+  )
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)

@@ -3,7 +3,19 @@ import { motion } from 'framer-motion'
 import { useStrings } from '../../i18n'
 import { useGame } from '../../context/GameContext'
 import { checkNicknameAvailable, createPlayer } from '../../lib/api/players'
+import { isSupabaseConfigured } from '../../lib/supabaseClient'
 import styles from './Onboarding.module.css'
+
+/**
+ * Fallback offline — quando o Supabase não está configurado ou a rede falha,
+ * geramos um id e código de recuperação locais. O jogo continua funcionando,
+ * apenas sem sincronização em nuvem.
+ */
+function createLocalPlayer(nickname) {
+  const id = `local-${Math.random().toString(36).slice(2, 10)}-${Date.now().toString(36)}`
+  const recovery = `LOCAL-${Math.random().toString(36).slice(2, 8).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`
+  return { id, nickname, recovery_code: recovery }
+}
 
 const VALIDATION = {
   IDLE:      'idle',
@@ -56,10 +68,19 @@ export default function NicknameScreen({ onComplete, onSwitchToRecovery }) {
       return
     }
 
+    // Sem Supabase configurado: aceita o nickname só com validação local.
+    // Não bloqueia o usuário em modo offline.
+    if (!isSupabaseConfigured()) {
+      setValidation(VALIDATION.VALID)
+      return
+    }
+
     setValidation(VALIDATION.CHECKING)
     debounceTimerRef.current = setTimeout(async () => {
       const result = await checkNicknameAvailable(nickname)
-      if (!result.ok) { setValidation(VALIDATION.IDLE); return }
+      // Falha de rede / Supabase indisponível → fallback: aceita o nome.
+      // Em modo offline o jogo segue, sem sincronizar com a nuvem.
+      if (!result.ok) { setValidation(VALIDATION.VALID); return }
       setValidation(result.available ? VALIDATION.VALID : VALIDATION.TAKEN)
     }, 500)
 
@@ -72,11 +93,22 @@ export default function NicknameScreen({ onComplete, onSwitchToRecovery }) {
     setSubmitting(true)
     setErrorMsg(null)
 
+    // Sem Supabase: cria jogador local direto.
+    if (!isSupabaseConfigured()) {
+      const local = createLocalPlayer(nickname.trim())
+      setPlayer(local.id, local.nickname, local.recovery_code)
+      onComplete(local)
+      return
+    }
+
     const result = await createPlayer(nickname.trim())
 
+    // Falha em chegar ao Supabase (rede / projeto pausado / etc.):
+    // cria jogador local pra não travar a criança fora do jogo.
     if (!result.ok) {
-      setErrorMsg(result.error ?? s.onboarding.errorGeneric)
-      setSubmitting(false)
+      const local = createLocalPlayer(nickname.trim())
+      setPlayer(local.id, local.nickname, local.recovery_code)
+      onComplete(local)
       return
     }
 

@@ -1,6 +1,6 @@
 .question-card {
   background:
-    linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    linear-gradient(180deg, var(--color-white) 0%, var(--color-surface-4) 100%);
   border-radius: 30px;
   padding: 1.9rem 1.7rem;
   width: 100%;
@@ -17,8 +17,8 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.8rem;
-  color: var(--color-primary);
-  background: rgba(124, 58, 237, 0.12);
+  color: var(--color-primary-dark);
+  background: var(--color-surface-3);
   padding: 0.3rem 0.8rem;
   border-radius: 999px;
   letter-spacing: 0.05em;
@@ -30,7 +30,7 @@
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(1.15rem, 3vw, 1.6rem);
-  color: var(--color-text);
+  color: var(--color-text-primary);
   line-height: 1.3;
   margin-bottom: 1.2rem;
 }
@@ -48,8 +48,8 @@
   gap: 0.8rem;
   padding: 0.9rem 1.05rem;
   border-radius: 18px;
-  background: linear-gradient(180deg, #fafafa, #f3f4f6);
-  border: 3px solid #e5e7eb;
+  background: linear-gradient(180deg, var(--color-surface-4), var(--color-surface-3));
+  border: 3px solid var(--color-surface-2);
   text-align: left;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s;
@@ -59,9 +59,9 @@
 }
 
 .option-btn:not(:disabled):hover {
-  background: linear-gradient(180deg, #faf5ff, #f3e8ff);
-  border-color: #c4b5fd;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.06), 0 6px 14px rgba(124, 58, 237, 0.18);
+  background: linear-gradient(180deg, var(--color-surface-3), var(--color-surface-2));
+  border-color: var(--color-primary);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.06), 0 6px 14px rgba(75, 174, 232, 0.18);
 }
 
 .option-letter {
@@ -72,19 +72,19 @@
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-text-inverse);
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1.1rem;
-  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 4px 10px rgba(26, 43, 140, 0.3);
 }
 
 .option-text {
   flex: 1;
   font-weight: 600;
   font-size: 1rem;
-  color: var(--color-text);
+  color: var(--color-text-primary);
   line-height: 1.3;
 }
 
@@ -93,29 +93,34 @@
   flex-shrink: 0;
 }
 
-/* Estados de resposta */
+/*
+ * Estados de resposta — usam tokens *-soft / *-mid que mudam no modo
+ * daltônico (verde→teal escuro, vermelho→laranja). O símbolo (✓ / ✕) +
+ * o "shake/pop" do animation garantem feedback redundante (cor + forma +
+ * movimento), seguindo WCAG 1.4.1.
+ */
 .option-correct {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0) !important;
-  border-color: #10b981 !important;
+  background: linear-gradient(135deg, var(--color-success-soft), var(--color-success-mid));
+  border-color: var(--color-success-mid);
   animation: correct-pop 0.5s ease;
 }
 .option-correct .option-letter {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, var(--color-success-mid), var(--color-success));
 }
 .option-correct .option-icon {
-  color: #059669;
+  color: var(--color-success);
 }
 
 .option-wrong {
-  background: linear-gradient(135deg, #fee2e2, #fecaca) !important;
-  border-color: #ef4444 !important;
+  background: linear-gradient(135deg, var(--color-danger-soft), var(--color-danger-mid));
+  border-color: var(--color-danger-mid);
   animation: wrong-shake 0.5s ease;
 }
 .option-wrong .option-letter {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, var(--color-danger-mid), var(--color-danger));
 }
 .option-wrong .option-icon {
-  color: #dc2626;
+  color: var(--color-danger);
 }
 
 .option-dimmed {
@@ -152,13 +157,13 @@
 }
 
 .explanation-correct {
-  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-  border-color: #10b981;
+  background: linear-gradient(135deg, var(--color-surface-4), var(--color-success-soft));
+  border-color: var(--color-success-mid);
 }
 
 .explanation-wrong {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border-color: #f59e0b;
+  background: linear-gradient(135deg, var(--color-surface-4), var(--color-warning-soft));
+  border-color: var(--color-warning-mid);
 }
 
 .explanation-header {
@@ -169,19 +174,19 @@
   font-weight: 800;
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: var(--color-text);
+  color: var(--color-text-primary);
 }
 
 .explanation-icon {
-  color: #f59e0b;
-  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.5));
+  color: var(--color-warning);
+  filter: drop-shadow(0 0 6px rgba(243, 156, 18, 0.5));
 }
 
 .explanation-text {
   font-family: var(--font-body);
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--color-text);
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -191,13 +196,13 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.4rem;
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-text-inverse);
   border-radius: 999px;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1rem;
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 8px 20px rgba(26, 43, 140, 0.4);
 }
 
 @media (max-width: 500px) {

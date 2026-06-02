@@ -8,7 +8,19 @@ import { PHASES } from '../data/questions.js'
 import { useStrings, useLanguage, pick } from '../i18n/index.js'
 import './ResultScreen.css'
 
-const COLORS = ['#ec4899', '#f59e0b', '#3b82f6', '#10b981']
+/*
+ * Cores por nível de estrelas — usadas como acento na pontuação. Vêm de
+ * tokens para que o modo daltônico (Okabe-Ito) também redefina o acento
+ * do resultado final.
+ *   0★ → vermelho (danger), 1★ → âmbar (warning),
+ *   2★ → azul (primary),    3★ → verde forte (success-mid)
+ */
+const COLORS = [
+  'var(--color-danger)',
+  'var(--color-warning)',
+  'var(--color-primary)',
+  'var(--color-success-mid)'
+]
 
 function getStars(correct, total) {
   const pct = total > 0 ? correct / total : 0

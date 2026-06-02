@@ -1,27 +1,37 @@
 .parents-content {
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-width: 720px;
-  padding: 1rem;
+  height: 100%;
+  padding: 1rem 1rem 4rem;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
-  align-items: center;
-  max-height: 100vh;
+  align-items: stretch;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.parents-back-btn {
-  align-self: flex-start;
+.parents-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.parents-back-btn,
+.parents-print-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.5rem 0.9rem;
+  padding: 0.55rem 1rem;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.22);
   border: 2px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
+  color: var(--color-text-inverse, #fff);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.95rem;
@@ -29,37 +39,60 @@
   backdrop-filter: blur(10px);
 }
 
-.parents-title {
-  color: #fff;
-  font-size: clamp(1.4rem, 4vw, 2rem);
+.parents-print-btn {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.parents-header {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
   text-align: center;
-  margin: 0.5rem 0 0.4rem;
+}
+
+.parents-title {
+  color: var(--color-text-inverse, #fff);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  margin: 0.3rem 0 0.2rem;
   text-shadow:
-    0 3px 0 #1e3a8a,
+    0 3px 0 var(--color-primary-dark, #1e3a8a),
     0 6px 18px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.01em;
 }
 
+.parents-subtitle {
+  color: var(--color-text-inverse, #fff);
+  font-family: var(--font-display);
+  font-weight: 600;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
 .parents-dashboard {
   width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
 }
 
+/* ─── Cartões resumo ─── */
 .parents-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.7rem;
 }
 
 .parents-card {
   background:
-    linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    linear-gradient(180deg, var(--color-white) 0%, var(--color-surface-4) 100%);
   border-radius: 20px;
-  padding: 0.85rem 0.6rem;
+  padding: 0.9rem 0.6rem;
   text-align: center;
-  border: 2.5px solid rgba(56, 189, 248, 0.4);
+  border: 2.5px solid var(--color-surface-2);
   box-shadow:
     0 8px 18px rgba(0, 0, 0, 0.22),
     inset 0 2px 0 rgba(255, 255, 255, 1);
@@ -84,71 +117,121 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.78rem;
-  color: var(--color-text-light);
+  color: var(--color-text-secondary);
 }
 
 .parents-card-value {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 1.15rem;
-  color: var(--color-text);
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
 }
 
+/* ─── Seções ─── */
 .parents-section {
   background:
-    linear-gradient(180deg, #ffffff 0%, #fef9c3 100%);
+    linear-gradient(180deg, var(--color-white) 0%, var(--color-warning-light) 100%);
   border-radius: 20px;
   padding: 1rem 1.1rem;
-  border: 2.5px solid rgba(245, 158, 11, 0.3);
+  border: 2.5px solid var(--color-warning);
   box-shadow:
     0 8px 18px rgba(0, 0, 0, 0.22),
     inset 0 2px 0 rgba(255, 255, 255, 1);
 }
 
 .parents-section h3 {
-  font-size: 1rem;
-  color: var(--color-text);
-  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--color-text-primary);
+  margin: 0 0 0.7rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
 
+.parents-section.parents-note {
+  background:
+    linear-gradient(180deg, var(--color-white) 0%, var(--color-success-light) 100%);
+  border-color: var(--color-success);
+}
+
+.parents-note p {
+  font-family: var(--font-body);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .parents-section-empty {
   font-family: var(--font-body);
-  color: var(--color-text-light);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 }
 
+/* ─── Listas ─── */
 .parents-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .parents-list-item {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 0.55rem 0.85rem;
+  gap: 0.7rem;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.6rem 0.95rem;
   border-radius: 14px;
-  border: 2px solid #fde68a;
+  border: 2px solid var(--color-surface-2);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
 }
 
 .parents-list-icon {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
+  flex-shrink: 0;
 }
 
 .parents-list-name {
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-text-primary);
+}
+
+.parents-list-body {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.parents-list-meta {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.parents-list-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.parents-list-acc {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.parents-list-stars {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--color-warning);
+  letter-spacing: 0.05em;
 }
 
 .parents-list-value {
@@ -157,12 +240,42 @@
   color: var(--color-primary);
 }
 
+.parents-list-recos .parents-list-item {
+  align-items: flex-start;
+}
+
+.parents-list-recos .parents-list-name {
+  font-weight: 500;
+  font-family: var(--font-body);
+  white-space: normal;
+  line-height: 1.4;
+}
+
 .parents-empty {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 18px;
-  padding: 1.2rem;
+  padding: 1.4rem;
   text-align: center;
   font-family: var(--font-body);
   font-weight: 500;
-  color: var(--color-text-light);
+  color: var(--color-text-secondary);
+}
+
+/* ─── Impressão ─── */
+@media print {
+  .parents-back-btn,
+  .parents-print-btn,
+  .parents-top-row { display: none !important; }
+
+  .parents-content {
+    overflow: visible;
+    position: static;
+    background: white !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .parents-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
