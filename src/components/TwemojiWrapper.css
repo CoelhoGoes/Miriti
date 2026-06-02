@@ -1,0 +1,26 @@
+.twemoji-root .emoji,
+.twemoji-root svg.emoji,
+.twemoji-root img.emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  min-width: 1em;
+  min-height: 1em;
+  line-height: 1;
+  font-size: inherit;
+  vertical-align: text-bottom;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.twemoji-root svg.emoji,
+.twemoji-root img.emoji {
+  width: 1em;
+  height: 1em;
+}
+
+.twemoji-root .emoji {
+  position: relative;
+}

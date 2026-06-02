@@ -22,6 +22,7 @@ import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
 import RotateDevice from './components/RotateDevice/RotateDevice.jsx'
+import TwemojiWrapper from './components/TwemojiWrapper.jsx'
 import { useGame } from './context/GameContext.jsx'
 import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
@@ -99,13 +100,6 @@ export default function App() {
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => { document.removeEventListener('visibilitychange', onVisibilityChange); stop() }
   }, [addPlayTime])
-
-  const fontScale = state.settings.fontScale || 1
-  useEffect(() => {
-    const SCALE_MAP = { 1: '16px', 2: '17.92px', 3: '20px', 4: '22.4px' }
-    document.documentElement.style.fontSize = SCALE_MAP[fontScale] ?? '16px'
-    return () => { document.documentElement.style.fontSize = '' }
-  }, [fontScale])
 
   const goTo = useCallback((target) => { sound.play('transition'); setScreen(target) }, [])
   const handleQuizComplete = useCallback((result) => { setLastResult(result); setScreen(SCREENS.RESULT) }, [])
@@ -197,42 +191,43 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
-      <TutorialProvider>
-        <div
-          className={[
-            'app-root',
-            animationsEnabled ? '' : 'animations-off',
-            `font-scale-${fontScale}`
-          ].filter(Boolean).join(' ')}
-        >
-          <div className="app-content">
-            <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
-              <motion.div
-                key={screen}
-                className="screen"
-                variants={screenVariants}
-                initial="initial"
-                animate="animate"
-              >
-                {renderScreen()}
-              </motion.div>
-            </ErrorBoundary>
+      <TwemojiWrapper>
+        <TutorialProvider>
+          <div
+            className={[
+              'app-root',
+              animationsEnabled ? '' : 'animations-off',
+            ].filter(Boolean).join(' ')}
+          >
+            <div className="app-content">
+              <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
+                <motion.div
+                  key={screen}
+                  className="screen"
+                  variants={screenVariants}
+                  initial="initial"
+                  animate="animate"
+                >
+                  {renderScreen()}
+                </motion.div>
+              </ErrorBoundary>
+            </div>
+
+            <AnimatePresence>
+              {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
+              {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
+            </AnimatePresence>
+
+            <RotateDevice />
           </div>
 
-          <AnimatePresence>
-            {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
-            {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
-          </AnimatePresence>
-
-          <RotateDevice />
-        </div>
-
-        <RewardModal
-          badge={badgeToShow}
-          coinsEarned={lastReward?.coins ?? 0}
-          onClose={clearTutorialReward}
-        />
-      </TutorialProvider>
+          <RewardModal
+            badge={badgeToShow}
+            coinsEarned={lastReward?.coins ?? 0}
+            onClose={clearTutorialReward}
+          />
+        </TutorialProvider>
+      </TwemojiWrapper>
     </MotionConfig>
   )
 }

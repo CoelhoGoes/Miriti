@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { createPortal } from 'react-dom'
-import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaFont, FaEye, FaSignOutAlt, FaUserSlash, FaTrashAlt, FaQuestionCircle } from 'react-icons/fa'
+import { FaTimes, FaVolumeUp, FaMusic, FaMagic, FaGlobe, FaTrash, FaUniversalAccess, FaEye, FaSignOutAlt, FaUserSlash, FaTrashAlt, FaQuestionCircle } from 'react-icons/fa'
 import LogoutModal from './LogoutModal'
 import DeactivateAccountModal from './Account/DeactivateAccountModal'
 import DeleteAccountModal from './Account/DeleteAccountModal'
@@ -214,32 +214,6 @@ export default function OptionsModal({ onClose }) {
         <div className="options-a11y">
           <div className="options-a11y-title">
             <FaUniversalAccess /> {s.a11y.sectionTitle}
-          </div>
-
-          {/* Tamanho da fonte */}
-          <div className="options-group">
-            <label className="options-label">
-              <FaFont /> {s.a11y.fontSize}
-            </label>
-            <div className="options-font-row">
-              {[
-                { v: 1, label: s.a11y.fontSmall, size: '0.85rem' },
-                { v: 2, label: s.a11y.fontMedium, size: '1rem' },
-                { v: 3, label: s.a11y.fontLarge, size: '1.2rem' },
-                { v: 4, label: s.a11y.fontXLarge, size: '1.4rem' }
-              ].map(opt => (
-                <button
-                  key={opt.v}
-                  type="button"
-                  className={`options-font-btn ${settings.fontScale === opt.v ? 'active' : ''}`}
-                  onClick={() => { sound.play('click'); updateSettings({ fontScale: opt.v }) }}
-                  aria-label={`${s.a11y.fontSize} ${opt.label}`}
-                  style={{ fontSize: opt.size }}
-                >
-                  Aa
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Modo daltônico */}

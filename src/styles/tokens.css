@@ -47,31 +47,34 @@
  ═══════════════════════════════════════════════════════════ */
 
 body.colorblind-mode {
---color-primary:      #0072B2;
---color-primary-dark: #003F7F;
---color-secondary:    #009E8A;
---color-success:      #009E73;
---color-danger:       #D55E00;
---color-warning:      #E69F00;
-/* Superfícies e textos mantêm-se — contraste já garantido */
+  --color-primary:      #0072B2;
+  --color-primary-dark: #003F7F;
+  --color-secondary:    #009E8A;
+  --color-success:      #009E73;
+  --color-danger:       #D55E00;
+  --color-warning:      #E69F00;
+  /* Superfícies e textos mantêm-se — contraste já garantido */
+  filter: url(#cb-deuter);
 }
 
 body.colorblind-mode[data-colorblind-mode='protan'] {
---color-primary:      #005F99;
---color-primary-dark: #003060;
---color-secondary:    #00857A;
---color-success:      #2B9C67;
---color-danger:       #C05A00;
---color-warning:      #D89000;
+  --color-primary:      #005F99;
+  --color-primary-dark: #003060;
+  --color-secondary:    #00857A;
+  --color-success:      #2B9C67;
+  --color-danger:       #C05A00;
+  --color-warning:      #D89000;
+  filter: url(#cb-protan);
 }
 
 body.colorblind-mode[data-colorblind-mode='tritan'] {
---color-primary:      #3B6FB6;
---color-primary-dark: #1A3A7A;
---color-secondary:    #1F9A8A;
---color-success:      #2A8C60;
---color-danger:       #B85E00;
---color-warning:      #C77D00;
+  --color-primary:      #3B6FB6;
+  --color-primary-dark: #1A3A7A;
+  --color-secondary:    #1F9A8A;
+  --color-success:      #2A8C60;
+  --color-danger:       #B85E00;
+  --color-warning:      #C77D00;
+  filter: url(#cb-tritan);
 }
 
 body.colorblind-mode[data-colorblind-mode='deuter'] {

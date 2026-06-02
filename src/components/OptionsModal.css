@@ -217,31 +217,6 @@
   color: var(--color-text-primary);
 }
 
-.options-font-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
-}
-
-.options-font-btn {
-  background: var(--color-surface-3);
-  border: 2px solid var(--color-surface-2);
-  border-radius: 12px;
-  padding: 0.3rem 0;
-  font-family: var(--font-display);
-  font-weight: 800;
-  color: var(--color-text);
-  cursor: pointer;
-  line-height: 1;
-  min-height: 44px;
-}
-
-.options-font-btn.active {
-  background: var(--color-success-light);
-  border-color: var(--color-success);
-  color: var(--color-success);
-}
-
 .options-cb-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
