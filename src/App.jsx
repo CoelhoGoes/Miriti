@@ -18,6 +18,7 @@ import ErrorBoundary from './components/ErrorBoundary.jsx'
 import MascotChat from './components/MascotChat.jsx'
 import ParentsPanel from './components/ParentsPanel.jsx'
 import { TutorialProvider } from './context/TutorialContext.jsx'
+import { ScreenProvider } from './context/ScreenContext'
 import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
@@ -193,6 +194,7 @@ export default function App() {
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
       <TwemojiWrapper>
         <TutorialProvider>
+          <ScreenProvider screen={screen} setScreen={setScreen}>
           <div
             className={[
               'app-root',
@@ -226,6 +228,7 @@ export default function App() {
             coinsEarned={lastReward?.coins ?? 0}
             onClose={clearTutorialReward}
           />
+          </ScreenProvider>
         </TutorialProvider>
       </TwemojiWrapper>
     </MotionConfig>
