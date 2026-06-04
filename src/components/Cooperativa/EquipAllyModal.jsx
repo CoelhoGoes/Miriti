@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext.jsx'
@@ -5,7 +7,7 @@ import { useStrings, useLanguage } from '../../i18n/index.js'
 import { ANIMALS } from '../../data/animals.js'
 import styles from './EquipAllyModal.module.css'
 
-export default function EquipAllyModal({ onClose }) {
+export default function EquipAllyModal({ onClose, onGoToCooperativa }) {
   const { state, dispatch } = useGame()
   const s = useStrings()
   const lang = useLanguage()
@@ -13,6 +15,12 @@ export default function EquipAllyModal({ onClose }) {
 
   const { alliesOwned, activeAlly } = state.cooperativa
   const sc = s.cooperativa
+
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose() }
+    globalThis.addEventListener('keydown', handleEsc)
+    return () => globalThis.removeEventListener('keydown', handleEsc)
+  }, [onClose])
 
   function handleEquip(animalId) {
     dispatch({ type: 'EQUIP_ALLY', payload: { animalId } })
@@ -67,6 +75,18 @@ export default function EquipAllyModal({ onClose }) {
               </div>
             )
           })}
+
+          {onGoToCooperativa && (
+            <motion.button
+              type="button"
+              className={styles.coopLink}
+              onClick={onGoToCooperativa}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              🐾 {sc.buttons?.goToCooperativa ?? 'Adotar mais aliados →'}
+            </motion.button>
+          )}
         </div>
 
         <motion.button
@@ -82,4 +102,9 @@ export default function EquipAllyModal({ onClose }) {
   )
 
   return createPortal(content, modalRoot)
+}
+
+EquipAllyModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onGoToCooperativa: PropTypes.func,
 }

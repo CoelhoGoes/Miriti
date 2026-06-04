@@ -61,6 +61,41 @@ export const DEFAULT_MASCOT = '🐷'
 
 const AVAILABLE_MASCOTS = new Set(['🐷', '🐔', '🐒', '🦥', '🐸', '🐢'])
 
+/* ---- Sistema de Investimento ---- */
+export const ESTACOES = ['verao', 'chuva', 'inverno', 'primavera']
+export const ROUNDS_POR_ESTACAO = 4
+
+export const MODIFICADORES_ESTACAO = {
+  verao:     { galinheiro: 1.00, pomar: 1.20, horta: 0.80, celeiro: 1.00 },
+  chuva:     { galinheiro: 0.90, pomar: 1.10, horta: 1.30, celeiro: 0.90 },
+  inverno:   { galinheiro: 0.80, pomar: 0.70, horta: 0.60, celeiro: 1.30 },
+  primavera: { galinheiro: 1.10, pomar: 1.30, horta: 1.20, celeiro: 1.00 },
+}
+
+export const DEFAULT_INVESTIMENTOS = {
+  galinheiro: { moedas_alocadas: 0, multiplicador_base: 1.10 },
+  pomar:      { moedas_alocadas: 0, multiplicador_base: 1.15 },
+  horta:      { moedas_alocadas: 0, multiplicador_base: 1.12 },
+  celeiro:    { moedas_alocadas: 0, multiplicador_base: 1.20 },
+}
+
+/** Retorna a estação vigente para uma rodada. */
+export function getEstacao(round) {
+  const idx = Math.floor((round - 1) / ROUNDS_POR_ESTACAO) % ESTACOES.length
+  return ESTACOES[idx]
+}
+
+/** Retorna quantas rodadas faltam até a próxima troca de estação. */
+export function getRoundsAteProximaEstacao(round) {
+  return ROUNDS_POR_ESTACAO - ((round - 1) % ROUNDS_POR_ESTACAO)
+}
+
+/** Retorna o nome da próxima estação. */
+export function getProximaEstacao(round) {
+  const currentIdx = Math.floor((round - 1) / ROUNDS_POR_ESTACAO) % ESTACOES.length
+  return ESTACOES[(currentIdx + 1) % ESTACOES.length]
+}
+
 function normalizeMascot(value) {
   return AVAILABLE_MASCOTS.has(value) ? value : DEFAULT_MASCOT
 }
@@ -141,7 +176,9 @@ const initialState = {
     tutorialDone: false,
     fontScale: 1, // @deprecated — kept for backward-compat with old saves; not used by UI
     colorblindMode: 'none'
-  }
+  },
+  investimentos: DEFAULT_INVESTIMENTOS,
+  ultimoCiclo: null,
 }
 
 function loadInitialState() {
@@ -213,7 +250,9 @@ function loadInitialState() {
       ...initialState.settings,
       ...(saved.settings || {}),
       colorblindMode
-    }
+    },
+    investimentos: { ...DEFAULT_INVESTIMENTOS, ...(saved.investimentos || {}) },
+    ultimoCiclo: saved.ultimoCiclo || null,
   }
 }
 
@@ -577,9 +616,29 @@ function reducer(state, action) {
       if (state.cooperativa.activeAlly === 'galinha')  bonusCoins += 2
       if (state.cooperativa.activeAlly === 'preguica') bonusCoins += Math.floor(state.coins * 0.01)
 
+      // Processamento de investimentos — rendimento baseado na estação da rodada atual
+      const estacao = getEstacao(state.market.round)
+      let totalRendimento = 0
+      let totalPrincipal = 0
+
+      const investimentosZerados = {}
+      Object.entries(state.investimentos).forEach(([ativo, dados]) => {
+        if (dados.moedas_alocadas > 0) {
+          const mod = MODIFICADORES_ESTACAO[estacao][ativo]
+          const multFinal = dados.multiplicador_base * mod
+          totalRendimento += Math.floor(dados.moedas_alocadas * (multFinal - 1))
+          totalPrincipal += dados.moedas_alocadas
+        }
+        investimentosZerados[ativo] = { ...dados, moedas_alocadas: 0 }
+      })
+
+      const temInvestimento = totalPrincipal > 0
+
       return {
         ...state,
-        coins: state.coins + bonusCoins,
+        coins: state.coins + bonusCoins + totalPrincipal + totalRendimento,
+        investimentos: investimentosZerados,
+        ultimoCiclo: temInvestimento ? { totalRendimento, totalPrincipal } : null,
         market: {
           ...state.market,
           prices: newPrices,
@@ -851,6 +910,25 @@ function reducer(state, action) {
       }
     }
 
+    case 'ALLOCATE_INVESTMENT': {
+      const { ativo, quantidade } = action.payload
+      if (!state.investimentos[ativo]) return state
+      if (!Number.isInteger(quantidade) || quantidade <= 0) return state
+      if (state.coins < quantidade) return state
+
+      return {
+        ...state,
+        coins: state.coins - quantidade,
+        investimentos: {
+          ...state.investimentos,
+          [ativo]: {
+            ...state.investimentos[ativo],
+            moedas_alocadas: state.investimentos[ativo].moedas_alocadas + quantidade,
+          },
+        },
+      }
+    }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -922,6 +1000,10 @@ export function GameProvider({ children }) {
     dispatch({ type: 'TUTORIAL_CLEAR_REWARD' })
   }, [])
 
+  const alocarInvestimento = useCallback((ativo, quantidade) => {
+    dispatch({ type: 'ALLOCATE_INVESTMENT', payload: { ativo, quantidade } })
+  }, [])
+
   const setPlayer = useCallback((id, nickname, recoveryCode) => {
     dispatch({ type: 'SET_PLAYER', payload: { id, nickname, recoveryCode } })
   }, [])
@@ -960,6 +1042,8 @@ export function GameProvider({ children }) {
     distinctProductsBought: state.distinctProductsBought,
     hasSoldAny:             state.hasSoldAny,
     hasSoldAtProfit:        state.hasSoldAtProfit,
+    investimentos:          state.investimentos,
+    ultimoCiclo:            state.ultimoCiclo,
   })
 
   const value = {
@@ -973,6 +1057,7 @@ export function GameProvider({ children }) {
     purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly,
     setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
     unlockBadge, completeTutorial, resetTutorial, visitArea, clearTutorialReward,
+    alocarInvestimento,
     syncMeta,
   }
 

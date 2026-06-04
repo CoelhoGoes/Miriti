@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
 import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
+import EquipAllyModal from './Cooperativa/EquipAllyModal.jsx'
 import SyncIndicator from './SyncIndicator/SyncIndicator.jsx'
 import { useSecondaryTutorial } from '../hooks/useSecondaryTutorial'
 import { FaTrophy } from 'react-icons/fa'
@@ -72,8 +74,9 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
   const { state } = useGame()
   const s = useStrings()
   useSecondaryTutorial('INITIAL', true)
+  const [showAllyModal, setShowAllyModal] = useState(false)
   const openSettings = () => { if (onSettings) onSettings() }
-  const openCredits  = () => { if (onCredits)  onCredits()  }
+  const openCredits = () => { if (onCredits) onCredits() }
 
   const handleMascot = () => {
     sound.play('pop')
@@ -296,8 +299,15 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <ActiveAllyBadge onSwapClick={onCooperativa} />
+        <ActiveAllyBadge onSwapClick={() => { sound.play('click'); setShowAllyModal(true) }} />
       </motion.div>
+
+      {showAllyModal && (
+        <EquipAllyModal
+          onClose={() => setShowAllyModal(false)}
+          onGoToCooperativa={() => { setShowAllyModal(false); onCooperativa?.() }}
+        />
+      )}
 
     </div>
   )
