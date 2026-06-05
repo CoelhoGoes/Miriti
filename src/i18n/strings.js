@@ -655,6 +655,7 @@ export const STRINGS = {
       actionCost: '−1 ação',
       farmHint: '⚡ Modo Arcade — {n} ações restantes',
       farmHintSingular: '⚡ Modo Arcade — 1 ação restante',
+      nodeSoon: 'Em breve no Arcade',
     },
   },
 
@@ -1303,6 +1304,7 @@ export const STRINGS = {
       actionCost: '−1 action',
       farmHint: '⚡ Arcade Mode — {n} actions left',
       farmHintSingular: '⚡ Arcade Mode — 1 action left',
+      nodeSoon: 'Coming soon in Arcade',
     },
   }
 }

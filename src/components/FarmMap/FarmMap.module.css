@@ -251,6 +251,30 @@ text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 border: 2px solid var(--color-surface-2, #e5e5e5);
 }
 
+.mapNodeDisabled {
+cursor: not-allowed;
+opacity: 0.55;
+filter: grayscale(60%);
+}
+
+.mapNodeDisabled .nodeCircle {
+box-shadow: none;
+}
+
+.nodeSoonBadge {
+margin-top: 2px;
+background: var(--color-text-secondary, #666);
+color: var(--color-text-inverse);
+padding: 2px 8px;
+border-radius: 10px;
+font-family: var(--font-display);
+font-size: 0.65rem;
+font-weight: 700;
+white-space: nowrap;
+text-align: center;
+letter-spacing: 0.03em;
+}
+
 .allyBadgeOverlay {
 position: absolute;
 bottom: calc(var(--ms-gap-md) + env(safe-area-inset-bottom, 0px));

@@ -472,6 +472,7 @@ function reducer(state, action) {
     }
 
     case 'BUY_PRODUCT': {
+      if (state.gameMode === 'arcade') return state
       // action.payload: { productId, quantity }
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const currentPrice = state.market.prices[action.payload.productId]
@@ -519,6 +520,7 @@ function reducer(state, action) {
     }
 
     case 'SELL_PRODUCT': {
+      if (state.gameMode === 'arcade') return state
       // action.payload: { productId, quantity }
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const slot = state.basket.find(
@@ -562,6 +564,7 @@ function reducer(state, action) {
     }
 
     case 'APPLY_MARKET_EVENT': {
+      if (state.gameMode === 'arcade') return state
       // action.payload: { event } — objeto completo do MARKET_EVENTS
       const event = action.payload?.event
       if (!event || !MARKET_EVENTS.some(ev => ev.id === event.id)) return state
@@ -594,6 +597,7 @@ function reducer(state, action) {
     }
 
     case 'ADVANCE_ROUND': {
+      if (state.gameMode === 'arcade') return state
       const newPrices = { ...state.market.prices }
       const newHistory = { ...state.market.priceHistory }
 
@@ -709,6 +713,7 @@ function reducer(state, action) {
     }
 
     case 'PURCHASE_ANIMAL': {
+      if (state.gameMode === 'arcade') return state
       const animal = ANIMALS.find(a => a.id === action.payload.animalId)
       if (!animal) return state
 

@@ -160,9 +160,9 @@ export default function App() {
           <FarmMap
             onEscolinha={isArcade ? () => arcadeNavigate(SCREENS.ARCADE_QUIZ) : () => goTo(SCREENS.ESCOLINHA)}
             onShop={isArcade ? () => arcadeNavigate(SCREENS.COOPERATIVA) : () => goTo(SCREENS.COOPERATIVA)}
-            onCooperativa={isArcade ? () => arcadeNavigate(SCREENS.COOPERATIVA) : () => goTo(SCREENS.COOPERATIVA)}
+            onCooperativa={isArcade ? null : () => goTo(SCREENS.COOPERATIVA)}
             onLeaderboard={isArcade ? null : () => goTo(SCREENS.LEADERBOARD)}
-            onStocks={isArcade ? () => arcadeNavigate(SCREENS.STOCKS) : () => goTo(SCREENS.STOCKS)}
+            onStocks={isArcade ? null : () => goTo(SCREENS.STOCKS)}
             onAchievements={isArcade ? null : () => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
             onCredits={isArcade ? null : () => goTo(SCREENS.CREDITS)}

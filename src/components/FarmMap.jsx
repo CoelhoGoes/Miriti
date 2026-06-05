@@ -266,7 +266,10 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
       {MAP_NODES.map((node, index) => {
         if (isArcade && node.id === 'conquistas') return null
 
+        const arcadeDisabled = isArcade && (node.id === 'feirinha' || node.id === 'cooperativa')
+
         const openNode = () => {
+          if (arcadeDisabled) return
           sound.play('click')
           if (node.id === 'escolinha') onEscolinha()
           if (node.id === 'feirinha') onStocks?.()
@@ -277,7 +280,7 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
         return (
           <motion.div
             key={node.id}
-            className={styles.mapNode}
+            className={`${styles.mapNode}${arcadeDisabled ? ` ${styles.mapNodeDisabled}` : ''}`}
             data-tutorial={`node-${node.id}`}
             style={{
               left: `${node.position.leftPct}%`,
@@ -286,8 +289,8 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
             initial={{ opacity: 0, y: 30, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.2 + index * 0.1, type: 'spring', stiffness: 200, damping: 18 }}
-            whileHover={{ scale: 1.07, y: -4 }}
-            whileTap={{ scale: 0.96 }}
+            whileHover={arcadeDisabled ? {} : { scale: 1.07, y: -4 }}
+            whileTap={arcadeDisabled ? {} : { scale: 0.96 }}
             onClick={openNode}
           >
             <div
@@ -303,6 +306,11 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
               )}
             </div>
             <div className={styles.nodeLabel}>{s.farmMap.nodes[node.id]}</div>
+            {arcadeDisabled && (
+              <div className={styles.nodeSoonBadge} aria-label={s?.arcade?.nodeSoon}>
+                🔒 {s?.arcade?.nodeSoon}
+              </div>
+            )}
           </motion.div>
         )
       })}
