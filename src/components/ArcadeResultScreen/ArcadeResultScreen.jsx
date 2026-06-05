@@ -12,10 +12,10 @@ export default function ArcadeResultScreen({ onMenu }) {
   const s = useStrings()
   const score = state.arcade?.finalScore
 
-  const finalCoins   = score?.coins ?? state.arcade?.coins ?? 0
-  const actionsUsed  = score?.actionsUsed ?? (ARCADE_INITIAL_ACTIONS - (state.arcade?.actionsLeft ?? 0))
-  const diff         = finalCoins - ARCADE_INITIAL_COINS
-  const isProfit     = diff > 0
+  const finalCoins = score?.coins ?? state.arcade?.coins ?? 0
+  const actionsUsed = score?.actionsUsed ?? (ARCADE_INITIAL_ACTIONS - (state.arcade?.actionsLeft ?? 0))
+  const diff = finalCoins - ARCADE_INITIAL_COINS
+  const isProfit = diff > 0
 
   const handlePlayAgain = () => {
     startArcade()

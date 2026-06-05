@@ -36,23 +36,23 @@ import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
 
 const SCREENS = {
-  HOME:         'home',
-  FARM:         'farm',
-  ESCOLINHA:    'escolinha',
-  QUIZ:         'quiz',
-  RESULT:       'result',
-  SHOP:         'shop',
-  COOPERATIVA:  'cooperativa',
+  HOME: 'home',
+  FARM: 'farm',
+  ESCOLINHA: 'escolinha',
+  QUIZ: 'quiz',
+  RESULT: 'result',
+  SHOP: 'shop',
+  COOPERATIVA: 'cooperativa',
   ACHIEVEMENTS: 'achievements',
-  LEADERBOARD:  'leaderboard',
-  STOCKS:       'stocks',
-  CREDITS:      'credits',
-  PARENTS:      'parents',
-  BOSS:         'boss',
+  LEADERBOARD: 'leaderboard',
+  STOCKS: 'stocks',
+  CREDITS: 'credits',
+  PARENTS: 'parents',
+  BOSS: 'boss',
   // Arcade
-  ARCADE_START:  'arcade_start',
+  ARCADE_START: 'arcade_start',
   ARCADE_RESULT: 'arcade_result',
-  ARCADE_QUIZ:   'arcade_quiz',
+  ARCADE_QUIZ: 'arcade_quiz',
 }
 
 const screenVariants = {
@@ -61,11 +61,11 @@ const screenVariants = {
 }
 
 export default function App() {
-  const [screen, setScreen]               = useState(SCREENS.HOME)
-  const [optionsOpen, setOptionsOpen]     = useState(false)
+  const [screen, setScreen] = useState(SCREENS.HOME)
+  const [optionsOpen, setOptionsOpen] = useState(false)
   const [mascotChatOpen, setMascotChatOpen] = useState(false)
-  const [bossPhase, setBossPhase]         = useState(0)
-  const [lastResult, setLastResult]       = useState(null)
+  const [bossPhase, setBossPhase] = useState(0)
+  const [lastResult, setLastResult] = useState(null)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
   const [showRecovery, setShowRecovery] = useState(false)
   const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade } = useGame()
@@ -247,44 +247,44 @@ export default function App() {
       <TwemojiWrapper>
         <TutorialProvider>
           <ScreenProvider screen={screen} setScreen={setScreen}>
-          <ToastProvider>
-          <div
-            className={[
-              'app-root',
-              animationsEnabled ? '' : 'animations-off',
-            ].filter(Boolean).join(' ')}
-          >
-            <div className="app-content">
-              <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
-                <motion.div
-                  key={screen}
-                  className="screen"
-                  variants={screenVariants}
-                  initial="initial"
-                  animate="animate"
-                >
-                  {renderScreen()}
-                </motion.div>
-              </ErrorBoundary>
-            </div>
+            <ToastProvider>
+              <div
+                className={[
+                  'app-root',
+                  animationsEnabled ? '' : 'animations-off',
+                ].filter(Boolean).join(' ')}
+              >
+                <div className="app-content">
+                  <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
+                    <motion.div
+                      key={screen}
+                      className="screen"
+                      variants={screenVariants}
+                      initial="initial"
+                      animate="animate"
+                    >
+                      {renderScreen()}
+                    </motion.div>
+                  </ErrorBoundary>
+                </div>
 
-            <AnimatePresence>
-              {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
-              {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
-            </AnimatePresence>
+                <AnimatePresence>
+                  {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
+                  {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
+                </AnimatePresence>
 
-            <RotateDevice />
-          </div>
+                <RotateDevice />
+              </div>
 
-          <RewardModal
-            badge={badgeToShow}
-            coinsEarned={lastReward?.coins ?? 0}
-            onClose={clearTutorialReward}
-          />
-          <HelperPouch />
-          <ActiveBuffsBar />
-          <ArcadeActionsHUD />
-          </ToastProvider>
+              <RewardModal
+                badge={badgeToShow}
+                coinsEarned={lastReward?.coins ?? 0}
+                onClose={clearTutorialReward}
+              />
+              <HelperPouch />
+              <ActiveBuffsBar />
+              <ArcadeActionsHUD />
+            </ToastProvider>
           </ScreenProvider>
         </TutorialProvider>
       </TwemojiWrapper>

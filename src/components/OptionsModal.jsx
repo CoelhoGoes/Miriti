@@ -59,9 +59,9 @@ export default function OptionsModal({ onClose }) {
   const [confirmReset, setConfirmReset] = useState(false)
   const [showArcadeResetBlock, setShowArcadeResetBlock] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
-  const [logoutOpen, setLogoutOpen]         = useState(false)
+  const [logoutOpen, setLogoutOpen] = useState(false)
   const [deactivateOpen, setDeactivateOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen]         = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const recoveryCode = state.player?.recoveryCode
 
@@ -284,11 +284,11 @@ export default function OptionsModal({ onClose }) {
           <p style={{ fontSize: 'var(--ms-text-xs)', color: 'var(--color-text-secondary)', margin: '4px 0 2px' }}>
             {s.options.tutorialsDescription}
           </p>
-          <ReplayTutorialButton tutorialKey="ESCOLA"        label={s.options.replayEscola}        onClose={onClose} />
-          <ReplayTutorialButton tutorialKey="FEIRA"         label={s.options.replayFeira}         onClose={onClose} />
-          <ReplayTutorialButton tutorialKey="COOPERATIVA"   label={s.options.replayCooperativa}   onClose={onClose} />
-          <ReplayTutorialButton tutorialKey="CONQUISTAS"    label={s.options.replayConquistas}    onClose={onClose} />
-          <ReplayTutorialButton tutorialKey="RANKING"       label={s.options.replayRanking}       onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="ESCOLA" label={s.options.replayEscola} onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="FEIRA" label={s.options.replayFeira} onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="COOPERATIVA" label={s.options.replayCooperativa} onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="CONQUISTAS" label={s.options.replayConquistas} onClose={onClose} />
+          <ReplayTutorialButton tutorialKey="RANKING" label={s.options.replayRanking} onClose={onClose} />
         </div>
 
         {/* Acessibilidade */}

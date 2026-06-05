@@ -67,17 +67,17 @@ export const ESTACOES = ['verao', 'chuva', 'inverno', 'primavera']
 export const ROUNDS_POR_ESTACAO = 4
 
 export const MODIFICADORES_ESTACAO = {
-  verao:     { galinheiro: 1.00, pomar: 1.20, horta: 0.80, celeiro: 1.00 },
-  chuva:     { galinheiro: 0.90, pomar: 1.10, horta: 1.30, celeiro: 0.90 },
-  inverno:   { galinheiro: 0.80, pomar: 0.70, horta: 0.60, celeiro: 1.30 },
+  verao: { galinheiro: 1.00, pomar: 1.20, horta: 0.80, celeiro: 1.00 },
+  chuva: { galinheiro: 0.90, pomar: 1.10, horta: 1.30, celeiro: 0.90 },
+  inverno: { galinheiro: 0.80, pomar: 0.70, horta: 0.60, celeiro: 1.30 },
   primavera: { galinheiro: 1.10, pomar: 1.30, horta: 1.20, celeiro: 1.00 },
 }
 
 export const DEFAULT_INVESTIMENTOS = {
   galinheiro: { moedas_alocadas: 0, multiplicador_base: 1.10 },
-  pomar:      { moedas_alocadas: 0, multiplicador_base: 1.15 },
-  horta:      { moedas_alocadas: 0, multiplicador_base: 1.12 },
-  celeiro:    { moedas_alocadas: 0, multiplicador_base: 1.20 },
+  pomar: { moedas_alocadas: 0, multiplicador_base: 1.15 },
+  horta: { moedas_alocadas: 0, multiplicador_base: 1.12 },
+  celeiro: { moedas_alocadas: 0, multiplicador_base: 1.20 },
 }
 
 /** Retorna a estação vigente para uma rodada. */
@@ -151,23 +151,23 @@ const initialState = {
   hasSoldAtProfit: false,
   hasSoldAny: false,
   cooperativa: {
-    helpers:        {},
+    helpers: {},
     activePartners: [],
-    alliesOwned:    ['cofrinho'],
-    activeAlly:     'cofrinho',
+    alliesOwned: ['cofrinho'],
+    activeAlly: 'cofrinho',
   },
   quizFlags: {},
   tutorialState: {
-    completed:    [],
+    completed: [],
     visitedAreas: [],
-    lastReward:   null,
+    lastReward: null,
   },
   badges: {
     unlocked: [],
   },
   player: {
-    id:           null,
-    nickname:     null,
+    id: null,
+    nickname: null,
     recoveryCode: null,
     hasOnboarded: false,
   },
@@ -258,7 +258,7 @@ function loadInitialState() {
     ultimoCiclo: saved.ultimoCiclo || null,
     // Arcade: salvar sessão é útil, mas ao reabrir o app deve-se retomar em história
     gameMode: 'historia',
-    arcade:    null,
+    arcade: null,
   }
 }
 
@@ -266,16 +266,16 @@ function migrateTutorialState(state) {
   let next = state.tutorialState
     ? state
     : {
-        ...state,
-        tutorialState: {
-          completed:    [],
-          visitedAreas: [],
-          lastReward:   null,
-        },
-      }
+      ...state,
+      tutorialState: {
+        completed: [],
+        visitedAreas: [],
+        lastReward: null,
+      },
+    }
 
   // saves antigos com tutorialDone=true: marcar 'tutorial.first-time' como concluído
-  const legacyDone     = next.settings?.tutorialDone === true
+  const legacyDone = next.settings?.tutorialDone === true
   const newAlreadyDone = next.tutorialState.completed.includes('tutorial.first-time')
   if (legacyDone && !newAlreadyDone) {
     next = {
@@ -300,8 +300,8 @@ function migrateLegacyShop(state) {
 
   const legacyMap = {
     mascot_monkey: 'macaco',
-    mascot_sloth:  'preguica',
-    mascot_frog:   'sapo',
+    mascot_sloth: 'preguica',
+    mascot_frog: 'sapo',
     mascot_turtle: 'jabuti',
   }
 
@@ -330,8 +330,8 @@ function migrateLegacyShop(state) {
     cooperativa: {
       helpers,
       activePartners: [],
-      alliesOwned:    migratedAllies,
-      activeAlly:     newActiveAlly,
+      alliesOwned: migratedAllies,
+      activeAlly: newActiveAlly,
     },
   }
 }
@@ -619,7 +619,7 @@ function reducer(state, action) {
       //  • Galinha-caipira → +2 moedas/rodada (renda diária constante)
       //  • Preguiça → +1% do saldo (juros compostos lentos)
       let bonusCoins = 0
-      if (state.cooperativa.activeAlly === 'galinha')  bonusCoins += 2
+      if (state.cooperativa.activeAlly === 'galinha') bonusCoins += 2
       if (state.cooperativa.activeAlly === 'preguica') bonusCoins += Math.floor(state.coins * 0.01)
 
       // Processamento de investimentos — rendimento baseado na estação da rodada atual
@@ -773,7 +773,7 @@ function reducer(state, action) {
       const animal = ANIMALS.find(a => a.id === action.payload.animalId)
       if (animal?.category !== 'parceiro') return state
 
-      const isControl    = MARKET_CONTROL_ANIMALS.includes(animal.id)
+      const isControl = MARKET_CONTROL_ANIMALS.includes(animal.id)
       const hasOtherCtrl = state.cooperativa.activePartners.some(
         p => MARKET_CONTROL_ANIMALS.includes(p.id) && p.id !== animal.id
       )
@@ -786,7 +786,7 @@ function reducer(state, action) {
         ...state,
         cooperativa: {
           ...state.cooperativa,
-          helpers:        { ...state.cooperativa.helpers, [animal.id]: stock - 1 },
+          helpers: { ...state.cooperativa.helpers, [animal.id]: stock - 1 },
           activePartners: [...others, { id: animal.id, roundsLeft: rounds }],
         },
       }
@@ -816,8 +816,8 @@ function reducer(state, action) {
         ...state,
         player: {
           ...state.player,
-          id:           action.payload.id,
-          nickname:     action.payload.nickname,
+          id: action.payload.id,
+          nickname: action.payload.nickname,
           recoveryCode: action.payload.recoveryCode,
         },
       }
@@ -835,8 +835,8 @@ function reducer(state, action) {
       return {
         ...state,
         player: {
-          id:           null,
-          nickname:     null,
+          id: null,
+          nickname: null,
           recoveryCode: null,
           hasOnboarded: false,
         },
@@ -845,7 +845,7 @@ function reducer(state, action) {
     case 'LOGOUT':
       return {
         ...initialState,
-        stocks:    initialStocks(),
+        stocks: initialStocks(),
         portfolio: initialPortfolio(),
         settings: {
           ...state.settings,
@@ -858,7 +858,7 @@ function reducer(state, action) {
       const alreadyDone = state.tutorialState.completed.includes(tutorialId)
 
       // efeito colateral: tutorial inicial → settings.tutorialDone=true (backward-compat)
-      const isInitial   = tutorialId === 'tutorial.first-time'
+      const isInitial = tutorialId === 'tutorial.first-time'
       const nextSettings = isInitial
         ? { ...state.settings, tutorialDone: true }
         : state.settings
@@ -940,12 +940,12 @@ function reducer(state, action) {
         ...state,
         gameMode: 'arcade',
         arcade: {
-          actionsLeft:    ARCADE_INITIAL_ACTIONS,
-          coins:          ARCADE_INITIAL_COINS,
-          startedAt:      Date.now(),
-          finishedAt:     null,
+          actionsLeft: ARCADE_INITIAL_ACTIONS,
+          coins: ARCADE_INITIAL_COINS,
+          startedAt: Date.now(),
+          finishedAt: null,
           usedQuestionIds: [],
-          finalScore:     null,
+          finalScore: null,
         },
       }
 
@@ -988,7 +988,7 @@ function reducer(state, action) {
           ...state.arcade,
           finishedAt: Date.now(),
           finalScore: {
-            coins:       state.arcade.coins,
+            coins: state.arcade.coins,
             actionsUsed: ARCADE_INITIAL_ACTIONS - state.arcade.actionsLeft,
           },
         },
@@ -1049,18 +1049,18 @@ export function GameProvider({ children }) {
   const completeBoss = useCallback((payload) => dispatch({ type: 'COMPLETE_BOSS', payload }), [])
   const addPlayTime = useCallback((seconds) => dispatch({ type: 'ADD_PLAY_TIME', seconds }), [])
   const markMascotChatViewed = useCallback(() => dispatch({ type: 'MASCOT_CHAT_VIEWED' }), [])
-  const resetProgress    = useCallback(() => dispatch({ type: 'RESET' }), [])
-  const purchaseAnimal   = useCallback((animalId) => dispatch({ type: 'PURCHASE_ANIMAL', payload: { animalId } }), [])
-  const useHelper        = useCallback((animalId) => dispatch({ type: 'USE_HELPER', payload: { animalId } }), [])
-  const activatePartner  = useCallback((animalId) => dispatch({ type: 'ACTIVATE_PARTNER', payload: { animalId } }), [])
-  const tickPartners     = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
-  const equipAlly        = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
+  const resetProgress = useCallback(() => dispatch({ type: 'RESET' }), [])
+  const purchaseAnimal = useCallback((animalId) => dispatch({ type: 'PURCHASE_ANIMAL', payload: { animalId } }), [])
+  const useHelper = useCallback((animalId) => dispatch({ type: 'USE_HELPER', payload: { animalId } }), [])
+  const activatePartner = useCallback((animalId) => dispatch({ type: 'ACTIVATE_PARTNER', payload: { animalId } }), [])
+  const tickPartners = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
+  const equipAlly = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
 
   const unlockBadge = useCallback((badgeId) => {
     dispatch({ type: 'UNLOCK_BADGE', payload: { badgeId } })
   }, [])
 
-  const completeTutorial  = useCallback((tutorialId, reward = null) => {
+  const completeTutorial = useCallback((tutorialId, reward = null) => {
     dispatch({ type: 'TUTORIAL_COMPLETE', payload: { tutorialId, reward } })
   }, [])
   const resetTutorial = useCallback((tutorialId) => {
@@ -1073,12 +1073,12 @@ export function GameProvider({ children }) {
     dispatch({ type: 'TUTORIAL_CLEAR_REWARD' })
   }, [])
 
-  const startArcade         = useCallback(() => dispatch({ type: 'ARCADE_START' }), [])
+  const startArcade = useCallback(() => dispatch({ type: 'ARCADE_START' }), [])
   const consumeArcadeAction = useCallback(() => dispatch({ type: 'ARCADE_CONSUME_ACTION' }), [])
-  const earnArcadeCoins     = useCallback((amount) => dispatch({ type: 'ARCADE_EARN_COINS', payload: { amount } }), [])
-  const useArcadeQuestion   = useCallback((questionId) => dispatch({ type: 'ARCADE_USE_QUESTION', payload: { questionId } }), [])
-  const finishArcade        = useCallback(() => dispatch({ type: 'ARCADE_FINISH' }), [])
-  const exitArcade          = useCallback(() => dispatch({ type: 'ARCADE_EXIT' }), [])
+  const earnArcadeCoins = useCallback((amount) => dispatch({ type: 'ARCADE_EARN_COINS', payload: { amount } }), [])
+  const useArcadeQuestion = useCallback((questionId) => dispatch({ type: 'ARCADE_USE_QUESTION', payload: { questionId } }), [])
+  const finishArcade = useCallback(() => dispatch({ type: 'ARCADE_FINISH' }), [])
+  const exitArcade = useCallback(() => dispatch({ type: 'ARCADE_EXIT' }), [])
 
   const alocarInvestimento = useCallback((ativo, quantidade) => {
     dispatch({ type: 'ALLOCATE_INVESTMENT', payload: { ativo, quantidade } })
@@ -1087,43 +1087,43 @@ export function GameProvider({ children }) {
   const setPlayer = useCallback((id, nickname, recoveryCode) => {
     dispatch({ type: 'SET_PLAYER', payload: { id, nickname, recoveryCode } })
   }, [])
-  const markOnboarded   = useCallback(() => dispatch({ type: 'MARK_ONBOARDED' }), [])
+  const markOnboarded = useCallback(() => dispatch({ type: 'MARK_ONBOARDED' }), [])
   const hydrateFromCloud = useCallback((gameState) => {
     dispatch({ type: 'HYDRATE_FROM_CLOUD', payload: { gameState } })
   }, [])
-  const clearPlayer     = useCallback(() => dispatch({ type: 'CLEAR_PLAYER' }), [])
+  const clearPlayer = useCallback(() => dispatch({ type: 'CLEAR_PLAYER' }), [])
   const logout = useCallback(() => {
     try { storage.remove('game_state') } catch (err) { console.warn('[logout]', err) }
     dispatch({ type: 'LOGOUT' })
   }, [])
 
   const syncMeta = useCloudSync(state.player?.id, {
-    coins:          state.coins,
-    basket:         state.basket,
-    market:         state.market,
-    cooperativa:    state.cooperativa,
-    achievements:   state.achievements,
-    inventory:      state.inventory,
+    coins: state.coins,
+    basket: state.basket,
+    market: state.market,
+    cooperativa: state.cooperativa,
+    achievements: state.achievements,
+    inventory: state.inventory,
     selectedMascot: state.selectedMascot,
-    settings:       state.settings,
-    stars:          state.stars,
-    phaseResults:   state.phaseResults,
-    bossClears:     state.bossClears,
+    settings: state.settings,
+    stars: state.stars,
+    phaseResults: state.phaseResults,
+    bossClears: state.bossClears,
     unlockedPhases: state.unlockedPhases,
-    totalScore:     state.totalScore,
-    stocks:         state.stocks,
-    portfolio:      state.portfolio,
-    playTimeSec:    state.playTimeSec,
-    quizFlags:      state.quizFlags,
-    ownedMascots:   state.ownedMascots,
-    tutorialState:          state.tutorialState,
-    badges:                 state.badges,
-    mascotChatViews:        state.mascotChatViews,
+    totalScore: state.totalScore,
+    stocks: state.stocks,
+    portfolio: state.portfolio,
+    playTimeSec: state.playTimeSec,
+    quizFlags: state.quizFlags,
+    ownedMascots: state.ownedMascots,
+    tutorialState: state.tutorialState,
+    badges: state.badges,
+    mascotChatViews: state.mascotChatViews,
     distinctProductsBought: state.distinctProductsBought,
-    hasSoldAny:             state.hasSoldAny,
-    hasSoldAtProfit:        state.hasSoldAtProfit,
-    investimentos:          state.investimentos,
-    ultimoCiclo:            state.ultimoCiclo,
+    hasSoldAny: state.hasSoldAny,
+    hasSoldAtProfit: state.hasSoldAtProfit,
+    investimentos: state.investimentos,
+    ultimoCiclo: state.ultimoCiclo,
   })
 
   const value = {
