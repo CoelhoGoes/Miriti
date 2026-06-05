@@ -19,6 +19,7 @@ import MascotChat from './components/MascotChat.jsx'
 import ParentsPanel from './components/ParentsPanel.jsx'
 import { TutorialProvider } from './context/TutorialContext.jsx'
 import { ScreenProvider } from './context/ScreenContext'
+import { ToastProvider } from './context/ToastContext'
 import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
@@ -195,6 +196,7 @@ export default function App() {
       <TwemojiWrapper>
         <TutorialProvider>
           <ScreenProvider screen={screen} setScreen={setScreen}>
+          <ToastProvider>
           <div
             className={[
               'app-root',
@@ -228,6 +230,7 @@ export default function App() {
             coinsEarned={lastReward?.coins ?? 0}
             onClose={clearTutorialReward}
           />
+          </ToastProvider>
           </ScreenProvider>
         </TutorialProvider>
       </TwemojiWrapper>

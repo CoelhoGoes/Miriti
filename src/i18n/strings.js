@@ -561,6 +561,9 @@ export const STRINGS = {
       success:         'Conta apagada. Tchau! 👋',
       errorGeneric:    'Algo deu errado. Tente de novo.',
     },
+    toast: {
+      defaultClose: 'Fechar',
+    },
   },
 
   en: {
@@ -1113,6 +1116,9 @@ export const STRINGS = {
       processing:      'Deleting...',
       success:         'Account deleted. Goodbye! 👋',
       errorGeneric:    'Something went wrong. Try again.',
+    },
+    toast: {
+      defaultClose: 'Close',
     },
   }
 }
