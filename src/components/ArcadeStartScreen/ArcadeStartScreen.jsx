@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext'
 import { useStrings } from '../../i18n'
+import { ARCADE_INITIAL_ACTIONS, ARCADE_INITIAL_COINS } from '../../data/arcadeConfig'
 import styles from './ArcadeStartScreen.module.css'
 
 export default function ArcadeStartScreen({ onStart, onBack, onViewLeaderboard }) {
@@ -56,11 +57,11 @@ export default function ArcadeStartScreen({ onStart, onBack, onViewLeaderboard }
         transition={{ delay: 0.35 }}
       >
         <div className={styles.stat}>
-          <span className={styles.statValue}>1 000</span>
+          <span className={styles.statValue}>{ARCADE_INITIAL_COINS.toLocaleString('pt-BR')}</span>
           <span className={styles.statLabel}>🪙 moedas</span>
         </div>
         <div className={styles.stat}>
-          <span className={styles.statValue}>20</span>
+          <span className={styles.statValue}>{ARCADE_INITIAL_ACTIONS}</span>
           <span className={styles.statLabel}>⚡ ações</span>
         </div>
         <div className={styles.stat}>
