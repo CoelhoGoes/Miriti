@@ -75,6 +75,12 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
   const s = useStrings()
   useSecondaryTutorial('INITIAL', true)
   const [showAllyModal, setShowAllyModal] = useState(false)
+  const isArcade = state.gameMode === 'arcade'
+  const displayCoins = isArcade ? (state.arcade?.coins ?? 0) : state.coins
+  const actionsLeft = state.arcade?.actionsLeft ?? 0
+  const arcadeHint = actionsLeft === 1
+    ? s.arcade.farmHintSingular
+    : s.arcade.farmHint.replace('{n}', actionsLeft)
   const openSettings = () => { if (onSettings) onSettings() }
   const openCredits = () => { if (onCredits) onCredits() }
 
@@ -148,26 +154,28 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
 
         <div className={styles.headerRight}>
           <SyncIndicator />
-          <motion.button
-            type="button"
-            className={styles.headerTrophyButton}
-            onClick={() => onLeaderboard?.()}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.94 }}
-            aria-label={s.leaderboard?.title}
-            title={s.leaderboard?.title}
-          >
-            <FaTrophy />
-          </motion.button>
+          {!isArcade && (
+            <motion.button
+              type="button"
+              className={styles.headerTrophyButton}
+              onClick={() => onLeaderboard?.()}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.94 }}
+              aria-label={s.leaderboard?.title}
+              title={s.leaderboard?.title}
+            >
+              <FaTrophy />
+            </motion.button>
+          )}
           <div className={styles.coinsBadge}>
             <span aria-hidden="true">🪙</span>
-            <span>{state.coins}</span>
+            <span>{displayCoins}</span>
           </div>
         </div>
       </motion.header>
 
       <div className={styles.hintBar}>
-        {s.farmMap.hint}
+        {isArcade ? arcadeHint : s.farmMap.hint}
       </div>
 
       <div className="farm-sky" />
@@ -251,12 +259,14 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
       ))}
 
       {MAP_NODES.map((node, index) => {
+        if (isArcade && node.id === 'conquistas') return null
+
         const openNode = () => {
           sound.play('click')
           if (node.id === 'escolinha') onEscolinha()
-          if (node.id === 'feirinha') onStocks()
+          if (node.id === 'feirinha') onStocks?.()
           if (node.id === 'cooperativa') onCooperativa?.()
-          if (node.id === 'conquistas') onAchievements()
+          if (node.id === 'conquistas') onAchievements?.()
         }
 
         return (
@@ -292,17 +302,19 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
         )
       })}
 
-      <motion.div
-        className={styles.allyBadgeOverlay}
-        data-tutorial="active-ally-overlay"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <ActiveAllyBadge onSwapClick={() => { sound.play('click'); setShowAllyModal(true) }} />
-      </motion.div>
+      {!isArcade && (
+        <motion.div
+          className={styles.allyBadgeOverlay}
+          data-tutorial="active-ally-overlay"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <ActiveAllyBadge onSwapClick={() => { sound.play('click'); setShowAllyModal(true) }} />
+        </motion.div>
+      )}
 
-      {showAllyModal && (
+      {!isArcade && showAllyModal && (
         <EquipAllyModal
           onClose={() => setShowAllyModal(false)}
           onGoToCooperativa={() => { setShowAllyModal(false); onCooperativa?.() }}

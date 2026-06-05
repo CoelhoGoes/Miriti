@@ -19,6 +19,9 @@ const SCREEN_TO_AREA = {
   credits:      'credits',
   parents:      'parents',
   boss:         'boss',
+  arcade_start:  'arcade_start',
+  arcade_result: 'arcade_result',
+  arcade_quiz:   'quiz',  // reutiliza helpers de quiz
 }
 
 /**

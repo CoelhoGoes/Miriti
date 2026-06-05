@@ -121,7 +121,12 @@ function buildInitialMarket() {
   return { prices, priceHistory }
 }
 
+const ARCADE_INITIAL_COINS = 1000
+const ARCADE_INITIAL_ACTIONS = 20
+
 const initialState = {
+  gameMode: 'historia', // 'historia' | 'arcade'
+  arcade: null,         // null = sem sessão; object = sessão activa ou encerrada
   currentPhase: 0,
   unlockedPhases: 1,
   totalScore: 0,
@@ -253,6 +258,9 @@ function loadInitialState() {
     },
     investimentos: { ...DEFAULT_INVESTIMENTOS, ...(saved.investimentos || {}) },
     ultimoCiclo: saved.ultimoCiclo || null,
+    // Arcade: salvar sessão é útil, mas ao reabrir o app deve-se retomar em história
+    gameMode: 'historia',
+    arcade:    null,
   }
 }
 
@@ -929,6 +937,87 @@ function reducer(state, action) {
       }
     }
 
+    case 'ARCADE_START':
+      return {
+        ...state,
+        gameMode: 'arcade',
+        arcade: {
+          actionsLeft:    ARCADE_INITIAL_ACTIONS,
+          coins:          ARCADE_INITIAL_COINS,
+          startedAt:      Date.now(),
+          finishedAt:     null,
+          usedQuestionIds: [],
+          finalScore:     null,
+        },
+      }
+
+    case 'ARCADE_CONSUME_ACTION': {
+      if (!state.arcade) return state
+      const next = state.arcade.actionsLeft - 1
+      if (next <= 0) {
+        // Esgotou — finalizar automaticamente
+        return {
+          ...state,
+          arcade: {
+            ...state.arcade,
+            actionsLeft: 0,
+            finishedAt: Date.now(),
+            finalScore: {
+              coins:       state.arcade.coins,
+              actionsUsed: ARCADE_INITIAL_ACTIONS,
+            },
+          },
+        }
+      }
+      return {
+        ...state,
+        arcade: { ...state.arcade, actionsLeft: next },
+      }
+    }
+
+    case 'ARCADE_EARN_COINS': {
+      if (!state.arcade) return state
+      return {
+        ...state,
+        arcade: { ...state.arcade, coins: state.arcade.coins + (action.payload.amount ?? 0) },
+      }
+    }
+
+    case 'ARCADE_USE_QUESTION': {
+      if (!state.arcade) return state
+      const id = action.payload.questionId
+      if (state.arcade.usedQuestionIds.includes(id)) return state
+      return {
+        ...state,
+        arcade: {
+          ...state.arcade,
+          usedQuestionIds: [...state.arcade.usedQuestionIds, id],
+        },
+      }
+    }
+
+    case 'ARCADE_FINISH': {
+      if (!state.arcade) return state
+      return {
+        ...state,
+        arcade: {
+          ...state.arcade,
+          finishedAt: Date.now(),
+          finalScore: {
+            coins:       state.arcade.coins,
+            actionsUsed: ARCADE_INITIAL_ACTIONS - state.arcade.actionsLeft,
+          },
+        },
+      }
+    }
+
+    case 'ARCADE_EXIT':
+      return {
+        ...state,
+        gameMode: 'historia',
+        arcade: null,
+      }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -1000,6 +1089,13 @@ export function GameProvider({ children }) {
     dispatch({ type: 'TUTORIAL_CLEAR_REWARD' })
   }, [])
 
+  const startArcade         = useCallback(() => dispatch({ type: 'ARCADE_START' }), [])
+  const consumeArcadeAction = useCallback(() => dispatch({ type: 'ARCADE_CONSUME_ACTION' }), [])
+  const earnArcadeCoins     = useCallback((amount) => dispatch({ type: 'ARCADE_EARN_COINS', payload: { amount } }), [])
+  const useArcadeQuestion   = useCallback((questionId) => dispatch({ type: 'ARCADE_USE_QUESTION', payload: { questionId } }), [])
+  const finishArcade        = useCallback(() => dispatch({ type: 'ARCADE_FINISH' }), [])
+  const exitArcade          = useCallback(() => dispatch({ type: 'ARCADE_EXIT' }), [])
+
   const alocarInvestimento = useCallback((ativo, quantidade) => {
     dispatch({ type: 'ALLOCATE_INVESTMENT', payload: { ativo, quantidade } })
   }, [])
@@ -1058,6 +1154,7 @@ export function GameProvider({ children }) {
     setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
     unlockBadge, completeTutorial, resetTutorial, visitArea, clearTutorialReward,
     alocarInvestimento,
+    startArcade, consumeArcadeAction, earnArcadeCoins, useArcadeQuestion, finishArcade, exitArcade,
     syncMeta,
   }
 

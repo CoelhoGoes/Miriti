@@ -22,6 +22,10 @@ import { ScreenProvider } from './context/ScreenContext'
 import { ToastProvider } from './context/ToastContext'
 import HelperPouch from './components/HelperPouch/HelperPouch'
 import ActiveBuffsBar from './components/ActiveBuffsBar/ActiveBuffsBar'
+import ArcadeActionsHUD from './components/ArcadeActionsHUD/ArcadeActionsHUD'
+import ArcadeStartScreen from './components/ArcadeStartScreen/ArcadeStartScreen'
+import ArcadeResultScreen from './components/ArcadeResultScreen/ArcadeResultScreen'
+import ArcadeQuizScreen from './components/ArcadeQuizScreen/ArcadeQuizScreen'
 import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
@@ -32,19 +36,23 @@ import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
 
 const SCREENS = {
-  HOME:        'home',
-  FARM:        'farm',
-  ESCOLINHA:   'escolinha',
-  QUIZ:        'quiz',
-  RESULT:      'result',
-  SHOP:        'shop',
-  COOPERATIVA: 'cooperativa',
+  HOME:         'home',
+  FARM:         'farm',
+  ESCOLINHA:    'escolinha',
+  QUIZ:         'quiz',
+  RESULT:       'result',
+  SHOP:         'shop',
+  COOPERATIVA:  'cooperativa',
   ACHIEVEMENTS: 'achievements',
   LEADERBOARD:  'leaderboard',
   STOCKS:       'stocks',
-  CREDITS:     'credits',
-  PARENTS:     'parents',
-  BOSS:        'boss',
+  CREDITS:      'credits',
+  PARENTS:      'parents',
+  BOSS:         'boss',
+  // Arcade
+  ARCADE_START:  'arcade_start',
+  ARCADE_RESULT: 'arcade_result',
+  ARCADE_QUIZ:   'arcade_quiz',
 }
 
 const screenVariants = {
@@ -60,7 +68,21 @@ export default function App() {
   const [lastResult, setLastResult]       = useState(null)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
   const [showRecovery, setShowRecovery] = useState(false)
-  const { state, addPlayTime, clearTutorialReward } = useGame()
+  const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade } = useGame()
+
+  // Quando as ações esgotam no Arcade, navegar para resultado
+  useEffect(() => {
+    if (state.gameMode === 'arcade' && state.arcade?.actionsLeft === 0 && !state.arcade?.finishedAt) {
+      finishArcade()
+      setScreen(SCREENS.ARCADE_RESULT)
+    }
+  }, [state.gameMode, state.arcade?.actionsLeft, state.arcade?.finishedAt, finishArcade])
+
+  // Consume 1 ação e navega; se actionsLeft chega a 0, o useEffect acima redireciona.
+  const arcadeNavigate = useCallback((target) => {
+    consumeArcadeAction()
+    setScreen(target)
+  }, [consumeArcadeAction])
 
   const lastReward = state.tutorialState?.lastReward ?? null
   const lastCompletedId = state.tutorialState?.completed?.length
@@ -139,21 +161,23 @@ export default function App() {
 
   const renderScreen = () => {
     switch (screen) {
-      case SCREENS.FARM:
+      case SCREENS.FARM: {
+        const isArcade = state.gameMode === 'arcade'
         return (
           <FarmMap
-            onEscolinha={() => goTo(SCREENS.ESCOLINHA)}
-            onShop={() => goTo(SCREENS.COOPERATIVA)}
-            onCooperativa={() => goTo(SCREENS.COOPERATIVA)}
-            onLeaderboard={() => goTo(SCREENS.LEADERBOARD)}
-            onStocks={() => goTo(SCREENS.STOCKS)}
-            onAchievements={() => goTo(SCREENS.ACHIEVEMENTS)}
+            onEscolinha={isArcade ? () => arcadeNavigate(SCREENS.ARCADE_QUIZ) : () => goTo(SCREENS.ESCOLINHA)}
+            onShop={isArcade ? () => arcadeNavigate(SCREENS.COOPERATIVA) : () => goTo(SCREENS.COOPERATIVA)}
+            onCooperativa={isArcade ? () => arcadeNavigate(SCREENS.COOPERATIVA) : () => goTo(SCREENS.COOPERATIVA)}
+            onLeaderboard={isArcade ? null : () => goTo(SCREENS.LEADERBOARD)}
+            onStocks={isArcade ? () => arcadeNavigate(SCREENS.STOCKS) : () => goTo(SCREENS.STOCKS)}
+            onAchievements={isArcade ? null : () => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
-            onCredits={() => goTo(SCREENS.CREDITS)}
-            onMascotClick={() => setMascotChatOpen(true)}
-            onParents={() => goTo(SCREENS.PARENTS)}
+            onCredits={isArcade ? null : () => goTo(SCREENS.CREDITS)}
+            onMascotClick={isArcade ? null : () => setMascotChatOpen(true)}
+            onParents={isArcade ? null : () => goTo(SCREENS.PARENTS)}
           />
         )
+      }
       case SCREENS.ESCOLINHA:
         return (
           <EscolinhaScreen
@@ -187,9 +211,30 @@ export default function App() {
         return <ParentsPanel onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.BOSS:
         return <BossQuiz phaseIndex={bossPhase} onExit={() => goTo(SCREENS.ESCOLINHA)} />
+      case SCREENS.ARCADE_START:
+        return (
+          <ArcadeStartScreen
+            onStart={() => goTo(SCREENS.FARM)}
+            onBack={() => goTo(SCREENS.HOME)}
+          />
+        )
+      case SCREENS.ARCADE_RESULT:
+        return (
+          <ArcadeResultScreen
+            onPlayAgain={() => goTo(SCREENS.ARCADE_START)}
+            onMenu={() => goTo(SCREENS.HOME)}
+          />
+        )
+      case SCREENS.ARCADE_QUIZ:
+        return <ArcadeQuizScreen onFinish={() => goTo(SCREENS.FARM)} />
       case SCREENS.HOME:
       default:
-        return <HomeScreen onStart={() => goTo(SCREENS.FARM)} />
+        return (
+          <HomeScreen
+            onStart={() => goTo(SCREENS.FARM)}
+            onArcade={() => goTo(SCREENS.ARCADE_START)}
+          />
+        )
     }
   }
 
@@ -234,6 +279,7 @@ export default function App() {
           />
           <HelperPouch />
           <ActiveBuffsBar />
+          <ArcadeActionsHUD />
           </ToastProvider>
           </ScreenProvider>
         </TutorialProvider>

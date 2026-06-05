@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { motion } from 'framer-motion'
@@ -6,11 +7,10 @@ import { sound } from '../utils/sound.js'
 import { useStrings } from '../i18n/index.js'
 import './HomeScreen.css'
 
-export default function HomeScreen({ onStart }) {
+export default function HomeScreen({ onStart, onArcade }) {
   const [pressed, setPressed] = useState(false)
   const s = useStrings()
 
-  // Animação do logo com React Spring
   const logoSpring = useSpring({
     from: { opacity: 0, scale: 0.4, rotate: -8 },
     to: { opacity: 1, scale: 1, rotate: 0 },
@@ -29,20 +29,7 @@ export default function HomeScreen({ onStart }) {
     config: { duration: 1500 }
   })
 
-  useEffect(() => {
-    if (pressed) return
-    const handler = () => {
-      if (pressed) return
-      setPressed(true)
-      sound.play('whoosh')
-      sound.play('star')
-      setTimeout(onStart, 350)
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [pressed, onStart])
-
-  const handleClick = () => {
+  const handleHistoria = () => {
     if (pressed) return
     setPressed(true)
     sound.play('whoosh')
@@ -50,11 +37,25 @@ export default function HomeScreen({ onStart }) {
     setTimeout(onStart, 350)
   }
 
+  // Qualquer tecla → modo história (comportamento legacy)
+  useEffect(() => {
+    if (pressed) return
+    globalThis.addEventListener('keydown', handleHistoria)
+    return () => globalThis.removeEventListener('keydown', handleHistoria)
+  }, [pressed]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleArcade = () => {
+    if (pressed) return
+    setPressed(true)
+    sound.play('whoosh')
+    setTimeout(onArcade, 200)
+  }
+
   return (
     <>
       <AnimatedBackground density={18} />
 
-      <div className="home-content" onClick={handleClick} role="button" tabIndex={0}>
+      <div className="home-content" role="main">
         <animated.div style={logoSpring} className="home-logo-wrap">
           <animated.div style={pulseSpring} className="home-logo">
             <span className="logo-letter" style={{ '--i': 0 }}>M</span>
@@ -89,18 +90,25 @@ export default function HomeScreen({ onStart }) {
         </motion.div>
 
         <motion.div
-          className="home-cta"
+          className="home-mode-buttons"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.5 }}
+          transition={{ delay: 1.0, duration: 0.5 }}
         >
-          <motion.div
-            className="cta-pulse"
-            animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          <button
+            type="button"
+            className="home-btn home-btn-historia"
+            onClick={handleHistoria}
           >
-            {s.home.cta}
-          </motion.div>
+            🌾 {s.home.btnHistoria ?? 'Modo História'}
+          </button>
+          <button
+            type="button"
+            className="home-btn home-btn-arcade"
+            onClick={handleArcade}
+          >
+            ⚡ {s.arcade?.homeTitle ?? 'Modo Arcade'}
+          </button>
         </motion.div>
       </div>
     </>
