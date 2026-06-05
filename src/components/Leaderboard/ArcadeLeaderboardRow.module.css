@@ -1,0 +1,81 @@
+.row {
+  display: grid;
+  grid-template-columns: 56px 48px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--color-surface-4);
+  border: 2px solid var(--color-surface-2);
+}
+
+.rowCurrent {
+  background: var(--color-warning-light);
+  border-color: var(--color-warning);
+}
+
+.rank {
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+.tierIcon {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.nicknameWrap {
+  min-width: 0;
+}
+
+.nickname {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.youLabel {
+  margin-left: 6px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  background: var(--color-warning);
+  color: var(--color-text-inverse);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+
+.coins {
+  font-size: 1.08rem;
+  font-weight: 900;
+  white-space: nowrap;
+  color: var(--color-warning);
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 44px 40px 1fr auto;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .rank {
+    font-size: 1.05rem;
+  }
+
+  .tierIcon {
+    font-size: 1.25rem;
+  }
+
+  .nickname {
+    font-size: 0.95rem;
+  }
+
+  .coins {
+    font-size: 0.98rem;
+  }
+}

@@ -194,6 +194,24 @@
   border-color: rgba(180, 130, 255, 0.7);
 }
 
+.btnLeaderboard {
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(180, 130, 255, 0.45);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #e8d5ff;
+  background: rgba(124, 58, 237, 0.2);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btnLeaderboard:hover {
+  border-color: rgba(180, 130, 255, 0.8);
+  color: #ffffff;
+}
+
 @media (max-width: 540px) {
   .rankInputRow {
     flex-direction: column;

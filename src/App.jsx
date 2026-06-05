@@ -7,6 +7,7 @@ import QuizScreen from './components/QuizScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import CooperativaScreen from './components/Cooperativa/index.jsx'
 import LeaderboardScreen from './components/Leaderboard/LeaderboardScreen.jsx'
+import LeaderboardArcade from './components/Leaderboard/LeaderboardArcade.jsx'
 import NicknameScreen from './components/Onboarding/NicknameScreen.jsx'
 import RecoveryCelebration from './components/Onboarding/RecoveryCelebration.jsx'
 import RecoveryScreen from './components/Onboarding/RecoveryScreen.jsx'
@@ -46,6 +47,7 @@ const SCREENS = {
   COOPERATIVA: 'cooperativa',
   ACHIEVEMENTS: 'achievements',
   LEADERBOARD: 'leaderboard',
+  LEADERBOARD_ARCADE: 'leaderboard_arcade',
   STOCKS: 'stocks',
   CREDITS: 'credits',
   PARENTS: 'parents',
@@ -67,6 +69,7 @@ export default function App() {
   const [mascotChatOpen, setMascotChatOpen] = useState(false)
   const [bossPhase, setBossPhase] = useState(0)
   const [lastResult, setLastResult] = useState(null)
+  const [arcadeLbReturn, setArcadeLbReturn] = useState(SCREENS.ARCADE_START)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
   const [showRecovery, setShowRecovery] = useState(false)
   const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade, exitArcade } = useGame()
@@ -142,6 +145,11 @@ export default function App() {
     goTo(SCREENS.HOME)
   }, [exitArcade, goTo])
 
+  const openArcadeLeaderboard = useCallback((from) => {
+    setArcadeLbReturn(from)
+    goTo(SCREENS.LEADERBOARD_ARCADE)
+  }, [goTo])
+
   const animationsEnabled = state.settings.animationsEnabled !== false
 
   const renderScreen = () => {
@@ -211,6 +219,8 @@ export default function App() {
         return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.LEADERBOARD:
         return <LeaderboardScreen onBack={() => goTo(SCREENS.FARM)} />
+      case SCREENS.LEADERBOARD_ARCADE:
+        return <LeaderboardArcade onBack={() => goTo(arcadeLbReturn)} />
       case SCREENS.ACHIEVEMENTS:
         return <AchievementsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.STOCKS:
@@ -226,12 +236,14 @@ export default function App() {
           <ArcadeStartScreen
             onStart={() => goTo(SCREENS.FARM)}
             onBack={() => goTo(SCREENS.HOME)}
+            onViewLeaderboard={() => openArcadeLeaderboard(SCREENS.ARCADE_START)}
           />
         )
       case SCREENS.ARCADE_RESULT:
         return (
           <ArcadeResultScreen
             onMenu={handleExitArcade}
+            onViewLeaderboard={() => openArcadeLeaderboard(SCREENS.ARCADE_RESULT)}
           />
         )
       case SCREENS.ARCADE_QUIZ:

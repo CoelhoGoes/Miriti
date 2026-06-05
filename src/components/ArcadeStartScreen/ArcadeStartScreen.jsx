@@ -4,7 +4,7 @@ import { useGame } from '../../context/GameContext'
 import { useStrings } from '../../i18n'
 import styles from './ArcadeStartScreen.module.css'
 
-export default function ArcadeStartScreen({ onStart, onBack }) {
+export default function ArcadeStartScreen({ onStart, onBack, onViewLeaderboard }) {
   const { startArcade } = useGame()
   const s = useStrings()
 
@@ -77,6 +77,9 @@ export default function ArcadeStartScreen({ onStart, onBack }) {
       >
         <button type="button" className={styles.btnStart} onClick={handleStart}>
           {s.arcade.startCta}
+        </button>
+        <button type="button" className={styles.btnLeaderboard} onClick={() => onViewLeaderboard?.()}>
+          {s.arcade.lbCta}
         </button>
         <button type="button" className={styles.btnBack} onClick={onBack}>
           ← {s.arcade.homeBack}

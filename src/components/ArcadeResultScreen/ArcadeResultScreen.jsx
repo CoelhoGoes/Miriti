@@ -24,7 +24,7 @@ function getTierLabel(strings, tier) {
   return strings.arcade.tierBasic
 }
 
-export default function ArcadeResultScreen({ onMenu }) {
+export default function ArcadeResultScreen({ onMenu, onViewLeaderboard }) {
   const { state, startArcade } = useGame()
   const { setScreen } = useScreen()
   const s = useStrings()
@@ -229,6 +229,9 @@ export default function ArcadeResultScreen({ onMenu }) {
       >
         <button type="button" className={styles.btnPlayAgain} onClick={handlePlayAgain}>
           {s.arcade.resultPlayAgain}
+        </button>
+        <button type="button" className={styles.btnLeaderboard} onClick={() => onViewLeaderboard?.()}>
+          {s.arcade.lbCta}
         </button>
         <button type="button" className={styles.btnMenu} onClick={handleMenu}>
           {s.arcade.resultMenu}
