@@ -585,6 +585,12 @@ export const STRINGS = {
         notAvailable: 'Sem estoque deste ajudante.',
       },
     },
+    activeBuffs: {
+      label:          'Activos',
+      roundsLabel:    '{n}r restantes',
+      roundsSingular: '{n}r restante',
+      tooltipFormat:  '{name} — {description}',
+    },
   },
 
   en: {
@@ -1161,6 +1167,12 @@ export const STRINGS = {
         used:         '{name} in action! {icon}',
         notAvailable: 'No stock of this helper.',
       },
+    },
+    activeBuffs: {
+      label:          'Active',
+      roundsLabel:    '{n}r left',
+      roundsSingular: '{n}r left',
+      tooltipFormat:  '{name} — {description}',
     },
   }
 }

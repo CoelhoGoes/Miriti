@@ -1,0 +1,117 @@
+/* ════════════════════════════════════════════════════════════
+   ACTIVE BUFFS BAR — Barra horizontal de buffs activos
+   ════════════════════════════════════════════════════════════ */
+
+.bar {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 70;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 2px solid var(--color-surface-2);
+  border-radius: 16px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  max-width: calc(100vw - 24px);
+}
+
+.label {
+  font-size: var(--ms-text-xs);
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.chipsList {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.chipsList::-webkit-scrollbar { display: none; }
+
+/* ─── Chip individual ─────────────────────────────────────── */
+.chip {
+  background: var(--color-white);
+  border: 2px solid var(--color-secondary);
+  border-radius: 14px;
+  padding: 3px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--ms-text-xs);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.chipIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.chipName {
+  font-weight: 800;
+  color: var(--color-text-primary);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chipTime {
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ─── Estado: prestes a expirar (1 ronda) ─────────────────── */
+.chipExpiring {
+  border-color: var(--color-warning);
+  background: var(--color-warning-light);
+  animation: pulseExpiring 1.6s ease-in-out infinite;
+}
+
+.chipExpiring .chipTime {
+  color: var(--color-warning);
+  font-weight: 800;
+}
+
+@keyframes pulseExpiring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); }
+  50%       { box-shadow: 0 0 0 6px rgba(243, 156, 18, 0.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chipExpiring { animation: none; }
+}
+
+/* ─── Mobile (até 480px) ──────────────────────────────────── */
+@media (max-width: 480px) {
+  .bar {
+    top: 8px;
+    padding: 5px 8px;
+    gap: 6px;
+  }
+
+  .label {
+    font-size: 0.65rem;
+  }
+
+  .chipName {
+    max-width: 80px;
+  }
+}
