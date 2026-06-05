@@ -3,11 +3,6 @@
    ════════════════════════════════════════════════════════════ */
 
 .bar {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 70;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -18,7 +13,6 @@
   align-items: center;
   gap: 10px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-  max-width: calc(100vw - 24px);
 }
 
 .label {
@@ -102,7 +96,6 @@
 /* ─── Mobile (até 480px) ──────────────────────────────────── */
 @media (max-width: 480px) {
   .bar {
-    top: 8px;
     padding: 5px 8px;
     gap: 6px;
   }

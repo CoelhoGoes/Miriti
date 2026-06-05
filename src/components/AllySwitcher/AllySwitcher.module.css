@@ -4,14 +4,6 @@
    ════════════════════════════════════════════════════════════ */
 
 .switcher {
-  position: fixed;
-  top: 12px;
-  /* Fica à esquerda da ActiveBuffsBar (centrada em 50%).
-     transform desloca 100% da própria largura + 8px de gap. */
-  left: 50%;
-  transform: translateX(calc(-100% - 8px));
-  z-index: 70;
-
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -26,7 +18,6 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   font-family: inherit;
   white-space: nowrap;
-  max-width: calc(50vw - 12px);
 }
 
 .switcher:hover:not(:disabled) {
@@ -70,7 +61,6 @@
 /* ─── Mobile (até 480px) ──────────────────────────────────── */
 @media (max-width: 480px) {
   .switcher {
-    top: 8px;
     padding: 5px 8px;
     gap: 5px;
   }

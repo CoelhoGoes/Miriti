@@ -6,7 +6,7 @@ import { useStrings, useLanguage } from '../../i18n'
 import { ANIMALS } from '../../data/animals'
 import styles from './ActiveBuffsBar.module.css'
 
-const SCREENS_WITH_BUFFS = ['farm', 'fair', 'cooperativa', 'quiz']
+const SCREENS_WITH_BUFFS = new Set(['farm', 'fair', 'cooperativa', 'quiz'])
 
 function pickLang(field, lang) {
   if (!field) return ''
@@ -30,18 +30,14 @@ export default function ActiveBuffsBar() {
   const lang = useLanguage()
 
   if (isTutorialActive) return null
-  if (!SCREENS_WITH_BUFFS.includes(screen)) return null
+  if (!SCREENS_WITH_BUFFS.has(screen)) return null
 
   const activePartners = state.cooperativa?.activePartners ?? []
   if (activePartners.length === 0) return null
 
   return (
-    <motion.div
+    <div
       className={styles.bar}
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.3 }}
       role="status"
       aria-live="polite"
     >
@@ -91,6 +87,6 @@ export default function ActiveBuffsBar() {
           })}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
   )
 }
