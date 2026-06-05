@@ -33,6 +33,7 @@ import BossQuiz from './components/BossQuiz.jsx'
 import RotateDevice from './components/RotateDevice/RotateDevice.jsx'
 import TwemojiWrapper from './components/TwemojiWrapper.jsx'
 import { useGame } from './context/GameContext.jsx'
+import { ARCADE_MAX_QUIZ_USES } from './data/arcadeConfig.js'
 import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
 
@@ -88,8 +89,8 @@ export default function App() {
   }, [state.gameMode, state.arcade, screen, finishArcade])
 
   // Consume 1 ação e navega; se actionsLeft chega a 0, o useEffect acima redireciona.
-  const arcadeNavigate = useCallback((target) => {
-    consumeArcadeAction()
+  const arcadeNavigate = useCallback((target, reason = 'feira') => {
+    consumeArcadeAction(reason)
     setScreen(target)
   }, [consumeArcadeAction])
 
@@ -156,13 +157,19 @@ export default function App() {
     switch (screen) {
       case SCREENS.FARM: {
         const isArcade = state.gameMode === 'arcade'
+        const arcadeQuizUses = state.arcade?.quizUses ?? 0
+        const arcadeQuizCooldown = state.arcade?.quizCooldownLeft ?? 0
+        const arcadeQuizDisabled = isArcade && (arcadeQuizUses >= ARCADE_MAX_QUIZ_USES || arcadeQuizCooldown > 0)
+        let onEscolinha
+        if (!isArcade) onEscolinha = () => goTo(SCREENS.ESCOLINHA)
+        else if (!arcadeQuizDisabled) onEscolinha = () => arcadeNavigate(SCREENS.ARCADE_QUIZ, 'quiz')
         return (
           <FarmMap
-            onEscolinha={isArcade ? () => arcadeNavigate(SCREENS.ARCADE_QUIZ) : () => goTo(SCREENS.ESCOLINHA)}
-            onShop={isArcade ? () => arcadeNavigate(SCREENS.COOPERATIVA) : () => goTo(SCREENS.COOPERATIVA)}
+            onEscolinha={onEscolinha}
+            onShop={isArcade ? null : () => goTo(SCREENS.COOPERATIVA)}
             onCooperativa={isArcade ? null : () => goTo(SCREENS.COOPERATIVA)}
             onLeaderboard={isArcade ? null : () => goTo(SCREENS.LEADERBOARD)}
-            onStocks={isArcade ? () => arcadeNavigate(SCREENS.STOCKS) : () => goTo(SCREENS.STOCKS)}
+            onStocks={isArcade ? () => arcadeNavigate(SCREENS.STOCKS, 'feira') : () => goTo(SCREENS.STOCKS)}
             onAchievements={isArcade ? null : () => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
             onCredits={isArcade ? null : () => goTo(SCREENS.CREDITS)}
