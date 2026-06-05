@@ -74,7 +74,7 @@ const CLOUDS = [
 export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents, onLeaderboard }) {
   const { state } = useGame()
   const s = useStrings()
-  useSecondaryTutorial('INITIAL', true)
+  useSecondaryTutorial('INITIAL', state.gameMode === 'historia')
   const [showAllyModal, setShowAllyModal] = useState(false)
   const isArcade = state.gameMode === 'arcade'
   const displayCoins = isArcade ? (state.arcade?.coins ?? 0) : state.coins
