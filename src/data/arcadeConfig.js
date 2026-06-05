@@ -1,5 +1,7 @@
 export const ARCADE_INITIAL_COINS = 1000
-export const ARCADE_INITIAL_ACTIONS = 20
+export const ARCADE_INITIAL_ACTIONS = 15
+export const ARCADE_MAX_QUIZ_USES = 6
+export const ARCADE_QUIZ_COOLDOWN = 1
 
 export const ARCADE_REWARD_CALC = 150
 export const ARCADE_REWARD_COMPARISON = 200

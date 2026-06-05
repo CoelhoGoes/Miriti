@@ -44,6 +44,18 @@ export default function ArcadeQuizScreen({ onFinish }) {
   const [answered, setAnswered] = useState(false)
 
   const question = questions[index]
+
+  // Shuffle estável por question.id — Fisher-Yates seedless mas fixo entre re-renders.
+  // Usamos useMemo keyed por id para que StrictMode não "salte" as opções.
+  const shuffledOptions = useMemo(() => {
+    const opts = [...question.options]
+    for (let i = opts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [opts[i], opts[j]] = [opts[j], opts[i]]
+    }
+    return opts
+  }, [question.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const questionReward = getArcadeReward(question)
   const isLast = index === questions.length - 1
   const progressPct = ((index + (answered ? 1 : 0)) / questions.length) * 100
@@ -80,7 +92,7 @@ export default function ArcadeQuizScreen({ onFinish }) {
     return `${styles.option} ${styles.optionDisabled}`
   }
 
-  const isCorrect = answered && question.options.find(o => o.id === selected)?.correct
+  const isCorrect = answered && shuffledOptions.find(o => o.id === selected)?.correct
 
   return (
     <motion.div
@@ -132,7 +144,7 @@ export default function ArcadeQuizScreen({ onFinish }) {
         </AnimatePresence>
 
         <div className={styles.options}>
-          {question.options.map(opt => (
+          {shuffledOptions.map(opt => (
             <button
               key={opt.id}
               type="button"

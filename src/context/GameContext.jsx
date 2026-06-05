@@ -23,7 +23,7 @@ import { PRODUCTS } from '../data/products'
 import { MARKET_EVENTS } from '../data/marketEvents'
 import { ANIMALS, MARKET_CONTROL_ANIMALS } from '../data/animals'
 import { ANIMAL_EFFECTS } from '../data/animalEffects'
-import { ARCADE_INITIAL_COINS, ARCADE_INITIAL_ACTIONS } from '../data/arcadeConfig'
+import { ARCADE_INITIAL_COINS, ARCADE_INITIAL_ACTIONS, ARCADE_QUIZ_COOLDOWN } from '../data/arcadeConfig'
 
 const GameContext = createContext(null)
 const ACCESSIBILITY_STORAGE_KEY = 'miriti_accessibility'
@@ -1023,6 +1023,8 @@ function reducer(state, action) {
           startedAt: Date.now(),
           finishedAt: null,
           usedQuestionIds: [],
+          quizUses: 0,
+          quizCooldownLeft: 0,
           finalScore: null,
           market: { ...buildInitialMarket(), round: 1, lastEventId: null, visitCount: 0 },
           basket: [],
@@ -1031,10 +1033,14 @@ function reducer(state, action) {
 
     case 'ARCADE_CONSUME_ACTION': {
       if (!state.arcade) return state
-      const next = Math.max(0, state.arcade.actionsLeft - 1)
+      const nextActions = Math.max(0, state.arcade.actionsLeft - 1)
+      const isQuiz = action.payload?.reason === 'quiz'
+      const nextCooldown = isQuiz
+        ? (state.arcade.quizCooldownLeft ?? 0)
+        : Math.max(0, (state.arcade.quizCooldownLeft ?? 0) - 1)
       return {
         ...state,
-        arcade: { ...state.arcade, actionsLeft: next },
+        arcade: { ...state.arcade, actionsLeft: nextActions, quizCooldownLeft: nextCooldown },
       }
     }
 
@@ -1055,6 +1061,8 @@ function reducer(state, action) {
         arcade: {
           ...state.arcade,
           usedQuestionIds: [...state.arcade.usedQuestionIds, id],
+          quizUses: (state.arcade.quizUses ?? 0) + 1,
+          quizCooldownLeft: ARCADE_QUIZ_COOLDOWN,
         },
       }
     }
@@ -1154,7 +1162,7 @@ export function GameProvider({ children }) {
   }, [])
 
   const startArcade = useCallback(() => dispatch({ type: 'ARCADE_START' }), [])
-  const consumeArcadeAction = useCallback(() => dispatch({ type: 'ARCADE_CONSUME_ACTION' }), [])
+  const consumeArcadeAction = useCallback((reason = 'feira') => dispatch({ type: 'ARCADE_CONSUME_ACTION', payload: { reason } }), [])
   const earnArcadeCoins = useCallback((amount) => dispatch({ type: 'ARCADE_EARN_COINS', payload: { amount } }), [])
   const useArcadeQuestion = useCallback((questionId) => dispatch({ type: 'ARCADE_USE_QUESTION', payload: { questionId } }), [])
   const finishArcade = useCallback(() => dispatch({ type: 'ARCADE_FINISH' }), [])
