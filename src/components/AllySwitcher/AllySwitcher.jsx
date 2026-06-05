@@ -1,14 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext'
-import { useScreenContext } from '../../hooks/useScreenContext'
 import { useTutorial } from '../../hooks/useTutorial'
 import { useStrings, useLanguage } from '../../i18n'
 import { ANIMALS } from '../../data/animals'
 import EquipAllyModal from '../Cooperativa/EquipAllyModal'
 import styles from './AllySwitcher.module.css'
-
-const SCREENS_WITH_ALLY_SWITCHER = ['fair']
 
 function pickLang(field, lang) {
   if (!field) return ''
@@ -17,16 +14,16 @@ function pickLang(field, lang) {
 }
 
 /**
- * Botão flutuante (no topo) que mostra o Aliado em Campo actual e
- * permite trocá-lo via EquipAllyModal.
+ * Pílula compacta que mostra o Aliado em Campo e abre o EquipAllyModal.
  *
- * - Renderiza apenas em telas listadas em SCREENS_WITH_ALLY_SWITCHER
+ * Componente INLINE: renderizado pelas telas que precisam dele
+ * (actualmente apenas Feirinha header). Sem position: fixed nem SCREENS_WITH_*.
+ *
  * - Esconde durante tutoriais activos
- * - Posição: top-center, à esquerda da ActiveBuffsBar
+ * - Esconde se não há aliado equipado
  */
 export default function AllySwitcher() {
   const { state } = useGame()
-  const screen = useScreenContext()
   const { isActive: isTutorialActive } = useTutorial()
   const s = useStrings()
   const lang = useLanguage()
@@ -34,7 +31,6 @@ export default function AllySwitcher() {
   const [showModal, setShowModal] = useState(false)
 
   if (isTutorialActive) return null
-  if (!SCREENS_WITH_ALLY_SWITCHER.includes(screen)) return null
 
   const activeAllyId = state.cooperativa?.activeAlly
   const allyData = ANIMALS.find(a => a.id === activeAllyId)
@@ -59,9 +55,9 @@ export default function AllySwitcher() {
         aria-label={s.allySwitcher.buttonAria}
         whileHover={canSwap ? { scale: 1.04 } : undefined}
         whileTap={canSwap ? { scale: 0.96 } : undefined}
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
       >
         <span className={styles.label}>
           🐾 {s.allySwitcher.label}

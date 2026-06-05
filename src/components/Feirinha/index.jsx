@@ -16,6 +16,8 @@ import { getBarometerLevel } from './Barometer'
 import styles from './FeirinhaScreen.module.css'
 import { useSecondaryTutorial } from '../../hooks/useSecondaryTutorial'
 import TutorialHelpButton from '../Tutorial/TutorialHelpButton'
+import AllySwitcher from '../AllySwitcher/AllySwitcher'
+import ActiveBuffsBar from '../ActiveBuffsBar/ActiveBuffsBar'
 
 function pickEvent(lastEventId) {
   const pool = MARKET_EVENTS.filter(event => event.id !== lastEventId)
@@ -104,19 +106,21 @@ export default function FeirinhaScreen({ onBack }) {
           >
             <FaArrowLeft />
           </button>
-          <div className={styles.headerInfo}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
-              <TutorialHelpButton tutorialKey="FEIRA" />
-            </div>
-            <div className={styles.headerBadges}>
-              <span className={styles.badge}>
-                <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', state.market.round)}</span>
-              </span>
-              <span className={`${styles.badge} ${styles.badgeCoins}`}>
-                🪙 {state.coins} {s.feirinha.header.coinsAvailable}
-              </span>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
+            <TutorialHelpButton tutorialKey="FEIRA" />
+          </div>
+          <div className={styles.headerHud}>
+            <AllySwitcher />
+            <ActiveBuffsBar inline />
+          </div>
+          <div className={styles.headerBadges}>
+            <span className={styles.badge}>
+              <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', state.market.round)}</span>
+            </span>
+            <span className={`${styles.badge} ${styles.badgeCoins}`}>
+              🪙 {state.coins} {s.feirinha.header.coinsAvailable}
+            </span>
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext'
 import { useScreenContext } from '../../hooks/useScreenContext'
@@ -15,14 +16,15 @@ function pickLang(field, lang) {
 }
 
 /**
- * Barra horizontal compacta que mostra Parceiros activos.
+ * Barra horizontal de Parceiros activos.
  *
- * - Aparece em telas listadas em SCREENS_WITH_BUFFS
- * - Esconde-se durante tutoriais activos
- * - Esconde-se se não há parceiros activos
- * - Chip amarelo com pulse quando roundsLeft === 1
+ * - Modo padrão (sem props): top-fixed, validação por SCREENS_WITH_BUFFS
+ * - Modo inline (<ActiveBuffsBar inline />): sem position fixed,
+ *   pai controla onde aparecer — usado pelo header da Feirinha
+ *
+ * @param {boolean} [inline=false]
  */
-export default function ActiveBuffsBar() {
+export default function ActiveBuffsBar({ inline = false }) {
   const { state } = useGame()
   const screen = useScreenContext()
   const { isActive: isTutorialActive } = useTutorial()
@@ -30,14 +32,14 @@ export default function ActiveBuffsBar() {
   const lang = useLanguage()
 
   if (isTutorialActive) return null
-  if (!SCREENS_WITH_BUFFS.has(screen)) return null
+  if (!inline && !SCREENS_WITH_BUFFS.has(screen)) return null
 
   const activePartners = state.cooperativa?.activePartners ?? []
   if (activePartners.length === 0) return null
 
   return (
     <div
-      className={styles.bar}
+      className={inline ? styles.barInline : styles.bar}
       role="status"
       aria-live="polite"
     >
