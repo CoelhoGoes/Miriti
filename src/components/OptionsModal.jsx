@@ -51,7 +51,7 @@ function ReplayTutorialButton({ tutorialKey, label, onClose }) {
   )
 }
 
-export default function OptionsModal({ onClose }) {
+export default function OptionsModal({ onClose, onExitArcade }) {
   const { state, updateSettings, resetProgress, exitArcade } = useGame()
   const { screen, setScreen } = useScreen()
   const { settings } = state
@@ -118,9 +118,13 @@ export default function OptionsModal({ onClose }) {
 
   const handleExitArcadeForReset = () => {
     sound.play('click')
-    exitArcade()
-    if (screen === 'arcade_start' || screen === 'arcade_quiz' || screen === 'arcade_result') {
-      setScreen('farm')
+    if (typeof onExitArcade === 'function') {
+      onExitArcade()
+    } else {
+      exitArcade()
+      if (screen === 'arcade_start' || screen === 'arcade_quiz' || screen === 'arcade_result') {
+        setScreen('home')
+      }
     }
     setShowArcadeResetBlock(false)
     setConfirmReset(false)

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { motion } from 'framer-motion'
 import AnimatedBackground from './AnimatedBackground.jsx'
@@ -36,19 +36,6 @@ export default function HomeScreen({ onStart, onArcade }) {
     sound.play('star')
     setTimeout(onStart, 350)
   }
-
-  const handleHistoriaRef = useRef(handleHistoria)
-
-  useEffect(() => {
-    handleHistoriaRef.current = handleHistoria
-  }, [handleHistoria])
-
-  // Qualquer tecla → modo história (comportamento legacy)
-  useEffect(() => {
-    const onKeyDown = (e) => handleHistoriaRef.current?.(e)
-    globalThis.addEventListener('keydown', onKeyDown)
-    return () => globalThis.removeEventListener('keydown', onKeyDown)
-  }, [])
 
   const handleArcade = () => {
     if (pressed) return

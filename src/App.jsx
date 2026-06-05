@@ -37,6 +37,7 @@ import { sound } from './utils/sound.js'
 
 const SCREENS = {
   HOME: 'home',
+  ONBOARDING: 'onboarding',
   FARM: 'farm',
   ESCOLINHA: 'escolinha',
   QUIZ: 'quiz',
@@ -68,7 +69,7 @@ export default function App() {
   const [lastResult, setLastResult] = useState(null)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
   const [showRecovery, setShowRecovery] = useState(false)
-  const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade } = useGame()
+  const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade, exitArcade } = useGame()
 
   // Em Arcade, a sessão fecha ao regressar ao mapa com 0 ações restantes.
   useEffect(() => {
@@ -136,31 +137,10 @@ export default function App() {
   const handleQuizComplete = useCallback((result) => { setLastResult(result); setScreen(SCREENS.RESULT) }, [])
   const startBoss = useCallback((phaseIndex) => { setBossPhase(phaseIndex); goTo(SCREENS.BOSS) }, [goTo])
 
-  // ── Onboarding gate (after all hooks) ──────────────────────────────────────
-  if (!state.player?.id) {
-    if (showRecovery) {
-      return (
-        <RecoveryScreen
-          onBack={() => setShowRecovery(false)}
-          onRecovered={() => { setShowRecovery(false); setScreen(SCREENS.FARM) }}
-        />
-      )
-    }
-    return (
-      <NicknameScreen
-        onComplete={(data) => setPendingPlayerData(data)}
-        onSwitchToRecovery={() => setShowRecovery(true)}
-      />
-    )
-  }
-  if (!state.player?.hasOnboarded && pendingPlayerData) {
-    return (
-      <RecoveryCelebration
-        playerData={pendingPlayerData}
-        onComplete={() => { setPendingPlayerData(null); setScreen(SCREENS.FARM) }}
-      />
-    )
-  }
+  const handleExitArcade = useCallback(() => {
+    exitArcade()
+    goTo(SCREENS.HOME)
+  }, [exitArcade, goTo])
 
   const animationsEnabled = state.settings.animationsEnabled !== false
 
@@ -183,6 +163,31 @@ export default function App() {
           />
         )
       }
+      case SCREENS.ONBOARDING:
+        if (showRecovery) {
+          return (
+            <RecoveryScreen
+              onBack={() => setShowRecovery(false)}
+              onRecovered={() => { setShowRecovery(false); goTo(SCREENS.FARM) }}
+            />
+          )
+        }
+
+        if (state.player?.id && !state.player?.hasOnboarded && pendingPlayerData) {
+          return (
+            <RecoveryCelebration
+              playerData={pendingPlayerData}
+              onComplete={() => { setPendingPlayerData(null); goTo(SCREENS.FARM) }}
+            />
+          )
+        }
+
+        return (
+          <NicknameScreen
+            onComplete={(data) => setPendingPlayerData(data)}
+            onSwitchToRecovery={() => setShowRecovery(true)}
+          />
+        )
       case SCREENS.ESCOLINHA:
         return (
           <EscolinhaScreen
@@ -226,7 +231,7 @@ export default function App() {
       case SCREENS.ARCADE_RESULT:
         return (
           <ArcadeResultScreen
-            onMenu={() => goTo(SCREENS.HOME)}
+            onMenu={handleExitArcade}
           />
         )
       case SCREENS.ARCADE_QUIZ:
@@ -235,7 +240,14 @@ export default function App() {
       default:
         return (
           <HomeScreen
-            onStart={() => goTo(SCREENS.FARM)}
+            onStart={() => {
+              if (state.player?.id) {
+                goTo(SCREENS.FARM)
+              } else {
+                setShowRecovery(false)
+                goTo(SCREENS.ONBOARDING)
+              }
+            }}
             onArcade={() => goTo(SCREENS.ARCADE_START)}
           />
         )
@@ -269,7 +281,12 @@ export default function App() {
                 </div>
 
                 <AnimatePresence>
-                  {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
+                  {optionsOpen && (
+                    <OptionsModal
+                      onClose={() => setOptionsOpen(false)}
+                      onExitArcade={handleExitArcade}
+                    />
+                  )}
                   {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
                 </AnimatePresence>
 

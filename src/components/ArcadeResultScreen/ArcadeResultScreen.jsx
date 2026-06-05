@@ -25,7 +25,7 @@ function getTierLabel(strings, tier) {
 }
 
 export default function ArcadeResultScreen({ onMenu }) {
-  const { state, exitArcade, startArcade } = useGame()
+  const { state, startArcade } = useGame()
   const { setScreen } = useScreen()
   const s = useStrings()
   const isOnline = useOnlineStatus()
@@ -110,8 +110,7 @@ export default function ArcadeResultScreen({ onMenu }) {
   }
 
   const handleMenu = () => {
-    exitArcade()
-    onMenu()
+    onMenu?.()
   }
 
   return (
