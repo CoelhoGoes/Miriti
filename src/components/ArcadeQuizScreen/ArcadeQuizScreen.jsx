@@ -5,6 +5,7 @@ import { FaArrowLeft } from 'react-icons/fa'
 import { useGame } from '../../context/GameContext'
 import { useStrings, useLanguage } from '../../i18n'
 import { getArcadeQuestion } from '../../data/arcadeQuestions'
+import { getArcadeReward } from '../../data/arcadeConfig'
 import { sound } from '../../utils/sound'
 import styles from './ArcadeQuizScreen.module.css'
 
@@ -43,6 +44,7 @@ export default function ArcadeQuizScreen({ onFinish }) {
   const [answered, setAnswered] = useState(false)
 
   const question = questions[index]
+  const questionReward = getArcadeReward(question)
   const isLast = index === questions.length - 1
   const progressPct = ((index + (answered ? 1 : 0)) / questions.length) * 100
 
@@ -53,8 +55,7 @@ export default function ArcadeQuizScreen({ onFinish }) {
 
     if (opt.correct) {
       sound.play('correct')
-      const reward = question.reward ?? 10
-      earnArcadeCoins(reward)
+      earnArcadeCoins(questionReward)
     } else {
       sound.play('wrong')
     }
@@ -154,7 +155,7 @@ export default function ArcadeQuizScreen({ onFinish }) {
             >
               <div>
                 {isCorrect
-                  ? s.arcade.quizCorrect.replace('{coins}', question.reward ?? 10)
+                  ? s.arcade.quizCorrect.replace('{coins}', questionReward)
                   : s.arcade.quizWrong}
               </div>
               <div className={styles.explanation}>

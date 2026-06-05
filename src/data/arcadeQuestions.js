@@ -17,6 +17,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '100 moedas', en: '100 coins' }, correct: false },
     ],
     explanation: { pt: '200 − 80 = 120 moedas.', en: '200 − 80 = 120 coins.' },
+    type: 'calc',
     reward: 10,
   },
   {
@@ -29,6 +30,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '15 moedas', en: '15 coins' }, correct: false },
     ],
     explanation: { pt: '22 − 15 = 7 moedas de lucro.', en: '22 − 15 = 7 coins profit.' },
+    type: 'calc',
     reward: 10,
   },
   {
@@ -41,6 +43,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Ignorar o preço', en: 'Ignore the price' }, correct: false },
     ],
     explanation: { pt: 'Preço em queda = oportunidade de compra. Aguarde o fundo e compre barato.', en: 'Falling price = buying opportunity. Wait for the bottom and buy cheap.' },
+    type: 'comparison',
     reward: 15,
   },
   {
@@ -53,6 +56,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Comprar o produto mais caro', en: 'Buy the most expensive product' }, correct: false },
     ],
     explanation: { pt: 'Diversificar reduz o risco: se um produto cair, os outros compensam.', en: 'Diversifying reduces risk: if one product falls, others compensate.' },
+    type: 'comparison',
     reward: 15,
   },
   {
@@ -65,6 +69,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '50 moedas', en: '50 coins' }, correct: false },
     ],
     explanation: { pt: '50 × 1,20 = 60 moedas.', en: '50 × 1.20 = 60 coins.' },
+    type: 'calc',
     reward: 20,
   },
   {
@@ -77,6 +82,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'O dinheiro que você não usou', en: 'The money you did not use' }, correct: false },
     ],
     explanation: { pt: 'Lucro = receita − custo. É o que fica depois de descontar o que foi gasto.', en: 'Profit = revenue − cost. It is what remains after deducting expenses.' },
+    type: 'comparison',
     reward: 10,
   },
   {
@@ -89,6 +95,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Nunca comprar castanha', en: 'Never buy brazil nuts' }, correct: false },
     ],
     explanation: { pt: 'Comprar mais barato significa menor custo e maior lucro potencial na revenda.', en: 'Buying cheaper means lower cost and higher potential profit on resale.' },
+    type: 'comparison',
     reward: 10,
   },
   {
@@ -101,6 +108,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '60 moedas', en: '60 coins' }, correct: false },
     ],
     explanation: { pt: '3 × 18 = 54 moedas.', en: '3 × 18 = 54 coins.' },
+    type: 'calc',
     reward: 10,
   },
   {
@@ -113,6 +121,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Macaco — bônus na venda', en: 'Monkey — sales bonus' }, correct: false },
     ],
     explanation: { pt: 'Juros compostos crescem com o saldo. A Preguiça rende mais conforme você acumula moedas.', en: 'Compound interest grows with balance. The Sloth earns more as you accumulate coins.' },
+    type: 'comparison',
     reward: 15,
   },
   {
@@ -125,6 +134,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '180 moedas', en: '180 coins' }, correct: false },
     ],
     explanation: { pt: '10 × 20 = 200 moedas (lucro de 80 em relação ao custo de 120).', en: '10 × 20 = 200 coins (profit of 80 compared to cost of 120).' },
+    type: 'calc',
     reward: 20,
   },
   {
@@ -137,6 +147,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Trocar de investimento todo dia', en: 'Switch investments every day' }, correct: false },
     ],
     explanation: { pt: 'Não colocar todos os ovos na mesma cesta: se um ativo perder valor, os outros compensam.', en: 'Do not put all eggs in one basket: if one asset loses value, others compensate.' },
+    type: 'comparison',
     reward: 15,
   },
   {
@@ -149,6 +160,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '50 moedas', en: '50 coins' }, correct: false },
     ],
     explanation: { pt: 'Lucro por unidade = 32−25 = 7. Total = 2 × 7 = 14 moedas.', en: 'Profit per unit = 32−25 = 7. Total = 2 × 7 = 14 coins.' },
+    type: 'calc',
     reward: 20,
   },
   {
@@ -161,6 +173,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Desconto em promoções', en: 'Discount on promotions' }, correct: false },
     ],
     explanation: { pt: 'Inflação é a alta generalizada dos preços, que reduz o poder de compra do dinheiro.', en: 'Inflation is the general rise in prices, which reduces the purchasing power of money.' },
+    type: 'comparison',
     reward: 10,
   },
   {
@@ -173,6 +186,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '320 moedas', en: '320 coins' }, correct: false },
     ],
     explanation: { pt: '300 + (20 × 8) = 300 + 160 = 460 moedas.', en: '300 + (20 × 8) = 300 + 160 = 460 coins.' },
+    type: 'calc',
     reward: 20,
   },
   {
@@ -185,6 +199,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Comprar e esperar subir mais', en: 'Buy and wait for it to rise further' }, correct: false },
     ],
     explanation: { pt: 'Quando o preço está muito alto, é o momento de vender — o risco de queda é maior que o ganho potencial.', en: 'When price is very high, it is time to sell — the downside risk exceeds the potential gain.' },
+    type: 'comparison',
     reward: 15,
   },
   {
@@ -197,6 +212,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Dívida para uso futuro', en: 'Debt for future use' }, correct: false },
     ],
     explanation: { pt: 'A reserva de emergência cobre gastos inesperados sem precisar de empréstimo ou vender investimentos.', en: 'An emergency fund covers unexpected expenses without needing a loan or selling investments.' },
+    type: 'comparison',
     reward: 10,
   },
   {
@@ -209,6 +225,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '100 moedas', en: '100 coins' }, correct: false },
     ],
     explanation: { pt: '500 − 430 = 70 moedas de poupança.', en: '500 − 430 = 70 coins saved.' },
+    type: 'calc',
     reward: 10,
   },
   {
@@ -221,6 +238,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '40 moedas de desconto', en: '40 coins discount' }, correct: false },
     ],
     explanation: { pt: '25% de 80 = 80 × 0,25 = 20 moedas. Preço final: 60 moedas.', en: '25% of 80 = 80 × 0.25 = 20 coins. Final price: 60 coins.' },
+    type: 'calc',
     reward: 20,
   },
   {
@@ -233,6 +251,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Venda de produto feito por você', en: 'Sale of a product made by you' }, correct: false },
     ],
     explanation: { pt: 'Receita passiva é gerada sem esforço direto — como juros, aluguéis e dividendos.', en: 'Passive income is generated without direct effort — like interest, rent, and dividends.' },
+    type: 'comparison',
     reward: 15,
   },
   {
@@ -245,6 +264,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '42 moedas', en: '42 coins' }, correct: false },
     ],
     explanation: { pt: 'Lucro por unidade = 14−10 = 4. 3 vendidas × 4 = 12 moedas de lucro.', en: 'Profit per unit = 14−10 = 4. 3 sold × 4 = 12 coins profit.' },
+    type: 'calc',
     reward: 20,
   },
   {
@@ -257,6 +277,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: '1100 moedas', en: '1100 coins' }, correct: false },
     ],
     explanation: { pt: 'Para saber o patrimônio, precisa do preço atual. A perda de 5 por ação = 100 moedas menos em ações (20×5), mas o preço atual define o total.', en: 'To know net worth, you need the current price. A loss of 5 per share = 100 fewer coins in shares (20×5), but the current price defines the total.' },
+    type: 'comparison',
     reward: 20,
   },
   {
@@ -269,6 +290,7 @@ export const ARCADE_QUESTIONS = [
       { id: 'd', text: { pt: 'Quando você está com muitas moedas', en: 'When you have many coins' }, correct: false },
     ],
     explanation: { pt: 'Comprar na baixa reduz o custo médio e maximiza o potencial de lucro na alta.', en: 'Buying at a low reduces average cost and maximizes profit potential on the rise.' },
+    type: 'comparison',
     reward: 15,
   },
 ]

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { motion } from 'framer-motion'
 import AnimatedBackground from './AnimatedBackground.jsx'
@@ -37,12 +37,18 @@ export default function HomeScreen({ onStart, onArcade }) {
     setTimeout(onStart, 350)
   }
 
+  const handleHistoriaRef = useRef(handleHistoria)
+
+  useEffect(() => {
+    handleHistoriaRef.current = handleHistoria
+  }, [handleHistoria])
+
   // Qualquer tecla → modo história (comportamento legacy)
   useEffect(() => {
-    if (pressed) return
-    globalThis.addEventListener('keydown', handleHistoria)
-    return () => globalThis.removeEventListener('keydown', handleHistoria)
-  }, [pressed]) // eslint-disable-line react-hooks/exhaustive-deps
+    const onKeyDown = (e) => handleHistoriaRef.current?.(e)
+    globalThis.addEventListener('keydown', onKeyDown)
+    return () => globalThis.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   const handleArcade = () => {
     if (pressed) return
@@ -55,7 +61,7 @@ export default function HomeScreen({ onStart, onArcade }) {
     <>
       <AnimatedBackground density={18} />
 
-      <div className="home-content" role="main">
+      <main className="home-content">
         <animated.div style={logoSpring} className="home-logo-wrap">
           <animated.div style={pulseSpring} className="home-logo">
             <span className="logo-letter" style={{ '--i': 0 }}>M</span>
@@ -110,7 +116,7 @@ export default function HomeScreen({ onStart, onArcade }) {
             ⚡ {s.arcade?.homeTitle ?? 'Modo Arcade'}
           </button>
         </motion.div>
-      </div>
+      </main>
     </>
   )
 }
