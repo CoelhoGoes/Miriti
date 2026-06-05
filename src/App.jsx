@@ -20,6 +20,7 @@ import ParentsPanel from './components/ParentsPanel.jsx'
 import { TutorialProvider } from './context/TutorialContext.jsx'
 import { ScreenProvider } from './context/ScreenContext'
 import { ToastProvider } from './context/ToastContext'
+import HelperPouch from './components/HelperPouch/HelperPouch'
 import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
@@ -230,6 +231,7 @@ export default function App() {
             coinsEarned={lastReward?.coins ?? 0}
             onClose={clearTutorialReward}
           />
+          <HelperPouch />
           </ToastProvider>
           </ScreenProvider>
         </TutorialProvider>

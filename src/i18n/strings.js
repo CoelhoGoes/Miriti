@@ -564,6 +564,27 @@ export const STRINGS = {
     toast: {
       defaultClose: 'Fechar',
     },
+    helperPouch: {
+      title:      'Bolsa de Ajudantes',
+      buttonAria: 'Abrir bolsa de ajudantes',
+      contextHints: {
+        quiz:    'Use aqui no Quiz!',
+        fair:    'Use aqui na Feira!',
+        default: 'Escolha um ajudante:',
+      },
+      empty: {
+        message: 'Nenhum ajudante disponível para esta tela.',
+        cta:     'Conhecer a Cooperativa',
+      },
+      stockLabel: 'em estoque',
+      useButton:  'Usar',
+      buyMore:    '+ Comprar mais',
+      closeAria:  'Fechar bolsa',
+      toast: {
+        used:         '{name} em ação! {icon}',
+        notAvailable: 'Sem estoque deste ajudante.',
+      },
+    },
   },
 
   en: {
@@ -1119,6 +1140,27 @@ export const STRINGS = {
     },
     toast: {
       defaultClose: 'Close',
+    },
+    helperPouch: {
+      title:      'Helpers Pouch',
+      buttonAria: 'Open helpers pouch',
+      contextHints: {
+        quiz:    'Use it here in the Quiz!',
+        fair:    'Use it here in the Market!',
+        default: 'Pick a helper:',
+      },
+      empty: {
+        message: 'No helpers available on this screen.',
+        cta:     'Visit the Cooperative',
+      },
+      stockLabel: 'in stock',
+      useButton:  'Use',
+      buyMore:    '+ Buy more',
+      closeAria:  'Close pouch',
+      toast: {
+        used:         '{name} in action! {icon}',
+        notAvailable: 'No stock of this helper.',
+      },
     },
   }
 }
