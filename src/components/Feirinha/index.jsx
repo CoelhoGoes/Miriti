@@ -34,17 +34,25 @@ export default function FeirinhaScreen({ onBack }) {
   const [activeFilter, setActiveFilter] = useState(FILTER_TYPES.ALL)
   const didInitRef = useRef(false)
 
+  const isArcade     = state.gameMode === 'arcade'
+  const market       = isArcade ? (state.arcade?.market  ?? state.market)  : state.market
+  const basket       = isArcade ? (state.arcade?.basket  ?? [])            : state.basket
+  const displayCoins = isArcade ? (state.arcade?.coins   ?? 0)             : state.coins
+
   useEffect(() => {
     if (didInitRef.current) return
     didInitRef.current = true
     dispatch({ type: 'TICK_PARTNERS' })
     dispatch({ type: 'ADVANCE_ROUND' })
-    const nextVisitCount = (state.market?.visitCount || 0) + 1
-    if (nextVisitCount % 2 === 0) {
-      const event = pickEvent(state.market?.lastEventId)
-      setActiveEvent(event)
+    if (!isArcade) {
+      const nextVisitCount = (market?.visitCount || 0) + 1
+      if (nextVisitCount % 2 === 0) {
+        const event = pickEvent(market?.lastEventId)
+        setActiveEvent(event)
+      }
     }
-  }, [dispatch, state.market?.lastEventId, state.market?.visitCount])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch])
 
   const handleCloseEvent = () => {
     if (activeEvent) dispatch({ type: 'APPLY_MARKET_EVENT', payload: { event: activeEvent } })
@@ -56,17 +64,17 @@ export default function FeirinhaScreen({ onBack }) {
   const handleShowHistory = (product, history) => setHistoryModal({ product, history })
 
   const productCards = useMemo(() => PRODUCTS.map(product => {
-    const history       = state.market?.priceHistory?.[product.id] || [product.basePrice]
-    const currentPrice  = state.market?.prices?.[product.id] ?? product.basePrice
+    const history       = market?.priceHistory?.[product.id] || [product.basePrice]
+    const currentPrice  = market?.prices?.[product.id] ?? product.basePrice
     const previousPrice = history.length > 1 ? history[history.length - 2] : history[history.length - 1]
     return {
       product,
       currentPrice,
       previousPrice,
       history,
-      basketSlot: state.basket.find(slot => slot.productId === product.id) || null,
+      basketSlot: basket.find(slot => slot.productId === product.id) || null,
     }
-  }), [state.basket, state.market?.priceHistory, state.market?.prices])
+  }), [basket, market?.priceHistory, market?.prices])
 
   const filteredCards = useMemo(() =>
     productCards.filter(({ product, currentPrice, basketSlot }) => {
@@ -116,10 +124,10 @@ export default function FeirinhaScreen({ onBack }) {
           </div>
           <div className={styles.headerBadges}>
             <span className={styles.badge}>
-              <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', state.market.round)}</span>
+              <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', market.round)}</span>
             </span>
             <span className={`${styles.badge} ${styles.badgeCoins}`}>
-              🪙 {state.coins} {s.feirinha.header.coinsAvailable}
+              🪙 {displayCoins} {s.feirinha.header.coinsAvailable}
             </span>
           </div>
         </div>
@@ -155,7 +163,7 @@ export default function FeirinhaScreen({ onBack }) {
                 currentPrice={currentPrice}
                 previousPrice={previousPrice}
                 basketSlot={basketSlot}
-                round={state.market.round}
+                round={market.round}
                 priceHistory={history}
                 onBuy={handleBuy}
                 onSell={handleSell}
@@ -177,17 +185,17 @@ export default function FeirinhaScreen({ onBack }) {
           )}
           <CofrinhoTipCard
             products={PRODUCTS}
-            marketPrices={state.market.prices}
-            basket={state.basket}
-            round={state.market.round}
+            marketPrices={market.prices}
+            basket={basket}
+            round={market.round}
           />
         </div>
 
         <div data-tutorial="basket-section">
           <CestaDaFamilia
-            basket={state.basket}
-            marketPrices={state.market.prices}
-            round={state.market.round}
+            basket={basket}
+            marketPrices={market.prices}
+            round={market.round}
             onSell={handleSell}
           />
         </div>

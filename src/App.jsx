@@ -162,7 +162,7 @@ export default function App() {
             onShop={isArcade ? () => arcadeNavigate(SCREENS.COOPERATIVA) : () => goTo(SCREENS.COOPERATIVA)}
             onCooperativa={isArcade ? null : () => goTo(SCREENS.COOPERATIVA)}
             onLeaderboard={isArcade ? null : () => goTo(SCREENS.LEADERBOARD)}
-            onStocks={isArcade ? null : () => goTo(SCREENS.STOCKS)}
+            onStocks={isArcade ? () => arcadeNavigate(SCREENS.STOCKS) : () => goTo(SCREENS.STOCKS)}
             onAchievements={isArcade ? null : () => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
             onCredits={isArcade ? null : () => goTo(SCREENS.CREDITS)}

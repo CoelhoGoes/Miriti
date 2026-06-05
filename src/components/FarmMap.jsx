@@ -266,7 +266,7 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
       {MAP_NODES.map((node, index) => {
         if (isArcade && node.id === 'conquistas') return null
 
-        const arcadeDisabled = isArcade && (node.id === 'feirinha' || node.id === 'cooperativa')
+        const arcadeDisabled = isArcade && node.id === 'cooperativa'
 
         const openNode = () => {
           if (arcadeDisabled) return
@@ -280,7 +280,7 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
         return (
           <motion.div
             key={node.id}
-            className={`${styles.mapNode}${arcadeDisabled ? ` ${styles.mapNodeDisabled}` : ''}`}
+            className={[styles.mapNode, arcadeDisabled ? styles.mapNodeDisabled : ''].filter(Boolean).join(' ')}
             data-tutorial={`node-${node.id}`}
             style={{
               left: `${node.position.leftPct}%`,

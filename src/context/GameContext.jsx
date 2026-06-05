@@ -472,8 +472,32 @@ function reducer(state, action) {
     }
 
     case 'BUY_PRODUCT': {
-      if (state.gameMode === 'arcade') return state
       // action.payload: { productId, quantity }
+      if (state.gameMode === 'arcade') {
+        if (!state.arcade?.market) return state
+        const product = PRODUCTS.find(p => p.id === action.payload.productId)
+        const currentPrice = state.arcade.market.prices[action.payload.productId]
+        if (!product || !currentPrice) return state
+        const totalCost = currentPrice * action.payload.quantity
+        if (state.arcade.coins < totalCost) return state
+        const arcadeBasket = state.arcade.basket ?? []
+        const existing = arcadeBasket.find(b => b.productId === action.payload.productId)
+        if (!existing && arcadeBasket.length >= 8) return state
+        const newBasket = existing
+          ? arcadeBasket.map(b => b.productId === action.payload.productId
+              ? { ...b, quantity: b.quantity + action.payload.quantity }
+              : b)
+          : [...arcadeBasket, {
+              productId: action.payload.productId,
+              quantity: action.payload.quantity,
+              boughtAt: currentPrice,
+              roundBought: state.arcade.market.round,
+            }]
+        return {
+          ...state,
+          arcade: { ...state.arcade, coins: state.arcade.coins - totalCost, basket: newBasket },
+        }
+      }
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const currentPrice = state.market.prices[action.payload.productId]
       if (!product || !currentPrice) return state
@@ -520,8 +544,31 @@ function reducer(state, action) {
     }
 
     case 'SELL_PRODUCT': {
-      if (state.gameMode === 'arcade') return state
       // action.payload: { productId, quantity }
+      if (state.gameMode === 'arcade') {
+        if (!state.arcade?.market) return state
+        const product = PRODUCTS.find(p => p.id === action.payload.productId)
+        const arcadeBasket = state.arcade.basket ?? []
+        const slot = arcadeBasket.find(b => b.productId === action.payload.productId)
+        if (!product || !slot || slot.quantity < action.payload.quantity) return state
+        if (product.hasCooldown) {
+          const roundsHeld = state.arcade.market.round - slot.roundBought
+          const effectiveCd = product.cooldownRounds || 0
+          if (roundsHeld < effectiveCd) return state
+        }
+        const currentPrice = state.arcade.market.prices[action.payload.productId]
+        const earnings = currentPrice * action.payload.quantity
+        const newBasket = slot.quantity === action.payload.quantity
+          ? arcadeBasket.filter(b => b.productId !== action.payload.productId)
+          : arcadeBasket.map(b => b.productId === action.payload.productId
+              ? { ...b, quantity: b.quantity - action.payload.quantity }
+              : b)
+        return {
+          ...state,
+          arcade: { ...state.arcade, coins: state.arcade.coins + earnings, basket: newBasket },
+        }
+      }
+
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const slot = state.basket.find(
         b => b.productId === action.payload.productId
@@ -597,7 +644,32 @@ function reducer(state, action) {
     }
 
     case 'ADVANCE_ROUND': {
-      if (state.gameMode === 'arcade') return state
+      if (state.gameMode === 'arcade') {
+        if (!state.arcade?.market) return state
+        const newPrices = { ...state.arcade.market.prices }
+        const newHistory = { ...state.arcade.market.priceHistory }
+        PRODUCTS.forEach(product => {
+          const variance = { low: 1, medium: 2, high: 4 }[product.volatility]
+          const delta = Math.floor(Math.random() * (variance * 2 + 1)) - variance
+          const updated = Math.min(product.maxPrice, Math.max(product.minPrice, newPrices[product.id] + delta))
+          newHistory[product.id] = [...(newHistory[product.id] || []), updated].slice(-10)
+          newPrices[product.id] = updated
+        })
+        return {
+          ...state,
+          arcade: {
+            ...state.arcade,
+            market: {
+              ...state.arcade.market,
+              prices: newPrices,
+              priceHistory: newHistory,
+              round: state.arcade.market.round + 1,
+              visitCount: state.arcade.market.visitCount + 1,
+            },
+          },
+        }
+      }
+
       const newPrices = { ...state.market.prices }
       const newHistory = { ...state.market.priceHistory }
 
@@ -798,6 +870,7 @@ function reducer(state, action) {
     }
 
     case 'TICK_PARTNERS': {
+      if (state.gameMode === 'arcade') return state
       const next = state.cooperativa.activePartners
         .map(p => ({ ...p, roundsLeft: p.roundsLeft - 1 }))
         .filter(p => p.roundsLeft > 0)
@@ -951,6 +1024,8 @@ function reducer(state, action) {
           finishedAt: null,
           usedQuestionIds: [],
           finalScore: null,
+          market: { ...buildInitialMarket(), round: 1, lastEventId: null, visitCount: 0 },
+          basket: [],
         },
       }
 
