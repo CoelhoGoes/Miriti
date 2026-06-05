@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
+import { ARCADE_MAX_QUIZ_USES } from '../data/arcadeConfig.js'
 import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
 import EquipAllyModal from './Cooperativa/EquipAllyModal.jsx'
 import SyncIndicator from './SyncIndicator/SyncIndicator.jsx'
@@ -78,6 +79,10 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
   const isArcade = state.gameMode === 'arcade'
   const displayCoins = isArcade ? (state.arcade?.coins ?? 0) : state.coins
   const actionsLeft = state.arcade?.actionsLeft ?? 0
+  const arcadeQuizUses = state.arcade?.quizUses ?? 0
+  const arcadeQuizCooldown = state.arcade?.quizCooldownLeft ?? 0
+  const arcadeQuizLimitReached = isArcade && arcadeQuizUses >= ARCADE_MAX_QUIZ_USES
+  const arcadeQuizOnCooldown = isArcade && !arcadeQuizLimitReached && arcadeQuizCooldown > 0
   let arcadeHint = null
   if (isArcade) {
     arcadeHint = actionsLeft <= 1
@@ -266,12 +271,18 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
       {MAP_NODES.map((node, index) => {
         if (isArcade && node.id === 'conquistas') return null
 
-        const arcadeDisabled = isArcade && node.id === 'cooperativa'
+        const arcadeCoopDisabled = isArcade && node.id === 'cooperativa'
+        const arcadeQuizDisabled = isArcade && node.id === 'escolinha' && (arcadeQuizLimitReached || arcadeQuizOnCooldown)
+        const arcadeDisabled = arcadeCoopDisabled || arcadeQuizDisabled
+
+        let quizBadgeLabel = null
+        if (arcadeQuizLimitReached && node.id === 'escolinha') quizBadgeLabel = s?.arcade?.quizLimitReached
+        else if (arcadeQuizOnCooldown && node.id === 'escolinha') quizBadgeLabel = s?.arcade?.quizCooldown
 
         const openNode = () => {
           if (arcadeDisabled) return
           sound.play('click')
-          if (node.id === 'escolinha') onEscolinha()
+          if (node.id === 'escolinha') onEscolinha?.()
           if (node.id === 'feirinha') onStocks?.()
           if (node.id === 'cooperativa') onCooperativa?.()
           if (node.id === 'conquistas') onAchievements?.()
@@ -306,9 +317,14 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
               )}
             </div>
             <div className={styles.nodeLabel}>{s.farmMap.nodes[node.id]}</div>
-            {arcadeDisabled && (
+            {arcadeCoopDisabled && (
               <div className={styles.nodeSoonBadge} aria-label={s?.arcade?.nodeSoon}>
                 🔒 {s?.arcade?.nodeSoon}
+              </div>
+            )}
+            {quizBadgeLabel && (
+              <div className={styles.nodeSoonBadge} aria-label={quizBadgeLabel}>
+                🔒 {quizBadgeLabel}
               </div>
             )}
           </motion.div>
