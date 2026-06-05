@@ -7,6 +7,7 @@ import QuizScreen from './components/QuizScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import CooperativaScreen from './components/Cooperativa/index.jsx'
 import LeaderboardScreen from './components/Leaderboard/LeaderboardScreen.jsx'
+import LeaderboardArcade from './components/Leaderboard/LeaderboardArcade.jsx'
 import NicknameScreen from './components/Onboarding/NicknameScreen.jsx'
 import RecoveryCelebration from './components/Onboarding/RecoveryCelebration.jsx'
 import RecoveryScreen from './components/Onboarding/RecoveryScreen.jsx'
@@ -18,29 +19,44 @@ import ErrorBoundary from './components/ErrorBoundary.jsx'
 import MascotChat from './components/MascotChat.jsx'
 import ParentsPanel from './components/ParentsPanel.jsx'
 import { TutorialProvider } from './context/TutorialContext.jsx'
+import { ScreenProvider } from './context/ScreenContext'
+import { ToastProvider } from './context/ToastContext'
+import HelperPouch from './components/HelperPouch/HelperPouch'
+import ActiveBuffsBar from './components/ActiveBuffsBar/ActiveBuffsBar'
+import ArcadeActionsHUD from './components/ArcadeActionsHUD/ArcadeActionsHUD'
+import ArcadeStartScreen from './components/ArcadeStartScreen/ArcadeStartScreen'
+import ArcadeResultScreen from './components/ArcadeResultScreen/ArcadeResultScreen'
+import ArcadeQuizScreen from './components/ArcadeQuizScreen/ArcadeQuizScreen'
 import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
 import RotateDevice from './components/RotateDevice/RotateDevice.jsx'
 import TwemojiWrapper from './components/TwemojiWrapper.jsx'
 import { useGame } from './context/GameContext.jsx'
+import { ARCADE_MAX_QUIZ_USES } from './data/arcadeConfig.js'
 import { useStrings } from './i18n/index.js'
 import { sound } from './utils/sound.js'
 
 const SCREENS = {
-  HOME:        'home',
-  FARM:        'farm',
-  ESCOLINHA:   'escolinha',
-  QUIZ:        'quiz',
-  RESULT:      'result',
-  SHOP:        'shop',
+  HOME: 'home',
+  ONBOARDING: 'onboarding',
+  FARM: 'farm',
+  ESCOLINHA: 'escolinha',
+  QUIZ: 'quiz',
+  RESULT: 'result',
+  SHOP: 'shop',
   COOPERATIVA: 'cooperativa',
   ACHIEVEMENTS: 'achievements',
-  LEADERBOARD:  'leaderboard',
-  STOCKS:       'stocks',
-  CREDITS:     'credits',
-  PARENTS:     'parents',
-  BOSS:        'boss',
+  LEADERBOARD: 'leaderboard',
+  LEADERBOARD_ARCADE: 'leaderboard_arcade',
+  STOCKS: 'stocks',
+  CREDITS: 'credits',
+  PARENTS: 'parents',
+  BOSS: 'boss',
+  // Arcade
+  ARCADE_START: 'arcade_start',
+  ARCADE_RESULT: 'arcade_result',
+  ARCADE_QUIZ: 'arcade_quiz',
 }
 
 const screenVariants = {
@@ -49,14 +65,34 @@ const screenVariants = {
 }
 
 export default function App() {
-  const [screen, setScreen]               = useState(SCREENS.HOME)
-  const [optionsOpen, setOptionsOpen]     = useState(false)
+  const [screen, setScreen] = useState(SCREENS.HOME)
+  const [optionsOpen, setOptionsOpen] = useState(false)
   const [mascotChatOpen, setMascotChatOpen] = useState(false)
-  const [bossPhase, setBossPhase]         = useState(0)
-  const [lastResult, setLastResult]       = useState(null)
+  const [bossPhase, setBossPhase] = useState(0)
+  const [lastResult, setLastResult] = useState(null)
+  const [arcadeLbReturn, setArcadeLbReturn] = useState(SCREENS.ARCADE_START)
   const [pendingPlayerData, setPendingPlayerData] = useState(null)
   const [showRecovery, setShowRecovery] = useState(false)
-  const { state, addPlayTime, clearTutorialReward } = useGame()
+  const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade, exitArcade } = useGame()
+
+  // Em Arcade, a sessão fecha ao regressar ao mapa com 0 ações restantes.
+  useEffect(() => {
+    if (state.gameMode !== 'arcade' || !state.arcade) return
+    if (screen !== SCREENS.FARM) return
+    if (state.arcade.actionsLeft > 0) return
+
+    if (!state.arcade.finishedAt) {
+      finishArcade()
+    } else if (screen !== SCREENS.ARCADE_RESULT) {
+      setScreen(SCREENS.ARCADE_RESULT)
+    }
+  }, [state.gameMode, state.arcade, screen, finishArcade])
+
+  // Consume 1 ação e navega; se actionsLeft chega a 0, o useEffect acima redireciona.
+  const arcadeNavigate = useCallback((target, reason = 'feira') => {
+    consumeArcadeAction(reason)
+    setScreen(target)
+  }, [consumeArcadeAction])
 
   const lastReward = state.tutorialState?.lastReward ?? null
   const lastCompletedId = state.tutorialState?.completed?.length
@@ -105,49 +141,66 @@ export default function App() {
   const handleQuizComplete = useCallback((result) => { setLastResult(result); setScreen(SCREENS.RESULT) }, [])
   const startBoss = useCallback((phaseIndex) => { setBossPhase(phaseIndex); goTo(SCREENS.BOSS) }, [goTo])
 
-  // ── Onboarding gate (after all hooks) ──────────────────────────────────────
-  if (!state.player?.id) {
-    if (showRecovery) {
-      return (
-        <RecoveryScreen
-          onBack={() => setShowRecovery(false)}
-          onRecovered={() => { setShowRecovery(false); setScreen(SCREENS.FARM) }}
-        />
-      )
-    }
-    return (
-      <NicknameScreen
-        onComplete={(data) => setPendingPlayerData(data)}
-        onSwitchToRecovery={() => setShowRecovery(true)}
-      />
-    )
-  }
-  if (!state.player?.hasOnboarded && pendingPlayerData) {
-    return (
-      <RecoveryCelebration
-        playerData={pendingPlayerData}
-        onComplete={() => { setPendingPlayerData(null); setScreen(SCREENS.FARM) }}
-      />
-    )
-  }
+  const handleExitArcade = useCallback(() => {
+    exitArcade()
+    goTo(SCREENS.HOME)
+  }, [exitArcade, goTo])
+
+  const openArcadeLeaderboard = useCallback((from) => {
+    setArcadeLbReturn(from)
+    goTo(SCREENS.LEADERBOARD_ARCADE)
+  }, [goTo])
 
   const animationsEnabled = state.settings.animationsEnabled !== false
 
   const renderScreen = () => {
     switch (screen) {
-      case SCREENS.FARM:
+      case SCREENS.FARM: {
+        const isArcade = state.gameMode === 'arcade'
+        const arcadeQuizUses = state.arcade?.quizUses ?? 0
+        const arcadeQuizCooldown = state.arcade?.quizCooldownLeft ?? 0
+        const arcadeQuizDisabled = isArcade && (arcadeQuizUses >= ARCADE_MAX_QUIZ_USES || arcadeQuizCooldown > 0)
+        let onEscolinha
+        if (!isArcade) onEscolinha = () => goTo(SCREENS.ESCOLINHA)
+        else if (!arcadeQuizDisabled) onEscolinha = () => arcadeNavigate(SCREENS.ARCADE_QUIZ, 'quiz')
         return (
           <FarmMap
-            onEscolinha={() => goTo(SCREENS.ESCOLINHA)}
-            onShop={() => goTo(SCREENS.COOPERATIVA)}
-            onCooperativa={() => goTo(SCREENS.COOPERATIVA)}
-            onLeaderboard={() => goTo(SCREENS.LEADERBOARD)}
-            onStocks={() => goTo(SCREENS.STOCKS)}
-            onAchievements={() => goTo(SCREENS.ACHIEVEMENTS)}
+            onEscolinha={onEscolinha}
+            onShop={isArcade ? null : () => goTo(SCREENS.COOPERATIVA)}
+            onCooperativa={isArcade ? null : () => goTo(SCREENS.COOPERATIVA)}
+            onLeaderboard={isArcade ? null : () => goTo(SCREENS.LEADERBOARD)}
+            onStocks={isArcade ? () => arcadeNavigate(SCREENS.STOCKS, 'feira') : () => goTo(SCREENS.STOCKS)}
+            onAchievements={isArcade ? null : () => goTo(SCREENS.ACHIEVEMENTS)}
             onSettings={() => setOptionsOpen(true)}
-            onCredits={() => goTo(SCREENS.CREDITS)}
-            onMascotClick={() => setMascotChatOpen(true)}
-            onParents={() => goTo(SCREENS.PARENTS)}
+            onCredits={isArcade ? null : () => goTo(SCREENS.CREDITS)}
+            onMascotClick={isArcade ? null : () => setMascotChatOpen(true)}
+            onParents={isArcade ? null : () => goTo(SCREENS.PARENTS)}
+          />
+        )
+      }
+      case SCREENS.ONBOARDING:
+        if (showRecovery) {
+          return (
+            <RecoveryScreen
+              onBack={() => setShowRecovery(false)}
+              onRecovered={() => { setShowRecovery(false); goTo(SCREENS.FARM) }}
+            />
+          )
+        }
+
+        if (state.player?.id && !state.player?.hasOnboarded && pendingPlayerData) {
+          return (
+            <RecoveryCelebration
+              playerData={pendingPlayerData}
+              onComplete={() => { setPendingPlayerData(null); goTo(SCREENS.FARM) }}
+            />
+          )
+        }
+
+        return (
+          <NicknameScreen
+            onComplete={(data) => setPendingPlayerData(data)}
+            onSwitchToRecovery={() => setShowRecovery(true)}
           />
         )
       case SCREENS.ESCOLINHA:
@@ -173,6 +226,8 @@ export default function App() {
         return <CooperativaScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.LEADERBOARD:
         return <LeaderboardScreen onBack={() => goTo(SCREENS.FARM)} />
+      case SCREENS.LEADERBOARD_ARCADE:
+        return <LeaderboardArcade onBack={() => goTo(arcadeLbReturn)} />
       case SCREENS.ACHIEVEMENTS:
         return <AchievementsScreen onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.STOCKS:
@@ -183,9 +238,38 @@ export default function App() {
         return <ParentsPanel onBack={() => goTo(SCREENS.FARM)} />
       case SCREENS.BOSS:
         return <BossQuiz phaseIndex={bossPhase} onExit={() => goTo(SCREENS.ESCOLINHA)} />
+      case SCREENS.ARCADE_START:
+        return (
+          <ArcadeStartScreen
+            onStart={() => goTo(SCREENS.FARM)}
+            onBack={() => goTo(SCREENS.HOME)}
+            onViewLeaderboard={() => openArcadeLeaderboard(SCREENS.ARCADE_START)}
+          />
+        )
+      case SCREENS.ARCADE_RESULT:
+        return (
+          <ArcadeResultScreen
+            onMenu={handleExitArcade}
+            onViewLeaderboard={() => openArcadeLeaderboard(SCREENS.ARCADE_RESULT)}
+          />
+        )
+      case SCREENS.ARCADE_QUIZ:
+        return <ArcadeQuizScreen onFinish={() => goTo(SCREENS.FARM)} />
       case SCREENS.HOME:
       default:
-        return <HomeScreen onStart={() => goTo(SCREENS.FARM)} />
+        return (
+          <HomeScreen
+            onStart={() => {
+              if (state.player?.id) {
+                goTo(SCREENS.FARM)
+              } else {
+                setShowRecovery(false)
+                goTo(SCREENS.ONBOARDING)
+              }
+            }}
+            onArcade={() => goTo(SCREENS.ARCADE_START)}
+          />
+        )
     }
   }
 
@@ -193,39 +277,51 @@ export default function App() {
     <MotionConfig reducedMotion={animationsEnabled ? 'never' : 'always'}>
       <TwemojiWrapper>
         <TutorialProvider>
-          <div
-            className={[
-              'app-root',
-              animationsEnabled ? '' : 'animations-off',
-            ].filter(Boolean).join(' ')}
-          >
-            <div className="app-content">
-              <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
-                <motion.div
-                  key={screen}
-                  className="screen"
-                  variants={screenVariants}
-                  initial="initial"
-                  animate="animate"
-                >
-                  {renderScreen()}
-                </motion.div>
-              </ErrorBoundary>
-            </div>
+          <ScreenProvider screen={screen} setScreen={setScreen}>
+            <ToastProvider>
+              <div
+                className={[
+                  'app-root',
+                  animationsEnabled ? '' : 'animations-off',
+                ].filter(Boolean).join(' ')}
+              >
+                <div className="app-content">
+                  <ErrorBoundary key={screen} strings={s.error} onReset={() => setScreen(SCREENS.HOME)}>
+                    <motion.div
+                      key={screen}
+                      className="screen"
+                      variants={screenVariants}
+                      initial="initial"
+                      animate="animate"
+                    >
+                      {renderScreen()}
+                    </motion.div>
+                  </ErrorBoundary>
+                </div>
 
-            <AnimatePresence>
-              {optionsOpen && <OptionsModal onClose={() => setOptionsOpen(false)} />}
-              {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
-            </AnimatePresence>
+                <AnimatePresence>
+                  {optionsOpen && (
+                    <OptionsModal
+                      onClose={() => setOptionsOpen(false)}
+                      onExitArcade={handleExitArcade}
+                    />
+                  )}
+                  {mascotChatOpen && <MascotChat onClose={() => setMascotChatOpen(false)} />}
+                </AnimatePresence>
 
-            <RotateDevice />
-          </div>
+                <RotateDevice />
+              </div>
 
-          <RewardModal
-            badge={badgeToShow}
-            coinsEarned={lastReward?.coins ?? 0}
-            onClose={clearTutorialReward}
-          />
+              <RewardModal
+                badge={badgeToShow}
+                coinsEarned={lastReward?.coins ?? 0}
+                onClose={clearTutorialReward}
+              />
+              <HelperPouch />
+              <ActiveBuffsBar />
+              <ArcadeActionsHUD />
+            </ToastProvider>
+          </ScreenProvider>
         </TutorialProvider>
       </TwemojiWrapper>
     </MotionConfig>

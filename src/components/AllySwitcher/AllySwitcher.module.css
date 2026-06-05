@@ -1,0 +1,61 @@
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-warning-light);
+  border: 2px solid var(--color-warning);
+  border-radius: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: box-shadow 0.2s;
+}
+
+.switcher:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+.switcher:focus-visible {
+  outline: 3px solid var(--color-warning);
+  outline-offset: 2px;
+}
+
+.switcher:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  border-color: var(--color-surface-2);
+  background: var(--color-surface-3);
+}
+
+.label {
+  font-size: var(--ms-text-xs);
+  font-weight: 800;
+  color: var(--color-warning);
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.name {
+  font-size: var(--ms-text-xs);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .switcher {
+    padding: 4px 8px;
+    gap: 5px;
+  }
+
+  .label { font-size: 0.65rem; }
+  .name  { max-width: 70px; font-size: 0.7rem; }
+}

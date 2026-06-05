@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { FaArrowLeft } from 'react-icons/fa'
 import { PRODUCTS } from '../../data/products'
 import { MARKET_EVENTS } from '../../data/marketEvents'
-import { ANIMALS } from '../../data/animals'
 import { useGame } from '../../context/GameContext.jsx'
 import { useStrings } from '../../i18n/index.js'
 import EventCard from './EventCard'
@@ -17,6 +16,8 @@ import { getBarometerLevel } from './Barometer'
 import styles from './FeirinhaScreen.module.css'
 import { useSecondaryTutorial } from '../../hooks/useSecondaryTutorial'
 import TutorialHelpButton from '../Tutorial/TutorialHelpButton'
+import AllySwitcher from '../AllySwitcher/AllySwitcher'
+import ActiveBuffsBar from '../ActiveBuffsBar/ActiveBuffsBar'
 
 function pickEvent(lastEventId) {
   const pool = MARKET_EVENTS.filter(event => event.id !== lastEventId)
@@ -33,17 +34,25 @@ export default function FeirinhaScreen({ onBack }) {
   const [activeFilter, setActiveFilter] = useState(FILTER_TYPES.ALL)
   const didInitRef = useRef(false)
 
+  const isArcade     = state.gameMode === 'arcade'
+  const market       = isArcade ? (state.arcade?.market  ?? state.market)  : state.market
+  const basket       = isArcade ? (state.arcade?.basket  ?? [])            : state.basket
+  const displayCoins = isArcade ? (state.arcade?.coins   ?? 0)             : state.coins
+
   useEffect(() => {
     if (didInitRef.current) return
     didInitRef.current = true
     dispatch({ type: 'TICK_PARTNERS' })
     dispatch({ type: 'ADVANCE_ROUND' })
-    const nextVisitCount = (state.market?.visitCount || 0) + 1
-    if (nextVisitCount % 2 === 0) {
-      const event = pickEvent(state.market?.lastEventId)
-      setActiveEvent(event)
+    if (!isArcade) {
+      const nextVisitCount = (market?.visitCount || 0) + 1
+      if (nextVisitCount % 2 === 0) {
+        const event = pickEvent(market?.lastEventId)
+        setActiveEvent(event)
+      }
     }
-  }, [dispatch, state.market?.lastEventId, state.market?.visitCount])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch])
 
   const handleCloseEvent = () => {
     if (activeEvent) dispatch({ type: 'APPLY_MARKET_EVENT', payload: { event: activeEvent } })
@@ -55,17 +64,17 @@ export default function FeirinhaScreen({ onBack }) {
   const handleShowHistory = (product, history) => setHistoryModal({ product, history })
 
   const productCards = useMemo(() => PRODUCTS.map(product => {
-    const history       = state.market?.priceHistory?.[product.id] || [product.basePrice]
-    const currentPrice  = state.market?.prices?.[product.id] ?? product.basePrice
+    const history       = market?.priceHistory?.[product.id] || [product.basePrice]
+    const currentPrice  = market?.prices?.[product.id] ?? product.basePrice
     const previousPrice = history.length > 1 ? history[history.length - 2] : history[history.length - 1]
     return {
       product,
       currentPrice,
       previousPrice,
       history,
-      basketSlot: state.basket.find(slot => slot.productId === product.id) || null,
+      basketSlot: basket.find(slot => slot.productId === product.id) || null,
     }
-  }), [state.basket, state.market?.priceHistory, state.market?.prices])
+  }), [basket, market?.priceHistory, market?.prices])
 
   const filteredCards = useMemo(() =>
     productCards.filter(({ product, currentPrice, basketSlot }) => {
@@ -105,35 +114,23 @@ export default function FeirinhaScreen({ onBack }) {
           >
             <FaArrowLeft />
           </button>
-          <div className={styles.headerInfo}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
-              <TutorialHelpButton tutorialKey="FEIRA" />
-            </div>
-            <div className={styles.headerBadges}>
-              <span className={styles.badge}>
-                <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', state.market.round)}</span>
-              </span>
-              <span className={`${styles.badge} ${styles.badgeCoins}`}>
-                🪙 {state.coins} {s.feirinha.header.coinsAvailable}
-              </span>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <h1 className={styles.title}>🛖 {s.feirinha.title}</h1>
+            <TutorialHelpButton tutorialKey="FEIRA" />
+          </div>
+          <div className={styles.headerHud}>
+            <AllySwitcher />
+            <ActiveBuffsBar inline />
+          </div>
+          <div className={styles.headerBadges}>
+            <span className={styles.badge}>
+              <span data-tutorial="round-counter">{s.feirinha.header.round.replace('{n}', market.round)}</span>
+            </span>
+            <span className={`${styles.badge} ${styles.badgeCoins}`}>
+              🪙 {displayCoins} {s.feirinha.header.coinsAvailable}
+            </span>
           </div>
         </div>
-
-        {(state.cooperativa?.activePartners?.length ?? 0) > 0 && (
-          <div className={styles.activeBuffs}>
-            {state.cooperativa.activePartners.map(p => {
-              const animal = ANIMALS.find(a => a.id === p.id)
-              if (!animal) return null
-              return (
-                <span key={p.id} className={styles.buffBadge}>
-                  {animal.icon} {p.roundsLeft}r
-                </span>
-              )
-            })}
-          </div>
-        )}
 
         <div className={styles.tipBar}>
           <span className={styles.tipBarMascot}>🐷</span>
@@ -166,7 +163,7 @@ export default function FeirinhaScreen({ onBack }) {
                 currentPrice={currentPrice}
                 previousPrice={previousPrice}
                 basketSlot={basketSlot}
-                round={state.market.round}
+                round={market.round}
                 priceHistory={history}
                 onBuy={handleBuy}
                 onSell={handleSell}
@@ -188,17 +185,17 @@ export default function FeirinhaScreen({ onBack }) {
           )}
           <CofrinhoTipCard
             products={PRODUCTS}
-            marketPrices={state.market.prices}
-            basket={state.basket}
-            round={state.market.round}
+            marketPrices={market.prices}
+            basket={basket}
+            round={market.round}
           />
         </div>
 
         <div data-tutorial="basket-section">
           <CestaDaFamilia
-            basket={state.basket}
-            marketPrices={state.market.prices}
-            round={state.market.round}
+            basket={basket}
+            marketPrices={market.prices}
+            round={market.round}
             onSell={handleSell}
           />
         </div>

@@ -1,9 +1,12 @@
 /* eslint-disable react/prop-types */
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
 import { useStrings } from '../i18n/index.js'
+import { ARCADE_MAX_QUIZ_USES } from '../data/arcadeConfig.js'
 import ActiveAllyBadge from './Cooperativa/ActiveAllyBadge.jsx'
+import EquipAllyModal from './Cooperativa/EquipAllyModal.jsx'
 import SyncIndicator from './SyncIndicator/SyncIndicator.jsx'
 import { useSecondaryTutorial } from '../hooks/useSecondaryTutorial'
 import { FaTrophy } from 'react-icons/fa'
@@ -71,9 +74,23 @@ const CLOUDS = [
 export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, onAchievements, onSettings, onCredits, onMascotClick, onParents, onLeaderboard }) {
   const { state } = useGame()
   const s = useStrings()
-  useSecondaryTutorial('INITIAL', true)
+  useSecondaryTutorial('INITIAL', state.gameMode === 'historia')
+  const [showAllyModal, setShowAllyModal] = useState(false)
+  const isArcade = state.gameMode === 'arcade'
+  const displayCoins = isArcade ? (state.arcade?.coins ?? 0) : state.coins
+  const actionsLeft = state.arcade?.actionsLeft ?? 0
+  const arcadeQuizUses = state.arcade?.quizUses ?? 0
+  const arcadeQuizCooldown = state.arcade?.quizCooldownLeft ?? 0
+  const arcadeQuizLimitReached = isArcade && arcadeQuizUses >= ARCADE_MAX_QUIZ_USES
+  const arcadeQuizOnCooldown = isArcade && !arcadeQuizLimitReached && arcadeQuizCooldown > 0
+  let arcadeHint = null
+  if (isArcade) {
+    arcadeHint = actionsLeft <= 1
+      ? s?.arcade?.farmHintSingular
+      : s?.arcade?.farmHint?.replace('{n}', actionsLeft)
+  }
   const openSettings = () => { if (onSettings) onSettings() }
-  const openCredits  = () => { if (onCredits)  onCredits()  }
+  const openCredits = () => { onCredits?.() }
 
   const handleMascot = () => {
     sound.play('pop')
@@ -104,16 +121,18 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
           >
             ⚙️
           </motion.button>
-          <motion.button
-            type="button"
-            onClick={openCredits}
-            title={s.farmMap.credits}
-            aria-label={s.farmMap.credits}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.94 }}
-          >
-            📋
-          </motion.button>
+          {!isArcade && (
+            <motion.button
+              type="button"
+              onClick={openCredits}
+              title={s.farmMap.credits}
+              aria-label={s.farmMap.credits}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
+              📋
+            </motion.button>
+          )}
           <motion.button
             type="button"
             onClick={openParents}
@@ -145,26 +164,28 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
 
         <div className={styles.headerRight}>
           <SyncIndicator />
-          <motion.button
-            type="button"
-            className={styles.headerTrophyButton}
-            onClick={() => onLeaderboard?.()}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.94 }}
-            aria-label={s.leaderboard?.title}
-            title={s.leaderboard?.title}
-          >
-            <FaTrophy />
-          </motion.button>
+          {!isArcade && (
+            <motion.button
+              type="button"
+              className={styles.headerTrophyButton}
+              onClick={() => onLeaderboard?.()}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.94 }}
+              aria-label={s.leaderboard?.title}
+              title={s.leaderboard?.title}
+            >
+              <FaTrophy />
+            </motion.button>
+          )}
           <div className={styles.coinsBadge}>
             <span aria-hidden="true">🪙</span>
-            <span>{state.coins}</span>
+            <span>{displayCoins}</span>
           </div>
         </div>
       </motion.header>
 
       <div className={styles.hintBar}>
-        {s.farmMap.hint}
+        {isArcade ? arcadeHint : s.farmMap.hint}
       </div>
 
       <div className="farm-sky" />
@@ -248,18 +269,29 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
       ))}
 
       {MAP_NODES.map((node, index) => {
+        if (isArcade && node.id === 'conquistas') return null
+
+        const arcadeCoopDisabled = isArcade && node.id === 'cooperativa'
+        const arcadeQuizDisabled = isArcade && node.id === 'escolinha' && (arcadeQuizLimitReached || arcadeQuizOnCooldown)
+        const arcadeDisabled = arcadeCoopDisabled || arcadeQuizDisabled
+
+        let quizBadgeLabel = null
+        if (arcadeQuizLimitReached && node.id === 'escolinha') quizBadgeLabel = s?.arcade?.quizLimitReached
+        else if (arcadeQuizOnCooldown && node.id === 'escolinha') quizBadgeLabel = s?.arcade?.quizCooldown
+
         const openNode = () => {
+          if (arcadeDisabled) return
           sound.play('click')
-          if (node.id === 'escolinha') onEscolinha()
-          if (node.id === 'feirinha') onStocks()
+          if (node.id === 'escolinha') onEscolinha?.()
+          if (node.id === 'feirinha') onStocks?.()
           if (node.id === 'cooperativa') onCooperativa?.()
-          if (node.id === 'conquistas') onAchievements()
+          if (node.id === 'conquistas') onAchievements?.()
         }
 
         return (
           <motion.div
             key={node.id}
-            className={styles.mapNode}
+            className={[styles.mapNode, arcadeDisabled ? styles.mapNodeDisabled : ''].filter(Boolean).join(' ')}
             data-tutorial={`node-${node.id}`}
             style={{
               left: `${node.position.leftPct}%`,
@@ -268,8 +300,8 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
             initial={{ opacity: 0, y: 30, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.2 + index * 0.1, type: 'spring', stiffness: 200, damping: 18 }}
-            whileHover={{ scale: 1.07, y: -4 }}
-            whileTap={{ scale: 0.96 }}
+            whileHover={arcadeDisabled ? {} : { scale: 1.07, y: -4 }}
+            whileTap={arcadeDisabled ? {} : { scale: 0.96 }}
             onClick={openNode}
           >
             <div
@@ -285,19 +317,38 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
               )}
             </div>
             <div className={styles.nodeLabel}>{s.farmMap.nodes[node.id]}</div>
+            {arcadeCoopDisabled && (
+              <div className={styles.nodeSoonBadge} aria-label={s?.arcade?.nodeSoon}>
+                🔒 {s?.arcade?.nodeSoon}
+              </div>
+            )}
+            {quizBadgeLabel && (
+              <div className={styles.nodeSoonBadge} aria-label={quizBadgeLabel}>
+                🔒 {quizBadgeLabel}
+              </div>
+            )}
           </motion.div>
         )
       })}
 
-      <motion.div
-        className={styles.allyBadgeOverlay}
-        data-tutorial="active-ally-overlay"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <ActiveAllyBadge onSwapClick={onCooperativa} />
-      </motion.div>
+      {!isArcade && (
+        <motion.div
+          className={styles.allyBadgeOverlay}
+          data-tutorial="active-ally-overlay"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <ActiveAllyBadge onSwapClick={() => { sound.play('click'); setShowAllyModal(true) }} />
+        </motion.div>
+      )}
+
+      {!isArcade && showAllyModal && (
+        <EquipAllyModal
+          onClose={() => setShowAllyModal(false)}
+          onGoToCooperativa={() => { setShowAllyModal(false); onCooperativa?.() }}
+        />
+      )}
 
     </div>
   )

@@ -20,6 +20,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_HINT_PREMIUM',
+    usableIn:    ['quiz'],
     name:        { pt: 'Coruja-buraqueira',      en: 'Burrowing Owl' },
     description: { pt: 'Mostra a explicação da resposta certa.',
                    en: 'Reveals the explanation of the correct answer.' },
@@ -34,6 +35,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_RETRY',
+    usableIn:    ['quiz'],
     name:        { pt: 'Joaninha',               en: 'Ladybug' },
     description: { pt: 'Dá uma segunda chance ao errar uma pergunta.',
                    en: 'Gives a second chance when you miss a question.' },
@@ -48,6 +50,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_SKIP',
+    usableIn:    ['quiz'],
     name:        { pt: 'Lagarta-de-fogo',        en: 'Fire Caterpillar' },
     description: { pt: 'Pula uma pergunta sem penalidade.',
                    en: 'Skips a question without penalty.' },
@@ -62,6 +65,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_BONUS_COINS',
+    usableIn:    ['quiz'],
     name:        { pt: 'Saúva',                  en: 'Leafcutter Ant' },
     description: { pt: '+5 moedas extra ao acertar a próxima.',
                    en: '+5 bonus coins on the next correct answer.' },
@@ -76,6 +80,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_REMOVE_TWO',
+    usableIn:    ['quiz'],
     name:        { pt: 'Morpho-Azul',            en: 'Blue Morpho' },
     description: { pt: 'Elimina 2 respostas erradas no quiz.',
                    en: 'Removes 2 wrong answers in the quiz.' },
@@ -90,6 +95,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_DOUBLE_COINS',
+    usableIn:    ['quiz'],
     name:        { pt: 'Uruçu (abelha nativa)',  en: 'Uruçu (native bee)' },
     description: { pt: 'Dobra as moedas da próxima resposta certa.',
                    en: 'Doubles the coins from the next correct answer.' },
@@ -104,6 +110,7 @@ export const ANIMALS = [
     maxStack: 5,
     duration: { type: 'uses', value: 1 },
     effect: 'QUIZ_VISUAL_HINT',
+    usableIn:    ['quiz'],
     name:        { pt: 'Caranguejeira',          en: 'Tarantula' },
     description: { pt: 'Mostra uma dica visual da pergunta.',
                    en: 'Reveals a visual hint about the question.' },
@@ -310,3 +317,20 @@ export const getAnimalsByCategory = (category) =>
 
 export const getAnimalById = (id) =>
   ANIMALS.find(a => a.id === id);
+
+/**
+ * Retorna todos os Ajudantes que podem ser usados na área indicada.
+ * @param {string} area - área lógica (ex: 'quiz', 'fair')
+ * @returns {Array} lista de animais ajudantes filtrados
+ * @example
+ * getHelpersForArea('quiz') // → [coruja, joaninha, lagarta, ...]
+ * getHelpersForArea('fair') // → []
+ */
+export function getHelpersForArea(area) {
+  if (!area) return []
+  return ANIMALS.filter(a =>
+    a.category === 'ajudante' &&
+    Array.isArray(a.usableIn) &&
+    a.usableIn.includes(area)
+  )
+}

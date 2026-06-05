@@ -1,0 +1,323 @@
+/* ════════════════════════════════════════════════════════════
+   HELPER POUCH — Botão flutuante + drawer lateral
+   ════════════════════════════════════════════════════════════ */
+
+/* ─── Botão flutuante ──────────────────────────────────────── */
+.floatingButton {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 80;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.2s;
+}
+
+.floatingButton:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+.floatingButton:focus-visible {
+  outline: 3px solid var(--color-warning);
+  outline-offset: 3px;
+}
+
+.buttonEmoji {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 12px;
+  background: var(--color-danger);
+  color: var(--color-text-inverse);
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Backdrop do drawer ──────────────────────────────────── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 8500;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+/* ─── Drawer ──────────────────────────────────────────────── */
+.drawer {
+  background: var(--color-white);
+  width: min(380px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+}
+
+/* ─── Header do drawer ────────────────────────────────────── */
+.drawerHeader {
+  position: relative;
+  padding: 16px 18px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 100%
+  );
+  color: var(--color-text-inverse);
+}
+
+.drawerTitleArea {
+  padding-right: 36px;
+}
+
+.drawerTitle {
+  margin: 0;
+  font-size: var(--ms-text-lg);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawerHint {
+  margin: 4px 0 0;
+  font-size: var(--ms-text-xs);
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--color-warning);
+  outline-offset: 2px;
+}
+
+/* ─── Body do drawer ──────────────────────────────────────── */
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px;
+}
+
+/* ─── Lista de ajudantes ──────────────────────────────────── */
+.helpersList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.helperCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-surface-4);
+  border: 2px solid var(--color-surface-2);
+  border-radius: 12px;
+  transition: border-color 0.15s;
+}
+
+.helperCard:hover {
+  border-color: var(--color-primary);
+}
+
+.helperIcon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 2px solid var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.helperInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.helperNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.helperName {
+  font-size: var(--ms-text-sm);
+  font-weight: 900;
+  color: var(--color-text-primary);
+}
+
+.helperStock {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border: 1.5px solid var(--color-warning);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.helperEffect {
+  font-size: var(--ms-text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+.useButton {
+  flex-shrink: 0;
+  background: var(--color-success);
+  color: var(--color-text-inverse);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+  transition: filter 0.15s;
+}
+
+.useButton:hover {
+  filter: brightness(1.06);
+}
+
+.useButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+}
+
+/* ─── Estado vazio ────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.emptyEmoji {
+  font-size: 3rem;
+  opacity: 0.6;
+}
+
+.emptyText {
+  margin: 0;
+  font-size: var(--ms-text-sm);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  line-height: 1.4;
+  max-width: 240px;
+}
+
+.emptyCta {
+  background: var(--color-white);
+  border: 2px solid var(--color-primary-dark);
+  color: var(--color-primary-dark);
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.emptyCta:hover {
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+}
+
+/* ─── Footer do drawer ────────────────────────────────────── */
+.drawerFooter {
+  padding: 12px;
+  border-top: 1px solid var(--color-surface-2);
+}
+
+.buyMoreButton {
+  width: 100%;
+  background: var(--color-white);
+  border: 2px solid var(--color-primary-dark);
+  color: var(--color-primary-dark);
+  padding: 10px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: var(--ms-text-sm);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.buyMoreButton:hover {
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+}
+
+/* ─── Mobile ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .floatingButton {
+    width: 52px;
+    height: 52px;
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .buttonEmoji { font-size: 1.5rem; }
+
+  .drawer {
+    width: 100%;
+  }
+}

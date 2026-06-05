@@ -1,0 +1,131 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 45%,
+    var(--color-secondary) 100%
+  );
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.headerCenter {
+  flex: 1;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--color-text-inverse);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--color-surface-3);
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 2px solid var(--color-surface-2);
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.list {
+  background: var(--color-white);
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.stateBox {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 24px;
+}
+
+.stateError {
+  color: var(--color-danger);
+}
+
+.retryButton {
+  margin-top: 10px;
+  border: 2px solid var(--color-primary);
+  background: var(--color-white);
+  color: var(--color-primary);
+  border-radius: 10px;
+  font-weight: 800;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.skeleton {
+  height: 60px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-3) 25%,
+    var(--color-surface-2) 50%,
+    var(--color-surface-3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 640px) {
+  .wrapper {
+    padding: 14px;
+  }
+
+  .title {
+    font-size: 1.35rem;
+  }
+
+  .backButton {
+    padding: 0 10px;
+    font-size: 0.9rem;
+  }
+}

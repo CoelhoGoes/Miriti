@@ -23,6 +23,7 @@ import { PRODUCTS } from '../data/products'
 import { MARKET_EVENTS } from '../data/marketEvents'
 import { ANIMALS, MARKET_CONTROL_ANIMALS } from '../data/animals'
 import { ANIMAL_EFFECTS } from '../data/animalEffects'
+import { ARCADE_INITIAL_COINS, ARCADE_INITIAL_ACTIONS, ARCADE_QUIZ_COOLDOWN } from '../data/arcadeConfig'
 
 const GameContext = createContext(null)
 const ACCESSIBILITY_STORAGE_KEY = 'miriti_accessibility'
@@ -61,6 +62,41 @@ export const DEFAULT_MASCOT = '🐷'
 
 const AVAILABLE_MASCOTS = new Set(['🐷', '🐔', '🐒', '🦥', '🐸', '🐢'])
 
+/* ---- Sistema de Investimento ---- */
+export const ESTACOES = ['verao', 'chuva', 'inverno', 'primavera']
+export const ROUNDS_POR_ESTACAO = 4
+
+export const MODIFICADORES_ESTACAO = {
+  verao: { galinheiro: 1.00, pomar: 1.20, horta: 0.80, celeiro: 1.00 },
+  chuva: { galinheiro: 0.90, pomar: 1.10, horta: 1.30, celeiro: 0.90 },
+  inverno: { galinheiro: 0.80, pomar: 0.70, horta: 0.60, celeiro: 1.30 },
+  primavera: { galinheiro: 1.10, pomar: 1.30, horta: 1.20, celeiro: 1.00 },
+}
+
+export const DEFAULT_INVESTIMENTOS = {
+  galinheiro: { moedas_alocadas: 0, multiplicador_base: 1.10 },
+  pomar: { moedas_alocadas: 0, multiplicador_base: 1.15 },
+  horta: { moedas_alocadas: 0, multiplicador_base: 1.12 },
+  celeiro: { moedas_alocadas: 0, multiplicador_base: 1.20 },
+}
+
+/** Retorna a estação vigente para uma rodada. */
+export function getEstacao(round) {
+  const idx = Math.floor((round - 1) / ROUNDS_POR_ESTACAO) % ESTACOES.length
+  return ESTACOES[idx]
+}
+
+/** Retorna quantas rodadas faltam até a próxima troca de estação. */
+export function getRoundsAteProximaEstacao(round) {
+  return ROUNDS_POR_ESTACAO - ((round - 1) % ROUNDS_POR_ESTACAO)
+}
+
+/** Retorna o nome da próxima estação. */
+export function getProximaEstacao(round) {
+  const currentIdx = Math.floor((round - 1) / ROUNDS_POR_ESTACAO) % ESTACOES.length
+  return ESTACOES[(currentIdx + 1) % ESTACOES.length]
+}
+
 function normalizeMascot(value) {
   return AVAILABLE_MASCOTS.has(value) ? value : DEFAULT_MASCOT
 }
@@ -87,6 +123,8 @@ function buildInitialMarket() {
 }
 
 const initialState = {
+  gameMode: 'historia', // 'historia' | 'arcade'
+  arcade: null,         // null = sem sessão; object = sessão activa ou encerrada
   currentPhase: 0,
   unlockedPhases: 1,
   totalScore: 0,
@@ -113,23 +151,23 @@ const initialState = {
   hasSoldAtProfit: false,
   hasSoldAny: false,
   cooperativa: {
-    helpers:        {},
+    helpers: {},
     activePartners: [],
-    alliesOwned:    ['cofrinho'],
-    activeAlly:     'cofrinho',
+    alliesOwned: ['cofrinho'],
+    activeAlly: 'cofrinho',
   },
   quizFlags: {},
   tutorialState: {
-    completed:    [],
+    completed: [],
     visitedAreas: [],
-    lastReward:   null,
+    lastReward: null,
   },
   badges: {
     unlocked: [],
   },
   player: {
-    id:           null,
-    nickname:     null,
+    id: null,
+    nickname: null,
     recoveryCode: null,
     hasOnboarded: false,
   },
@@ -141,7 +179,9 @@ const initialState = {
     tutorialDone: false,
     fontScale: 1, // @deprecated — kept for backward-compat with old saves; not used by UI
     colorblindMode: 'none'
-  }
+  },
+  investimentos: DEFAULT_INVESTIMENTOS,
+  ultimoCiclo: null,
 }
 
 function loadInitialState() {
@@ -213,7 +253,12 @@ function loadInitialState() {
       ...initialState.settings,
       ...(saved.settings || {}),
       colorblindMode
-    }
+    },
+    investimentos: { ...DEFAULT_INVESTIMENTOS, ...(saved.investimentos || {}) },
+    ultimoCiclo: saved.ultimoCiclo || null,
+    // Arcade: salvar sessão é útil, mas ao reabrir o app deve-se retomar em história
+    gameMode: 'historia',
+    arcade: null,
   }
 }
 
@@ -221,16 +266,16 @@ function migrateTutorialState(state) {
   let next = state.tutorialState
     ? state
     : {
-        ...state,
-        tutorialState: {
-          completed:    [],
-          visitedAreas: [],
-          lastReward:   null,
-        },
-      }
+      ...state,
+      tutorialState: {
+        completed: [],
+        visitedAreas: [],
+        lastReward: null,
+      },
+    }
 
   // saves antigos com tutorialDone=true: marcar 'tutorial.first-time' como concluído
-  const legacyDone     = next.settings?.tutorialDone === true
+  const legacyDone = next.settings?.tutorialDone === true
   const newAlreadyDone = next.tutorialState.completed.includes('tutorial.first-time')
   if (legacyDone && !newAlreadyDone) {
     next = {
@@ -255,8 +300,8 @@ function migrateLegacyShop(state) {
 
   const legacyMap = {
     mascot_monkey: 'macaco',
-    mascot_sloth:  'preguica',
-    mascot_frog:   'sapo',
+    mascot_sloth: 'preguica',
+    mascot_frog: 'sapo',
     mascot_turtle: 'jabuti',
   }
 
@@ -285,8 +330,8 @@ function migrateLegacyShop(state) {
     cooperativa: {
       helpers,
       activePartners: [],
-      alliesOwned:    migratedAllies,
-      activeAlly:     newActiveAlly,
+      alliesOwned: migratedAllies,
+      activeAlly: newActiveAlly,
     },
   }
 }
@@ -428,6 +473,31 @@ function reducer(state, action) {
 
     case 'BUY_PRODUCT': {
       // action.payload: { productId, quantity }
+      if (state.gameMode === 'arcade') {
+        if (!state.arcade?.market) return state
+        const product = PRODUCTS.find(p => p.id === action.payload.productId)
+        const currentPrice = state.arcade.market.prices[action.payload.productId]
+        if (!product || !currentPrice) return state
+        const totalCost = currentPrice * action.payload.quantity
+        if (state.arcade.coins < totalCost) return state
+        const arcadeBasket = state.arcade.basket ?? []
+        const existing = arcadeBasket.find(b => b.productId === action.payload.productId)
+        if (!existing && arcadeBasket.length >= 8) return state
+        const newBasket = existing
+          ? arcadeBasket.map(b => b.productId === action.payload.productId
+              ? { ...b, quantity: b.quantity + action.payload.quantity }
+              : b)
+          : [...arcadeBasket, {
+              productId: action.payload.productId,
+              quantity: action.payload.quantity,
+              boughtAt: currentPrice,
+              roundBought: state.arcade.market.round,
+            }]
+        return {
+          ...state,
+          arcade: { ...state.arcade, coins: state.arcade.coins - totalCost, basket: newBasket },
+        }
+      }
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const currentPrice = state.market.prices[action.payload.productId]
       if (!product || !currentPrice) return state
@@ -475,6 +545,30 @@ function reducer(state, action) {
 
     case 'SELL_PRODUCT': {
       // action.payload: { productId, quantity }
+      if (state.gameMode === 'arcade') {
+        if (!state.arcade?.market) return state
+        const product = PRODUCTS.find(p => p.id === action.payload.productId)
+        const arcadeBasket = state.arcade.basket ?? []
+        const slot = arcadeBasket.find(b => b.productId === action.payload.productId)
+        if (!product || !slot || slot.quantity < action.payload.quantity) return state
+        if (product.hasCooldown) {
+          const roundsHeld = state.arcade.market.round - slot.roundBought
+          const effectiveCd = product.cooldownRounds || 0
+          if (roundsHeld < effectiveCd) return state
+        }
+        const currentPrice = state.arcade.market.prices[action.payload.productId]
+        const earnings = currentPrice * action.payload.quantity
+        const newBasket = slot.quantity === action.payload.quantity
+          ? arcadeBasket.filter(b => b.productId !== action.payload.productId)
+          : arcadeBasket.map(b => b.productId === action.payload.productId
+              ? { ...b, quantity: b.quantity - action.payload.quantity }
+              : b)
+        return {
+          ...state,
+          arcade: { ...state.arcade, coins: state.arcade.coins + earnings, basket: newBasket },
+        }
+      }
+
       const product = PRODUCTS.find(p => p.id === action.payload.productId)
       const slot = state.basket.find(
         b => b.productId === action.payload.productId
@@ -517,6 +611,7 @@ function reducer(state, action) {
     }
 
     case 'APPLY_MARKET_EVENT': {
+      if (state.gameMode === 'arcade') return state
       // action.payload: { event } — objeto completo do MARKET_EVENTS
       const event = action.payload?.event
       if (!event || !MARKET_EVENTS.some(ev => ev.id === event.id)) return state
@@ -549,6 +644,32 @@ function reducer(state, action) {
     }
 
     case 'ADVANCE_ROUND': {
+      if (state.gameMode === 'arcade') {
+        if (!state.arcade?.market) return state
+        const newPrices = { ...state.arcade.market.prices }
+        const newHistory = { ...state.arcade.market.priceHistory }
+        PRODUCTS.forEach(product => {
+          const variance = { low: 1, medium: 2, high: 4 }[product.volatility]
+          const delta = Math.floor(Math.random() * (variance * 2 + 1)) - variance
+          const updated = Math.min(product.maxPrice, Math.max(product.minPrice, newPrices[product.id] + delta))
+          newHistory[product.id] = [...(newHistory[product.id] || []), updated].slice(-10)
+          newPrices[product.id] = updated
+        })
+        return {
+          ...state,
+          arcade: {
+            ...state.arcade,
+            market: {
+              ...state.arcade.market,
+              prices: newPrices,
+              priceHistory: newHistory,
+              round: state.arcade.market.round + 1,
+              visitCount: state.arcade.market.visitCount + 1,
+            },
+          },
+        }
+      }
+
       const newPrices = { ...state.market.prices }
       const newHistory = { ...state.market.priceHistory }
 
@@ -574,12 +695,32 @@ function reducer(state, action) {
       //  • Galinha-caipira → +2 moedas/rodada (renda diária constante)
       //  • Preguiça → +1% do saldo (juros compostos lentos)
       let bonusCoins = 0
-      if (state.cooperativa.activeAlly === 'galinha')  bonusCoins += 2
+      if (state.cooperativa.activeAlly === 'galinha') bonusCoins += 2
       if (state.cooperativa.activeAlly === 'preguica') bonusCoins += Math.floor(state.coins * 0.01)
+
+      // Processamento de investimentos — rendimento baseado na estação da rodada atual
+      const estacao = getEstacao(state.market.round)
+      let totalRendimento = 0
+      let totalPrincipal = 0
+
+      const investimentosZerados = {}
+      Object.entries(state.investimentos).forEach(([ativo, dados]) => {
+        if (dados.moedas_alocadas > 0) {
+          const mod = MODIFICADORES_ESTACAO[estacao][ativo]
+          const multFinal = dados.multiplicador_base * mod
+          totalRendimento += Math.floor(dados.moedas_alocadas * (multFinal - 1))
+          totalPrincipal += dados.moedas_alocadas
+        }
+        investimentosZerados[ativo] = { ...dados, moedas_alocadas: 0 }
+      })
+
+      const temInvestimento = totalPrincipal > 0
 
       return {
         ...state,
-        coins: state.coins + bonusCoins,
+        coins: state.coins + bonusCoins + totalPrincipal + totalRendimento,
+        investimentos: investimentosZerados,
+        ultimoCiclo: temInvestimento ? { totalRendimento, totalPrincipal } : null,
         market: {
           ...state.market,
           prices: newPrices,
@@ -644,6 +785,7 @@ function reducer(state, action) {
     }
 
     case 'PURCHASE_ANIMAL': {
+      if (state.gameMode === 'arcade') return state
       const animal = ANIMALS.find(a => a.id === action.payload.animalId)
       if (!animal) return state
 
@@ -708,7 +850,7 @@ function reducer(state, action) {
       const animal = ANIMALS.find(a => a.id === action.payload.animalId)
       if (animal?.category !== 'parceiro') return state
 
-      const isControl    = MARKET_CONTROL_ANIMALS.includes(animal.id)
+      const isControl = MARKET_CONTROL_ANIMALS.includes(animal.id)
       const hasOtherCtrl = state.cooperativa.activePartners.some(
         p => MARKET_CONTROL_ANIMALS.includes(p.id) && p.id !== animal.id
       )
@@ -721,13 +863,14 @@ function reducer(state, action) {
         ...state,
         cooperativa: {
           ...state.cooperativa,
-          helpers:        { ...state.cooperativa.helpers, [animal.id]: stock - 1 },
+          helpers: { ...state.cooperativa.helpers, [animal.id]: stock - 1 },
           activePartners: [...others, { id: animal.id, roundsLeft: rounds }],
         },
       }
     }
 
     case 'TICK_PARTNERS': {
+      if (state.gameMode === 'arcade') return state
       const next = state.cooperativa.activePartners
         .map(p => ({ ...p, roundsLeft: p.roundsLeft - 1 }))
         .filter(p => p.roundsLeft > 0)
@@ -751,8 +894,8 @@ function reducer(state, action) {
         ...state,
         player: {
           ...state.player,
-          id:           action.payload.id,
-          nickname:     action.payload.nickname,
+          id: action.payload.id,
+          nickname: action.payload.nickname,
           recoveryCode: action.payload.recoveryCode,
         },
       }
@@ -770,8 +913,8 @@ function reducer(state, action) {
       return {
         ...state,
         player: {
-          id:           null,
-          nickname:     null,
+          id: null,
+          nickname: null,
           recoveryCode: null,
           hasOnboarded: false,
         },
@@ -780,7 +923,7 @@ function reducer(state, action) {
     case 'LOGOUT':
       return {
         ...initialState,
-        stocks:    initialStocks(),
+        stocks: initialStocks(),
         portfolio: initialPortfolio(),
         settings: {
           ...state.settings,
@@ -793,7 +936,7 @@ function reducer(state, action) {
       const alreadyDone = state.tutorialState.completed.includes(tutorialId)
 
       // efeito colateral: tutorial inicial → settings.tutorialDone=true (backward-compat)
-      const isInitial   = tutorialId === 'tutorial.first-time'
+      const isInitial = tutorialId === 'tutorial.first-time'
       const nextSettings = isInitial
         ? { ...state.settings, tutorialDone: true }
         : state.settings
@@ -851,6 +994,102 @@ function reducer(state, action) {
       }
     }
 
+    case 'ALLOCATE_INVESTMENT': {
+      const { ativo, quantidade } = action.payload
+      if (!state.investimentos[ativo]) return state
+      if (!Number.isInteger(quantidade) || quantidade <= 0) return state
+      if (state.coins < quantidade) return state
+
+      return {
+        ...state,
+        coins: state.coins - quantidade,
+        investimentos: {
+          ...state.investimentos,
+          [ativo]: {
+            ...state.investimentos[ativo],
+            moedas_alocadas: state.investimentos[ativo].moedas_alocadas + quantidade,
+          },
+        },
+      }
+    }
+
+    case 'ARCADE_START':
+      return {
+        ...state,
+        gameMode: 'arcade',
+        arcade: {
+          actionsLeft: ARCADE_INITIAL_ACTIONS,
+          coins: ARCADE_INITIAL_COINS,
+          startedAt: Date.now(),
+          finishedAt: null,
+          usedQuestionIds: [],
+          quizUses: 0,
+          quizCooldownLeft: 0,
+          finalScore: null,
+          market: { ...buildInitialMarket(), round: 1, lastEventId: null, visitCount: 0 },
+          basket: [],
+        },
+      }
+
+    case 'ARCADE_CONSUME_ACTION': {
+      if (!state.arcade) return state
+      const nextActions = Math.max(0, state.arcade.actionsLeft - 1)
+      const isQuiz = action.payload?.reason === 'quiz'
+      const nextCooldown = isQuiz
+        ? (state.arcade.quizCooldownLeft ?? 0)
+        : Math.max(0, (state.arcade.quizCooldownLeft ?? 0) - 1)
+      return {
+        ...state,
+        arcade: { ...state.arcade, actionsLeft: nextActions, quizCooldownLeft: nextCooldown },
+      }
+    }
+
+    case 'ARCADE_EARN_COINS': {
+      if (!state.arcade) return state
+      return {
+        ...state,
+        arcade: { ...state.arcade, coins: state.arcade.coins + (action.payload.amount ?? 0) },
+      }
+    }
+
+    case 'ARCADE_USE_QUESTION': {
+      if (!state.arcade) return state
+      const id = action.payload.questionId
+      if (state.arcade.usedQuestionIds.includes(id)) return state
+      return {
+        ...state,
+        arcade: {
+          ...state.arcade,
+          usedQuestionIds: [...state.arcade.usedQuestionIds, id],
+          quizUses: (state.arcade.quizUses ?? 0) + 1,
+          quizCooldownLeft: ARCADE_QUIZ_COOLDOWN,
+        },
+      }
+    }
+
+    case 'ARCADE_FINISH': {
+      if (!state.arcade) return state
+      if (state.arcade.finishedAt) return state
+      return {
+        ...state,
+        arcade: {
+          ...state.arcade,
+          finishedAt: Date.now(),
+          finalScore: {
+            coins: state.arcade.coins,
+            actionsUsed: ARCADE_INITIAL_ACTIONS - state.arcade.actionsLeft,
+          },
+        },
+      }
+    }
+
+    case 'ARCADE_EXIT':
+      return {
+        ...state,
+        gameMode: 'historia',
+        arcade: null,
+      }
+
     case 'RESET':
       return { ...initialState, stocks: initialStocks(), portfolio: initialPortfolio() }
 
@@ -898,18 +1137,18 @@ export function GameProvider({ children }) {
   const completeBoss = useCallback((payload) => dispatch({ type: 'COMPLETE_BOSS', payload }), [])
   const addPlayTime = useCallback((seconds) => dispatch({ type: 'ADD_PLAY_TIME', seconds }), [])
   const markMascotChatViewed = useCallback(() => dispatch({ type: 'MASCOT_CHAT_VIEWED' }), [])
-  const resetProgress    = useCallback(() => dispatch({ type: 'RESET' }), [])
-  const purchaseAnimal   = useCallback((animalId) => dispatch({ type: 'PURCHASE_ANIMAL', payload: { animalId } }), [])
-  const useHelper        = useCallback((animalId) => dispatch({ type: 'USE_HELPER', payload: { animalId } }), [])
-  const activatePartner  = useCallback((animalId) => dispatch({ type: 'ACTIVATE_PARTNER', payload: { animalId } }), [])
-  const tickPartners     = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
-  const equipAlly        = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
+  const resetProgress = useCallback(() => dispatch({ type: 'RESET' }), [])
+  const purchaseAnimal = useCallback((animalId) => dispatch({ type: 'PURCHASE_ANIMAL', payload: { animalId } }), [])
+  const useHelper = useCallback((animalId) => dispatch({ type: 'USE_HELPER', payload: { animalId } }), [])
+  const activatePartner = useCallback((animalId) => dispatch({ type: 'ACTIVATE_PARTNER', payload: { animalId } }), [])
+  const tickPartners = useCallback(() => dispatch({ type: 'TICK_PARTNERS' }), [])
+  const equipAlly = useCallback((animalId) => dispatch({ type: 'EQUIP_ALLY', payload: { animalId } }), [])
 
   const unlockBadge = useCallback((badgeId) => {
     dispatch({ type: 'UNLOCK_BADGE', payload: { badgeId } })
   }, [])
 
-  const completeTutorial  = useCallback((tutorialId, reward = null) => {
+  const completeTutorial = useCallback((tutorialId, reward = null) => {
     dispatch({ type: 'TUTORIAL_COMPLETE', payload: { tutorialId, reward } })
   }, [])
   const resetTutorial = useCallback((tutorialId) => {
@@ -922,44 +1161,57 @@ export function GameProvider({ children }) {
     dispatch({ type: 'TUTORIAL_CLEAR_REWARD' })
   }, [])
 
+  const startArcade = useCallback(() => dispatch({ type: 'ARCADE_START' }), [])
+  const consumeArcadeAction = useCallback((reason = 'feira') => dispatch({ type: 'ARCADE_CONSUME_ACTION', payload: { reason } }), [])
+  const earnArcadeCoins = useCallback((amount) => dispatch({ type: 'ARCADE_EARN_COINS', payload: { amount } }), [])
+  const useArcadeQuestion = useCallback((questionId) => dispatch({ type: 'ARCADE_USE_QUESTION', payload: { questionId } }), [])
+  const finishArcade = useCallback(() => dispatch({ type: 'ARCADE_FINISH' }), [])
+  const exitArcade = useCallback(() => dispatch({ type: 'ARCADE_EXIT' }), [])
+
+  const alocarInvestimento = useCallback((ativo, quantidade) => {
+    dispatch({ type: 'ALLOCATE_INVESTMENT', payload: { ativo, quantidade } })
+  }, [])
+
   const setPlayer = useCallback((id, nickname, recoveryCode) => {
     dispatch({ type: 'SET_PLAYER', payload: { id, nickname, recoveryCode } })
   }, [])
-  const markOnboarded   = useCallback(() => dispatch({ type: 'MARK_ONBOARDED' }), [])
+  const markOnboarded = useCallback(() => dispatch({ type: 'MARK_ONBOARDED' }), [])
   const hydrateFromCloud = useCallback((gameState) => {
     dispatch({ type: 'HYDRATE_FROM_CLOUD', payload: { gameState } })
   }, [])
-  const clearPlayer     = useCallback(() => dispatch({ type: 'CLEAR_PLAYER' }), [])
+  const clearPlayer = useCallback(() => dispatch({ type: 'CLEAR_PLAYER' }), [])
   const logout = useCallback(() => {
     try { storage.remove('game_state') } catch (err) { console.warn('[logout]', err) }
     dispatch({ type: 'LOGOUT' })
   }, [])
 
   const syncMeta = useCloudSync(state.player?.id, {
-    coins:          state.coins,
-    basket:         state.basket,
-    market:         state.market,
-    cooperativa:    state.cooperativa,
-    achievements:   state.achievements,
-    inventory:      state.inventory,
+    coins: state.coins,
+    basket: state.basket,
+    market: state.market,
+    cooperativa: state.cooperativa,
+    achievements: state.achievements,
+    inventory: state.inventory,
     selectedMascot: state.selectedMascot,
-    settings:       state.settings,
-    stars:          state.stars,
-    phaseResults:   state.phaseResults,
-    bossClears:     state.bossClears,
+    settings: state.settings,
+    stars: state.stars,
+    phaseResults: state.phaseResults,
+    bossClears: state.bossClears,
     unlockedPhases: state.unlockedPhases,
-    totalScore:     state.totalScore,
-    stocks:         state.stocks,
-    portfolio:      state.portfolio,
-    playTimeSec:    state.playTimeSec,
-    quizFlags:      state.quizFlags,
-    ownedMascots:   state.ownedMascots,
-    tutorialState:          state.tutorialState,
-    badges:                 state.badges,
-    mascotChatViews:        state.mascotChatViews,
+    totalScore: state.totalScore,
+    stocks: state.stocks,
+    portfolio: state.portfolio,
+    playTimeSec: state.playTimeSec,
+    quizFlags: state.quizFlags,
+    ownedMascots: state.ownedMascots,
+    tutorialState: state.tutorialState,
+    badges: state.badges,
+    mascotChatViews: state.mascotChatViews,
     distinctProductsBought: state.distinctProductsBought,
-    hasSoldAny:             state.hasSoldAny,
-    hasSoldAtProfit:        state.hasSoldAtProfit,
+    hasSoldAny: state.hasSoldAny,
+    hasSoldAtProfit: state.hasSoldAtProfit,
+    investimentos: state.investimentos,
+    ultimoCiclo: state.ultimoCiclo,
   })
 
   const value = {
@@ -973,6 +1225,8 @@ export function GameProvider({ children }) {
     purchaseAnimal, useHelper, activatePartner, tickPartners, equipAlly,
     setPlayer, markOnboarded, hydrateFromCloud, clearPlayer, logout,
     unlockBadge, completeTutorial, resetTutorial, visitArea, clearTutorialReward,
+    alocarInvestimento,
+    startArcade, consumeArcadeAction, earnArcadeCoins, useArcadeQuestion, finishArcade, exitArcade,
     syncMeta,
   }
 
