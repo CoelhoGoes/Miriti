@@ -85,7 +85,7 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
       : s?.arcade?.farmHint?.replace('{n}', actionsLeft)
   }
   const openSettings = () => { if (onSettings) onSettings() }
-  const openCredits = () => { if (onCredits) onCredits() }
+  const openCredits = () => { onCredits?.() }
 
   const handleMascot = () => {
     sound.play('pop')
@@ -116,16 +116,18 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
           >
             ⚙️
           </motion.button>
-          <motion.button
-            type="button"
-            onClick={openCredits}
-            title={s.farmMap.credits}
-            aria-label={s.farmMap.credits}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.94 }}
-          >
-            📋
-          </motion.button>
+          {!isArcade && (
+            <motion.button
+              type="button"
+              onClick={openCredits}
+              title={s.farmMap.credits}
+              aria-label={s.farmMap.credits}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
+              📋
+            </motion.button>
+          )}
           <motion.button
             type="button"
             onClick={openParents}

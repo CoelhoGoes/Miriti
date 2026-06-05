@@ -6,6 +6,7 @@ import DeactivateAccountModal from './Account/DeactivateAccountModal'
 import DeleteAccountModal from './Account/DeleteAccountModal'
 import { sound } from '../utils/sound.js'
 import { useGame } from '../context/GameContext.jsx'
+import { useScreen } from '../context/ScreenContext'
 import { useStrings, LANGUAGES } from '../i18n/index.js'
 import { useState } from 'react'
 import { useTutorial } from '../hooks/useTutorial'
@@ -51,10 +52,12 @@ function ReplayTutorialButton({ tutorialKey, label, onClose }) {
 }
 
 export default function OptionsModal({ onClose }) {
-  const { state, updateSettings, resetProgress } = useGame()
+  const { state, updateSettings, resetProgress, exitArcade } = useGame()
+  const { screen, setScreen } = useScreen()
   const { settings } = state
   const s = useStrings()
   const [confirmReset, setConfirmReset] = useState(false)
+  const [showArcadeResetBlock, setShowArcadeResetBlock] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
   const [logoutOpen, setLogoutOpen]         = useState(false)
   const [deactivateOpen, setDeactivateOpen] = useState(false)
@@ -101,6 +104,29 @@ export default function OptionsModal({ onClose }) {
     setConfirmReset(false)
   }
 
+  const handleResetClick = () => {
+    if (state.gameMode === 'arcade') {
+      sound.play('wrong')
+      setShowArcadeResetBlock(true)
+      setConfirmReset(false)
+      return
+    }
+    sound.play('hover')
+    setShowArcadeResetBlock(false)
+    setConfirmReset(true)
+  }
+
+  const handleExitArcadeForReset = () => {
+    sound.play('click')
+    exitArcade()
+    if (screen === 'arcade_start' || screen === 'arcade_quiz' || screen === 'arcade_result') {
+      setScreen('farm')
+    }
+    setShowArcadeResetBlock(false)
+    setConfirmReset(false)
+    onClose()
+  }
+
   const handleClose = () => {
     sound.play('click')
     onClose()
@@ -108,6 +134,61 @@ export default function OptionsModal({ onClose }) {
 
   const modalRoot = document.getElementById('modal-root')
   if (!modalRoot) return null
+
+  let resetDangerContent = null
+  if (showArcadeResetBlock) {
+    resetDangerContent = (
+      <div className="options-confirm">
+        <p style={{ marginBottom: 6, fontWeight: 800 }}>
+          {s.arcade.resetBlockedTitle}
+        </p>
+        <p>{s.arcade.resetBlockedDesc}</p>
+        <div className="options-confirm-actions">
+          <button
+            className="options-confirm-btn cancel"
+            onClick={() => { sound.play('click'); setShowArcadeResetBlock(false) }}
+          >
+            {s.arcade.resetBlockedCancelCta}
+          </button>
+          <button
+            className="options-confirm-btn confirm"
+            onClick={handleExitArcadeForReset}
+          >
+            {s.arcade.resetBlockedExitCta}
+          </button>
+        </div>
+      </div>
+    )
+  } else if (confirmReset) {
+    resetDangerContent = (
+      <div className="options-confirm">
+        <p>{s.options.resetConfirm}</p>
+        <div className="options-confirm-actions">
+          <button
+            className="options-confirm-btn cancel"
+            onClick={() => { sound.play('click'); setConfirmReset(false) }}
+          >
+            {s.options.cancel}
+          </button>
+          <button
+            className="options-confirm-btn confirm"
+            onClick={handleReset}
+          >
+            {s.options.resetYes}
+          </button>
+        </div>
+      </div>
+    )
+  } else {
+    resetDangerContent = (
+      <button
+        className="options-reset-btn"
+        onClick={handleResetClick}
+      >
+        <FaTrash /> {s.options.reset}
+      </button>
+    )
+  }
 
   const modalContent = (
     <motion.div
@@ -374,32 +455,7 @@ export default function OptionsModal({ onClose }) {
         )}
 
         <div className="options-danger">
-          {confirmReset ? (
-            <div className="options-confirm">
-              <p>{s.options.resetConfirm}</p>
-              <div className="options-confirm-actions">
-                <button
-                  className="options-confirm-btn cancel"
-                  onClick={() => { sound.play('click'); setConfirmReset(false) }}
-                >
-                  {s.options.cancel}
-                </button>
-                <button
-                  className="options-confirm-btn confirm"
-                  onClick={handleReset}
-                >
-                  {s.options.resetYes}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              className="options-reset-btn"
-              onClick={() => { sound.play('hover'); setConfirmReset(true) }}
-            >
-              <FaTrash /> {s.options.reset}
-            </button>
-          )}
+          {resetDangerContent}
         </div>
       </motion.div>
     </motion.div>
