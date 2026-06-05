@@ -22,6 +22,7 @@ import { ScreenProvider } from './context/ScreenContext'
 import { ToastProvider } from './context/ToastContext'
 import HelperPouch from './components/HelperPouch/HelperPouch'
 import ActiveBuffsBar from './components/ActiveBuffsBar/ActiveBuffsBar'
+import AllySwitcher from './components/AllySwitcher/AllySwitcher'
 import RewardModal from './components/Tutorial/RewardModal.jsx'
 import { getBadgeByTutorialId } from './data/badges.js'
 import BossQuiz from './components/BossQuiz.jsx'
@@ -234,6 +235,7 @@ export default function App() {
           />
           <HelperPouch />
           <ActiveBuffsBar />
+          <AllySwitcher />
           </ToastProvider>
           </ScreenProvider>
         </TutorialProvider>

@@ -100,26 +100,6 @@
   color: var(--color-success);
 }
 
-/* Active buffs */
-.activeBuffs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.buffBadge {
-  background: var(--color-warning-light);
-  border: 2px solid var(--color-warning);
-  border-radius: 14px;
-  padding: 3px 10px;
-  font-size: var(--ms-text-xs);
-  font-weight: 700;
-  color: var(--color-warning);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
 /* Tip bar educativa */
 .tipBar {
   background: rgba(255, 255, 255, 0.92);

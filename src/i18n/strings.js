@@ -591,6 +591,12 @@ export const STRINGS = {
       roundsSingular: '{n}r restante',
       tooltipFormat:  '{name} — {description}',
     },
+    allySwitcher: {
+      label:          'Aliado',
+      buttonAria:     'Trocar aliado em campo',
+      tooltipDefault: 'Toque para trocar aliado',
+      tooltipOnlyOne: 'Adopte mais aliados na Cooperativa',
+    },
   },
 
   en: {
@@ -1173,6 +1179,12 @@ export const STRINGS = {
       roundsLabel:    '{n}r left',
       roundsSingular: '{n}r left',
       tooltipFormat:  '{name} — {description}',
+    },
+    allySwitcher: {
+      label:          'Ally',
+      buttonAria:     'Swap active ally',
+      tooltipDefault: 'Tap to swap ally',
+      tooltipOnlyOne: 'Adopt more allies at the Cooperative',
     },
   }
 }

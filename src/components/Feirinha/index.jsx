@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { FaArrowLeft } from 'react-icons/fa'
 import { PRODUCTS } from '../../data/products'
 import { MARKET_EVENTS } from '../../data/marketEvents'
-import { ANIMALS } from '../../data/animals'
 import { useGame } from '../../context/GameContext.jsx'
 import { useStrings } from '../../i18n/index.js'
 import EventCard from './EventCard'
@@ -120,20 +119,6 @@ export default function FeirinhaScreen({ onBack }) {
             </div>
           </div>
         </div>
-
-        {(state.cooperativa?.activePartners?.length ?? 0) > 0 && (
-          <div className={styles.activeBuffs}>
-            {state.cooperativa.activePartners.map(p => {
-              const animal = ANIMALS.find(a => a.id === p.id)
-              if (!animal) return null
-              return (
-                <span key={p.id} className={styles.buffBadge}>
-                  {animal.icon} {p.roundsLeft}r
-                </span>
-              )
-            })}
-          </div>
-        )}
 
         <div className={styles.tipBar}>
           <span className={styles.tipBarMascot}>🐷</span>
