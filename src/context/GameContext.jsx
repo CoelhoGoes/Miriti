@@ -23,6 +23,7 @@ import { PRODUCTS } from '../data/products'
 import { MARKET_EVENTS } from '../data/marketEvents'
 import { ANIMALS, MARKET_CONTROL_ANIMALS } from '../data/animals'
 import { ANIMAL_EFFECTS } from '../data/animalEffects'
+import { ARCADE_INITIAL_COINS, ARCADE_INITIAL_ACTIONS } from '../data/arcadeConfig'
 
 const GameContext = createContext(null)
 const ACCESSIBILITY_STORAGE_KEY = 'miriti_accessibility'
@@ -120,9 +121,6 @@ function buildInitialMarket() {
   })
   return { prices, priceHistory }
 }
-
-const ARCADE_INITIAL_COINS = 1000
-const ARCADE_INITIAL_ACTIONS = 20
 
 const initialState = {
   gameMode: 'historia', // 'historia' | 'arcade'
@@ -953,22 +951,7 @@ function reducer(state, action) {
 
     case 'ARCADE_CONSUME_ACTION': {
       if (!state.arcade) return state
-      const next = state.arcade.actionsLeft - 1
-      if (next <= 0) {
-        // Esgotou — finalizar automaticamente
-        return {
-          ...state,
-          arcade: {
-            ...state.arcade,
-            actionsLeft: 0,
-            finishedAt: Date.now(),
-            finalScore: {
-              coins:       state.arcade.coins,
-              actionsUsed: ARCADE_INITIAL_ACTIONS,
-            },
-          },
-        }
-      }
+      const next = Math.max(0, state.arcade.actionsLeft - 1)
       return {
         ...state,
         arcade: { ...state.arcade, actionsLeft: next },
@@ -998,6 +981,7 @@ function reducer(state, action) {
 
     case 'ARCADE_FINISH': {
       if (!state.arcade) return state
+      if (state.arcade.finishedAt) return state
       return {
         ...state,
         arcade: {

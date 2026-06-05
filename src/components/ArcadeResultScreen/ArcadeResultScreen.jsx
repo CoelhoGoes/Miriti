@@ -1,25 +1,25 @@
 /* eslint-disable react/prop-types */
 import { motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext'
+import { useScreen } from '../../context/ScreenContext'
 import { useStrings } from '../../i18n'
+import { ARCADE_INITIAL_COINS, ARCADE_INITIAL_ACTIONS } from '../../data/arcadeConfig'
 import styles from './ArcadeResultScreen.module.css'
 
-const INITIAL_COINS = 1000
-
-export default function ArcadeResultScreen({ onPlayAgain, onMenu }) {
+export default function ArcadeResultScreen({ onMenu }) {
   const { state, exitArcade, startArcade } = useGame()
+  const { setScreen } = useScreen()
   const s = useStrings()
   const score = state.arcade?.finalScore
 
   const finalCoins   = score?.coins ?? state.arcade?.coins ?? 0
-  const actionsUsed  = score?.actionsUsed ?? (20 - (state.arcade?.actionsLeft ?? 0))
-  const diff         = finalCoins - INITIAL_COINS
+  const actionsUsed  = score?.actionsUsed ?? (ARCADE_INITIAL_ACTIONS - (state.arcade?.actionsLeft ?? 0))
+  const diff         = finalCoins - ARCADE_INITIAL_COINS
   const isProfit     = diff > 0
 
   const handlePlayAgain = () => {
-    exitArcade()
     startArcade()
-    onPlayAgain()
+    setScreen('farm')
   }
 
   const handleMenu = () => {
@@ -62,7 +62,7 @@ export default function ArcadeResultScreen({ onPlayAgain, onMenu }) {
       >
         <div className={styles.row}>
           <span className={styles.rowLabel}>🪙 {s.arcade.resultStart}</span>
-          <span className={styles.rowValue}>{INITIAL_COINS}</span>
+          <span className={styles.rowValue}>{ARCADE_INITIAL_COINS}</span>
         </div>
         <div className={styles.row}>
           <span className={styles.rowLabel}>🪙 {s.arcade.resultCoins}</span>
@@ -79,7 +79,7 @@ export default function ArcadeResultScreen({ onPlayAgain, onMenu }) {
         </div>
         <div className={styles.row}>
           <span className={styles.rowLabel}>⚡ {s.arcade.resultActions}</span>
-          <span className={styles.rowValue}>{actionsUsed} / 20</span>
+          <span className={styles.rowValue}>{actionsUsed} / {ARCADE_INITIAL_ACTIONS}</span>
         </div>
       </motion.div>
 

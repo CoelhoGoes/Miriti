@@ -28,7 +28,7 @@ function pickLang(field, lang) {
 }
 
 export default function ArcadeQuizScreen({ onFinish }) {
-  const { state, earnArcadeCoins, useArcadeQuestion } = useGame()
+  const { state, earnArcadeCoins, useArcadeQuestion: markArcadeQuestionUsed } = useGame()
   const s = useStrings()
   const lang = useLanguage()
 
@@ -41,7 +41,6 @@ export default function ArcadeQuizScreen({ onFinish }) {
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null) // id da opção selecionada
   const [answered, setAnswered] = useState(false)
-  const [coinsEarned, setCoinsEarned] = useState(0)
 
   const question = questions[index]
   const isLast = index === questions.length - 1
@@ -56,12 +55,11 @@ export default function ArcadeQuizScreen({ onFinish }) {
       sound.play('correct')
       const reward = question.reward ?? 10
       earnArcadeCoins(reward)
-      setCoinsEarned(prev => prev + reward)
     } else {
       sound.play('wrong')
     }
 
-    useArcadeQuestion(question.id)
+    markArcadeQuestionUsed(question.id)
   }
 
   const handleNext = () => {
@@ -103,7 +101,7 @@ export default function ArcadeQuizScreen({ onFinish }) {
         <span className={styles.headerTitle}>{s.arcade.quizTitle}</span>
         <div className={styles.coinsBadge}>
           <span aria-hidden="true">🪙</span>
-          <span>{arcadeCoins + coinsEarned}</span>
+          <span>{arcadeCoins}</span>
         </div>
       </div>
 

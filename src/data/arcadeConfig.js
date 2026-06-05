@@ -1,0 +1,2 @@
+export const ARCADE_INITIAL_COINS = 1000
+export const ARCADE_INITIAL_ACTIONS = 20

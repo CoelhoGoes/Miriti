@@ -78,9 +78,12 @@ export default function FarmMap({ onEscolinha, onShop, onCooperativa, onStocks, 
   const isArcade = state.gameMode === 'arcade'
   const displayCoins = isArcade ? (state.arcade?.coins ?? 0) : state.coins
   const actionsLeft = state.arcade?.actionsLeft ?? 0
-  const arcadeHint = actionsLeft === 1
-    ? s.arcade.farmHintSingular
-    : s.arcade.farmHint.replace('{n}', actionsLeft)
+  let arcadeHint = null
+  if (isArcade) {
+    arcadeHint = actionsLeft <= 1
+      ? s?.arcade?.farmHintSingular
+      : s?.arcade?.farmHint?.replace('{n}', actionsLeft)
+  }
   const openSettings = () => { if (onSettings) onSettings() }
   const openCredits = () => { if (onCredits) onCredits() }
 

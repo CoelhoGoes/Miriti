@@ -70,13 +70,18 @@ export default function App() {
   const [showRecovery, setShowRecovery] = useState(false)
   const { state, addPlayTime, clearTutorialReward, consumeArcadeAction, finishArcade } = useGame()
 
-  // Quando as ações esgotam no Arcade, navegar para resultado
+  // Em Arcade, a sessão fecha ao regressar ao mapa com 0 ações restantes.
   useEffect(() => {
-    if (state.gameMode === 'arcade' && state.arcade?.actionsLeft === 0 && !state.arcade?.finishedAt) {
+    if (state.gameMode !== 'arcade' || !state.arcade) return
+    if (screen !== SCREENS.FARM) return
+    if (state.arcade.actionsLeft > 0) return
+
+    if (!state.arcade.finishedAt) {
       finishArcade()
+    } else if (screen !== SCREENS.ARCADE_RESULT) {
       setScreen(SCREENS.ARCADE_RESULT)
     }
-  }, [state.gameMode, state.arcade?.actionsLeft, state.arcade?.finishedAt, finishArcade])
+  }, [state.gameMode, state.arcade, screen, finishArcade])
 
   // Consume 1 ação e navega; se actionsLeft chega a 0, o useEffect acima redireciona.
   const arcadeNavigate = useCallback((target) => {
@@ -221,7 +226,6 @@ export default function App() {
       case SCREENS.ARCADE_RESULT:
         return (
           <ArcadeResultScreen
-            onPlayAgain={() => goTo(SCREENS.ARCADE_START)}
             onMenu={() => goTo(SCREENS.HOME)}
           />
         )
